@@ -44,7 +44,7 @@ public class BoardServiceImplement implements BoardService {
         try {
             switch (category) {
                 case 1:
-                    boardSearchListViewEntities = boardListViewRepository.findByTitleContainsOrContentContainsOrWriterNicknameContainsOrderByCreateAt(searchWord, searchWord, searchWord);
+                    boardSearchListViewEntities = boardListViewRepository.findByTitleContainsOrContentContainsOrWriterNicknameContainsOrderByCreateAtDesc(searchWord, searchWord, searchWord);
                     break;
                 case 2:
                     boardSearchListViewEntities = boardListViewRepository.findByWriterNicknameContainsOrderByCreateAtDesc(searchWord);

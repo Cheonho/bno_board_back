@@ -10,4 +10,8 @@ import java.util.List;
 public interface BoardListViewRepository extends JpaRepository<BoardListViewEntity, Integer> {
 
     List<BoardListViewEntity> findByOrderByCreateAtDesc();
+    List<BoardListViewEntity> findByTitleContainsOrContentContainsOrWriterNicknameContainsOrderByCreateAt(String title, String content, String writerNickname);
+    List<BoardListViewEntity> findByWriterNicknameContainsOrderByCreateAtDesc(String writerNickname);
+    List<BoardListViewEntity> findByTitleContainsOrderByCreateAtDesc(String title);
+    List<BoardListViewEntity> findByContentContainsOrderByCreateAtDesc(String content);
 }

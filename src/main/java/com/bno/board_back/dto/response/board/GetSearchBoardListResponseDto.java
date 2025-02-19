@@ -6,23 +6,31 @@ import com.bno.board_back.dto.object.Board;
 import com.bno.board_back.dto.response.ResponseDto;
 import com.bno.board_back.entity.BoardListViewEntity;
 import lombok.Getter;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 public class GetSearchBoardListResponseDto extends ResponseDto {
 
     private List<Board> boardSearchList;
+    private int totalPages;
+    private long totalElements;
+    private int pageNumber;
+    private int pageSize;
 
-    private GetSearchBoardListResponseDto(List<BoardListViewEntity> boardListViewEntities) {
+    private GetSearchBoardListResponseDto(Page<BoardListViewEntity> page) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
-        this.boardSearchList = Board.getList(boardListViewEntities);
+        this.boardSearchList = Board.getList(page.getContent());
+        this.totalPages = page.getTotalPages();
+        this.totalElements = page.getTotalElements();
+        this.pageNumber = page.getNumber();
+        this.pageSize = page.getSize();
     }
 
-    public static ResponseEntity<GetSearchBoardListResponseDto> success(List<BoardListViewEntity> boardListViewEntities) {
+    public static ResponseEntity<GetSearchBoardListResponseDto> success(Page<BoardListViewEntity> boardListViewEntities) {
         GetSearchBoardListResponseDto result = new GetSearchBoardListResponseDto(boardListViewEntities);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }

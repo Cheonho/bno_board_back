@@ -8,6 +8,9 @@ import com.bno.board_back.repository.BoardListViewRepository;
 import com.bno.board_back.repository.BoardRepository;
 import com.bno.board_back.service.BoardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -18,43 +21,44 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardServiceImplement implements BoardService {
 
-    private final BoardRepository boardRepository;
     private final BoardListViewRepository boardListViewRepository;
 
     @Override
-    public ResponseEntity<? super GetBoardListResponseDto> getBoardList() {
+    public ResponseEntity<? super GetBoardListResponseDto> getBoardList(Pageable pageable) {
 
-        List<BoardListViewEntity> boardListViewEntities = new ArrayList<>();
+        Page<BoardListViewEntity> page;
 
         try {
-            boardListViewEntities = boardListViewRepository.findByOrderByCreateAtDesc();
+            page = boardListViewRepository.findByOrderByBoardNumDesc(pageable);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.databseError();
         }
 
-        return GetBoardListResponseDto.sucess(boardListViewEntities);
+        return GetBoardListResponseDto.sucess(page);
     }
 
     @Override
-    public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(int category, String searchWord) {
+    public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(int category, String searchWord, Pageable pageable) {
 
-        List<BoardListViewEntity> boardSearchListViewEntities = new ArrayList<>();
+        Page<BoardListViewEntity> boardSearchListViewEntities;
 
         try {
             switch (category) {
                 case 1:
-                    boardSearchListViewEntities = boardListViewRepository.findByTitleContainsOrContentContainsOrWriterNicknameContainsOrderByCreateAtDesc(searchWord, searchWord, searchWord);
+                    boardSearchListViewEntities = boardListViewRepository.findByTitleContainsOrContentContainsOrWriterNicknameContainsOrderByCreateAtDesc(searchWord, searchWord, searchWord, pageable);
                     break;
                 case 2:
-                    boardSearchListViewEntities = boardListViewRepository.findByWriterNicknameContainsOrderByCreateAtDesc(searchWord);
+                    boardSearchListViewEntities = boardListViewRepository.findByWriterNicknameContainsOrderByCreateAtDesc(searchWord, pageable);
                     break;
                 case 3:
-                    boardSearchListViewEntities = boardListViewRepository.findByTitleContainsOrderByCreateAtDesc(searchWord);
+                    boardSearchListViewEntities = boardListViewRepository.findByTitleContainsOrderByCreateAtDesc(searchWord, pageable);
                     break;
                 case 4:
-                    boardSearchListViewEntities = boardListViewRepository.findByContentContainsOrderByCreateAtDesc(searchWord);
+                    boardSearchListViewEntities = boardListViewRepository.findByContentContainsOrderByCreateAtDesc(searchWord, pageable);
                     break;
+                default:
+                    throw new Exception();
             }
         } catch (Exception e) {
             e.printStackTrace();

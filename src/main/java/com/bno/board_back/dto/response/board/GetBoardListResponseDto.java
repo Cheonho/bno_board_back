@@ -6,6 +6,7 @@ import com.bno.board_back.dto.object.Board;
 import com.bno.board_back.dto.response.ResponseDto;
 import com.bno.board_back.entity.BoardListViewEntity;
 import lombok.Getter;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -15,14 +16,24 @@ import java.util.List;
 public class GetBoardListResponseDto extends ResponseDto {
 
     private List<Board> boardList;
+    private int totalPages;
+    private long totalElements;
+    private int pageNumber;
+    private int pageSize;
+//    private int pageList;
 
-    private GetBoardListResponseDto(List<BoardListViewEntity> boardListViewEntities) {
+    private GetBoardListResponseDto(Page<BoardListViewEntity> page) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
-        this.boardList = Board.getList(boardListViewEntities);
+        this.boardList = Board.getList(page.getContent());
+        this.totalPages = page.getTotalPages();
+        this.totalElements = page.getTotalElements();
+        this.pageNumber = page.getNumber();
+        this.pageSize = page.getSize();
+//        this.pageList = page.getNumberOfElements();
     }
 
-    public static ResponseEntity<GetBoardListResponseDto> sucess(List<BoardListViewEntity> boardListViewEntities) {
-        GetBoardListResponseDto result = new GetBoardListResponseDto(boardListViewEntities);
+    public static ResponseEntity<GetBoardListResponseDto> sucess(Page<BoardListViewEntity> page) {
+        GetBoardListResponseDto result = new GetBoardListResponseDto(page);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

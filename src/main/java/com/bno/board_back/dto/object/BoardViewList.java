@@ -17,7 +17,7 @@ public class BoardViewList {
     private int boardNum;
     private String title;
     private String content;
-    private String writerId;
+    private String writerEmail;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
     private int viewCount;
@@ -29,7 +29,7 @@ public class BoardViewList {
         this.boardNum = boardListViewEntity.getBoardNum();
         this.title = boardListViewEntity.getTitle();
         this.content = boardListViewEntity.getContent();
-        this.writerId = boardListViewEntity.getWriterId();
+        this.writerEmail = boardListViewEntity.getWriterEmail();
         this.writerNickname = boardListViewEntity.getWriterNickname();
         this.createAt = boardListViewEntity.getCreateAt();
         this.updateAt = boardListViewEntity.getUpdateAt();

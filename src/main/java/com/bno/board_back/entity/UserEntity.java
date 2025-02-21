@@ -1,25 +1,23 @@
 package com.bno.board_back.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity(name="users")
 @Table(name="users")
 public class UserEntity {
 
     @Id
-    private String userId;
+    private String email;
     private String userNickname;
     private String password;
-    private String email;
-    private String tel;
     private String address;
     private String role;
     private String salt;

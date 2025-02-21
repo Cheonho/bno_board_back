@@ -15,7 +15,7 @@ public class Comments {
     private String content;
     private int commentLevel;
     private int parentNum;
-    private String writer;
+    private String writerEmail;
     private int boardNum;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;

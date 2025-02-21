@@ -77,10 +77,10 @@ public class BoardServiceImplement implements BoardService {
         Boolean checkUser = false;
 
         try {
-            checkUser = userRepository.existsByUserId(board.getWriterId());
+            checkUser = userRepository.existsByEmail(board.getWriterEmail());
             if (!checkUser) return ResponseDto.authError();
 
-            BoardEntity boardEntity = new BoardEntity(board.getTitle(), board.getContent(), board.getWriterId());
+            BoardEntity boardEntity = BoardEntity.createBoard(board.getTitle(), board.getContent(), board.getWriterEmail());
             boardRepository.save(boardEntity);
         } catch (Exception e) {
             e.printStackTrace();

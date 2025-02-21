@@ -1,6 +1,10 @@
 package com.bno.board_back.service;
 
-import com.bno.board_back.dto.UserModel ;
+import com.bno.board_back.dto.object.Users;
+import com.bno.board_back.dto.response.ResponseDto;
+import com.bno.board_back.dto.response.user.GetLoginUserDto;
+import com.bno.board_back.entity.UserEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.bno.board_back.repository.UserRepository ;
@@ -19,47 +23,60 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public UserModel loginPage(UserModel user) {
-        System.out.println("아이디 비번 : " + user.getUserId() + user.getSalt());
+    public ResponseEntity<? super GetLoginUserDto> loginPage(Users user) {
+        System.out.println("아이디 비번 : " + user.getEmail() + user.getSalt());
 
-        Optional<UserModel> model = repo.findByUserId(user.getUserId());
+        Optional<UserEntity> model;
+        try {
+            model = repo.findByEmail(user.getEmail());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databseError();
+        }
 
         if (model.isPresent()) {
             // 사용자가 존재하는 경우
-            UserModel foundUser = model.get();
-            if (user.getUserId().equals(foundUser.getUserId())) {
+            UserEntity foundUser = model.get();
+            if (user.getEmail().equals(foundUser.getEmail())) {
                 if (passwordEncoder.matches(user.getSalt(), foundUser.getSalt())) {
-                    return foundUser;
+                    return GetLoginUserDto.success(foundUser);
                 } else {
                     // 비밀번호가 일치하지 않는 경우
-                    return null;
+                    return ResponseDto.signFailed();
                 }
             } else {
                 // 아이디가 일치하지 않는 경우
-                return null;
+                return ResponseDto.signFailed();
             }
         } else {
             // 사용자가 존재하지 않는 경우
-            return null;
+            return ResponseDto.signFailed();
         }
 
     }
 
-    public UserModel JoinPage(UserModel user){
-        String userSalt = passwordEncoder.encode(user.getUserPw()) ;
-        user.setSalt(userSalt);
-        System.out.println("비밀번호 : " + user.getUserPw());
+    public void JoinPage(Users user){
+        System.out.println(user);
+        String userSalt = passwordEncoder.encode(user.getPassword());
+        UserEntity userEntity = UserEntity.builder()
+                .email(user.getEmail())
+                .salt(userSalt)
+                .password(userSalt)
+                .userNickname(user.getUserName())
+                .address(user.getAddress())
+                .role("user")
+                .build();
+        System.out.println("비밀번호 : " + user.getPassword());
         System.out.println("암호화 : " + user.getSalt());
-        return repo.save(user) ;
-
+        repo.save(userEntity) ;
     }
 
-    public boolean idcheckPage(String userId) {
-        return repo.existsByUserId(userId) ;
+    public boolean idcheckPage(String email) {
+        return repo.existsByEmail(email) ;
 
     }
 
     public boolean namecheckPage(String userName) {
-        return repo.existsByUserName(userName) ;
+        return repo.existsByUserNickname(userName) ;
     }
 }

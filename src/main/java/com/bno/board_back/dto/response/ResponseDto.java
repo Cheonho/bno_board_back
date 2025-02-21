@@ -23,4 +23,9 @@ public class ResponseDto {
         ResponseDto responseDto = new ResponseDto(ResponseCode.AUTHORIZATION_FAIL, ResponseMessage.AUTHORIZATION_FAIL);
         return ResponseEntity.status(HttpStatus.NON_AUTHORITATIVE_INFORMATION).body(responseDto);
     }
+
+    public static ResponseEntity<ResponseDto> signFailed() {
+        ResponseDto responseDto = new ResponseDto(ResponseCode.SIGN_IN_FAIL, ResponseMessage.SIGN_IN_FAIL);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseDto);
+    }
 }

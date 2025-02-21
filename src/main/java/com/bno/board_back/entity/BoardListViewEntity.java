@@ -19,7 +19,7 @@ public class BoardListViewEntity {
     private int boardNum;
     private String title;
     private String content;
-    private String writerId;
+    private String writerEmail;
     private String writerNickname;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;

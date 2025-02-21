@@ -2,7 +2,7 @@ package com.bno.board_back.dto.response.board;
 
 import com.bno.board_back.common.ResponseCode;
 import com.bno.board_back.common.ResponseMessage;
-import com.bno.board_back.dto.object.Board;
+import com.bno.board_back.dto.object.BoardViewList;
 import com.bno.board_back.dto.response.ResponseDto;
 import com.bno.board_back.entity.BoardListViewEntity;
 import lombok.Getter;
@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 public class GetBoardListResponseDto extends ResponseDto {
 
-    private List<Board> boardList;
+    private List<BoardViewList> boardList;
     private int totalPages;
     private long totalElements;
     private int pageNumber;
@@ -24,7 +24,7 @@ public class GetBoardListResponseDto extends ResponseDto {
 
     private GetBoardListResponseDto(Page<BoardListViewEntity> page) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
-        this.boardList = Board.getList(page.getContent());
+        this.boardList = BoardViewList.getList(page.getContent());
         this.totalPages = page.getTotalPages();
         this.totalElements = page.getTotalElements();
         this.pageNumber = page.getNumber();

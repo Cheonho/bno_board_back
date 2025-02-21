@@ -1,27 +1,29 @@
 package com.bno.board_back.service.implement;
 
+import com.bno.board_back.dto.object.Boards;
 import com.bno.board_back.dto.response.ResponseDto;
 import com.bno.board_back.dto.response.board.GetBoardListResponseDto;
 import com.bno.board_back.dto.response.board.GetSearchBoardListResponseDto;
+import com.bno.board_back.dto.response.board.PostWriteBoardResponseDto;
+import com.bno.board_back.entity.BoardEntity;
 import com.bno.board_back.entity.BoardListViewEntity;
 import com.bno.board_back.repository.BoardListViewRepository;
 import com.bno.board_back.repository.BoardRepository;
+import com.bno.board_back.repository.UserRepository;
 import com.bno.board_back.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class BoardServiceImplement implements BoardService {
 
     private final BoardListViewRepository boardListViewRepository;
+    private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
 
     @Override
     public ResponseEntity<? super GetBoardListResponseDto> getBoardList(Pageable pageable) {
@@ -67,5 +69,24 @@ public class BoardServiceImplement implements BoardService {
 
         return GetSearchBoardListResponseDto.success(boardSearchListViewEntities);
 
+    }
+
+    @Override
+    public ResponseEntity<? super PostWriteBoardResponseDto> postWriteBoard(Boards board) {
+
+        Boolean checkUser = false;
+
+        try {
+            checkUser = userRepository.existsByUserId(board.getWriterId());
+            if (!checkUser) return ResponseDto.authError();
+
+            BoardEntity boardEntity = new BoardEntity(board.getTitle(), board.getContent(), board.getWriterId());
+            boardRepository.save(boardEntity);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databseError();
+        }
+
+        return PostWriteBoardResponseDto.success();
     }
 }

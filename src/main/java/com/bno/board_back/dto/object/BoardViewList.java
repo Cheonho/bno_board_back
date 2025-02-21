@@ -1,9 +1,6 @@
 package com.bno.board_back.dto.object;
 
 import com.bno.board_back.entity.BoardListViewEntity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +12,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Board {
+public class BoardViewList {
 
     private int boardNum;
     private String title;
@@ -25,9 +22,10 @@ public class Board {
     private LocalDateTime updateAt;
     private int viewCount;
     private int commentCount;
+//    private int favoriteCount;
     private String writerNickname;
 
-    public Board(BoardListViewEntity boardListViewEntity) {
+    public BoardViewList(BoardListViewEntity boardListViewEntity) {
         this.boardNum = boardListViewEntity.getBoardNum();
         this.title = boardListViewEntity.getTitle();
         this.content = boardListViewEntity.getContent();
@@ -37,12 +35,13 @@ public class Board {
         this.updateAt = boardListViewEntity.getUpdateAt();
         this.viewCount = boardListViewEntity.getViewCount();
         this.commentCount = boardListViewEntity.getCommentCount();
+//        this.favoriteCount = boardListViewEntity.getFavoriteCount();
     }
 
-    public static List<Board> getList(List<BoardListViewEntity> boardListViewEntities) {
-        List<Board> list = new ArrayList<>();
+    public static List<BoardViewList> getList(List<BoardListViewEntity> boardListViewEntities) {
+        List<BoardViewList> list = new ArrayList<>();
         for (BoardListViewEntity boardListViewEntity : boardListViewEntities) {
-            Board board = new Board(boardListViewEntity);
+            BoardViewList board = new BoardViewList(boardListViewEntity);
             list.add(board);
         }
         return list;

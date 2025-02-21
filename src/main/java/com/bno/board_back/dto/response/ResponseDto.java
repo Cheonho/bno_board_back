@@ -18,4 +18,9 @@ public class ResponseDto {
         ResponseDto responseDto = new ResponseDto(ResponseCode.DATABASE_ERROR, ResponseMessage.DATABASE_ERROR);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
     }
+
+    public static ResponseEntity<ResponseDto> authError() {
+        ResponseDto responseDto = new ResponseDto(ResponseCode.AUTHORIZATION_FAIL, ResponseMessage.AUTHORIZATION_FAIL);
+        return ResponseEntity.status(HttpStatus.NON_AUTHORITATIVE_INFORMATION).body(responseDto);
+    }
 }

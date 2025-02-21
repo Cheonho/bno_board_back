@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name="board")
-@Table(name="board")
+@Table(name="boards")
 public class BoardEntity {
 
     @Id
@@ -24,4 +24,16 @@ public class BoardEntity {
     private LocalDateTime updateAt;
     private int viewCount;
     private int commentCount;
+//    private int favoriteCount;
+
+    public BoardEntity(String title, String content, String writer) {
+        this.title = title;
+        this.content = content;
+        this.writer = writer;
+        this.createAt = LocalDateTime.now();
+        this.updateAt = null;
+        this.viewCount = 0;
+        this.commentCount = 0;
+//        this.favoriteCount = 0;
+    }
 }

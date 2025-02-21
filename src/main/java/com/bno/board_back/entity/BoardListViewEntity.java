@@ -25,4 +25,5 @@ public class BoardListViewEntity {
     private LocalDateTime updateAt;
     private int viewCount;
     private int commentCount;
+//    private int favoriteCount;
 }

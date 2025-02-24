@@ -1,5 +1,6 @@
 package com.bno.board_back.controller;
 
+import com.bno.board_back.dto.response.ResponseDto;
 import com.bno.board_back.dto.response.board.GetBoardResponseDto;
 import com.bno.board_back.dto.response.comment.GetCommentListResponseDto;
 import com.bno.board_back.service.BoardService;
@@ -24,15 +25,20 @@ public class BoardController {
         return boardService.getBoardById(boardNum);
     }
 
-//    @DeleteMapping("/{boardNum}")
-//    public ResponseEntity<ResponseDto> deleteBoard(@PathVariable Long boardNum) {
-//        return boardService.deleteBoard(boardNum);
-//    }
+    @DeleteMapping("/{boardNum}")
+    public ResponseEntity<ResponseDto> deleteBoard(@PathVariable Long boardNum) {
+        return boardService.deleteBoardById(boardNum);
+    }
 
 
     @GetMapping("/{boardNum}/comment")
     public ResponseEntity<? super GetCommentListResponseDto> getCommentById(@PathVariable Long boardNum) {
         return commentService.getCommentsByBoardNum(boardNum);
+    }
+
+    @DeleteMapping("/{boardNum}/comment/{commentNum}")
+    public ResponseEntity<ResponseDto> deleteComment(@PathVariable Long commentNum) {
+        return commentService.deleteCommentById(commentNum);
     }
 
 

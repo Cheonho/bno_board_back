@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface BoardListViewRepository extends JpaRepository<BoardListViewEntity, Integer> {
+public interface BoardListViewRepository extends JpaRepository<BoardListViewEntity, Long> {
 
     Page<BoardListViewEntity> findByOrderByCreateAtDesc(Pageable pageable);
     Page<BoardListViewEntity> findByTitleContainsOrContentContainsOrWriterNicknameContainsOrderByCreateAtDesc(String title, String content, String writerNickname, Pageable pageable);

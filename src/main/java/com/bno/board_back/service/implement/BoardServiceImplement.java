@@ -11,7 +11,9 @@ import com.bno.board_back.repository.BoardListViewRepository;
 import com.bno.board_back.repository.BoardRepository;
 import com.bno.board_back.repository.UserRepository;
 import com.bno.board_back.service.BoardService;
+import com.bno.board_back.utils.TsidUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -25,13 +27,15 @@ public class BoardServiceImplement implements BoardService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
 
+    private final TsidUtil tsidUtil;
+
     @Override
     public ResponseEntity<? super GetBoardListResponseDto> getBoardList(Pageable pageable) {
 
         Page<BoardListViewEntity> page;
 
         try {
-            page = boardListViewRepository.findByOrderByBoardNumDesc(pageable);
+            page = boardListViewRepository.findByOrderByCreateAtDesc(pageable);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.databseError();
@@ -75,12 +79,13 @@ public class BoardServiceImplement implements BoardService {
     public ResponseEntity<? super PostWriteBoardResponseDto> postWriteBoard(Boards board) {
 
         Boolean checkUser = false;
+        System.out.println("----------------------- tsidUtil.getTsid() : " + tsidUtil.getTsid() + "-----------------------");
 
         try {
             checkUser = userRepository.existsByEmail(board.getWriterEmail());
             if (!checkUser) return ResponseDto.authError();
 
-            BoardEntity boardEntity = BoardEntity.createBoard(board.getTitle(), board.getContent(), board.getWriterEmail());
+            BoardEntity boardEntity = BoardEntity.createBoard(tsidUtil.getTsid(), board.getTitle(), board.getContent(), board.getWriterEmail());
             boardRepository.save(boardEntity);
         } catch (Exception e) {
             e.printStackTrace();

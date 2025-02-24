@@ -1,5 +1,6 @@
 package com.bno.board_back.entity;
 
+import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,26 +18,25 @@ import java.time.LocalDateTime;
 public class BoardEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int boardNum;
+    private Long boardNum;
     private String title;
     private String content;
     private String writerEmail;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
     private int viewCount;
-    private int commentCount;
-//    private int favoriteCount;
+    private boolean status;
 
-    public static BoardEntity createBoard(String title, String content, String writerEmail) {
+    public static BoardEntity createBoard(Long boardNum, String title, String content, String writerEmail) {
         return BoardEntity.builder()
+                .boardNum(boardNum)
                 .title(title)
                 .content(content)
                 .writerEmail(writerEmail)
                 .createAt(LocalDateTime.now())
                 .updateAt(null)
                 .viewCount(0)
-                .commentCount(0)
+                .status(true)
                 .build();
     }
 }

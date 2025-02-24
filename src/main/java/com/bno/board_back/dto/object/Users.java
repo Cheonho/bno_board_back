@@ -15,7 +15,6 @@ public class Users {
     private String email;
     private String password;
     private String userName;
-    private String salt;
     private String address;
     private String role;
 

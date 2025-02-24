@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class BoardListViewEntity {
 
     @Id
-    private int boardNum;
+    private Long boardNum;
     private String title;
     private String content;
     private String writerEmail;
@@ -24,6 +24,4 @@ public class BoardListViewEntity {
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
     private int viewCount;
-    private int commentCount;
-//    private int favoriteCount;
 }

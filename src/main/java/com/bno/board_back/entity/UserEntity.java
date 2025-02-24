@@ -15,10 +15,11 @@ import lombok.NoArgsConstructor;
 public class UserEntity {
 
     @Id
+    private Long id;
     private String email;
     private String userNickname;
     private String password;
     private String address;
     private String role;
-    private String salt;
+    private boolean status;
 }

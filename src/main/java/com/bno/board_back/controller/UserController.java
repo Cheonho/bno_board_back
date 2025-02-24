@@ -2,6 +2,7 @@ package com.bno.board_back.controller;
 
 import com.bno.board_back.dto.object.Users;
 import com.bno.board_back.dto.response.user.GetLoginUserDto;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -12,6 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api/v1/user/")
+@Tag(name="User", description = "User API")
 public class UserController {
 
     final

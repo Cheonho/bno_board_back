@@ -1,10 +1,11 @@
 package com.bno.board_back.dto.object;
 
 import com.bno.board_back.entity.BoardListViewEntity;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,18 +14,15 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(description = "게시글 목록 요청 DTO")
 public class BoardViewList {
 
-    private int boardNum;
+    private Long boardNum;
     private String title;
     private String content;
     private String writerEmail;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
     private int viewCount;
-    private int commentCount;
-//    private int favoriteCount;
     private String writerNickname;
 
     public BoardViewList(BoardListViewEntity boardListViewEntity) {
@@ -36,8 +34,6 @@ public class BoardViewList {
         this.createAt = boardListViewEntity.getCreateAt();
         this.updateAt = boardListViewEntity.getUpdateAt();
         this.viewCount = boardListViewEntity.getViewCount();
-        this.commentCount = boardListViewEntity.getCommentCount();
-//        this.favoriteCount = boardListViewEntity.getFavoriteCount();
     }
 
     public static List<BoardViewList> getList(List<BoardListViewEntity> boardListViewEntities) {

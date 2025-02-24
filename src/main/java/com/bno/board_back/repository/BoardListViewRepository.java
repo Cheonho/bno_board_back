@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface BoardListViewRepository extends JpaRepository<BoardListViewEntity, Integer> {
 
-    Page<BoardListViewEntity> findByOrderByBoardNumDesc(Pageable pageable);
+    Page<BoardListViewEntity> findByOrderByCreateAtDesc(Pageable pageable);
     Page<BoardListViewEntity> findByTitleContainsOrContentContainsOrWriterNicknameContainsOrderByCreateAtDesc(String title, String content, String writerNickname, Pageable pageable);
     Page<BoardListViewEntity> findByWriterNicknameContainsOrderByCreateAtDesc(String writerNickname, Pageable pageable);
     Page<BoardListViewEntity> findByTitleContainsOrderByCreateAtDesc(String title, Pageable pageable);

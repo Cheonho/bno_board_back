@@ -24,7 +24,6 @@ public class UserService {
     }
 
     public ResponseEntity<? super GetLoginUserDto> loginPage(Users user) {
-        System.out.println("아이디 비번 : " + user.getEmail() + user.getSalt());
 
         Optional<UserEntity> model;
         try {
@@ -38,7 +37,7 @@ public class UserService {
             // 사용자가 존재하는 경우
             UserEntity foundUser = model.get();
             if (user.getEmail().equals(foundUser.getEmail())) {
-                if (passwordEncoder.matches(user.getSalt(), foundUser.getSalt())) {
+                if (passwordEncoder.matches(user.getPassword(), foundUser.getPassword())) {
                     return GetLoginUserDto.success(foundUser);
                 } else {
                     // 비밀번호가 일치하지 않는 경우
@@ -60,14 +59,13 @@ public class UserService {
         String userSalt = passwordEncoder.encode(user.getPassword());
         UserEntity userEntity = UserEntity.builder()
                 .email(user.getEmail())
-                .salt(userSalt)
                 .password(userSalt)
                 .userNickname(user.getUserName())
                 .address(user.getAddress())
                 .role("user")
                 .build();
         System.out.println("비밀번호 : " + user.getPassword());
-        System.out.println("암호화 : " + user.getSalt());
+        System.out.println("암호화 : " + user.getPassword());
         repo.save(userEntity) ;
     }
 

@@ -5,18 +5,21 @@ import com.bno.board_back.dto.response.board.GetBoardListResponseDto;
 import com.bno.board_back.dto.response.board.GetSearchBoardListResponseDto;
 import com.bno.board_back.dto.response.board.PostWriteBoardResponseDto;
 import com.bno.board_back.service.BoardService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Api(tags="게시판 API")
-@Controller
+@RestController
 @RequestMapping("/api/v1/board/")
+@Tag(name="Board", description = "Board API")
 public class BoardController {
 
     private final BoardService boardService;
@@ -25,7 +28,7 @@ public class BoardController {
         this.boardService = boardService;
     }
 
-    @ApiOperation(value="게시판 전체 조회")
+    @Operation(summary = "게시글 전체 조회", description = "등록된 게시글을 조회 합니다.")
     @GetMapping("board-list")
     public ResponseEntity<? super GetBoardListResponseDto> getBoardList(@RequestParam(value = "page", defaultValue = "0") int page) {
         int size = 3;
@@ -34,16 +37,13 @@ public class BoardController {
         return response;
     }
 
-    @ApiOperation(value="게시판 검색 조회")
+    @Operation(summary = "게시글 검색", description = "등록된 게시글을 검색 합니다. (category 전체 - 1 / 작성자 - 2 / 제목 - 3 / 내용 - 4)")
     @GetMapping("search-list/{category}/{searchWord}")
     public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(
-            @ApiParam(value="카테고리 번호", required=true)
             @PathVariable int category,
 
-            @ApiParam(value="검색어", required=true)
             @PathVariable String searchWord,
 
-            @ApiParam(value="페이지", required=true)
             @RequestParam(value = "page", defaultValue = "0") int page
     ) {
         int size = 3;
@@ -52,11 +52,18 @@ public class BoardController {
         return response;
     }
 
-    @ApiOperation(value="게시글 작성")
+    @Operation(summary = "게시글 등록", description = "등록된 게시글을 등록 합니다.",
+    responses = {
+            @ApiResponse(responseCode = "200",
+            description = "게시글 작성 성공",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = GetBoardListResponseDto.class)
+            ))
+    })
     @PostMapping("/write")
     public ResponseEntity<? super PostWriteBoardResponseDto> postSaveBoard(
-            @ApiParam(value="게시글", required=true)
-            @RequestBody Boards board
+            @Valid @RequestBody Boards board
     ) {
         ResponseEntity<? super PostWriteBoardResponseDto> response = boardService.postWriteBoard(board);
         return response;

@@ -1,38 +1,39 @@
 package com.bno.board_back.dto.object;
 
 import com.bno.board_back.entity.BoardEntity;
-import com.bno.board_back.entity.BoardListViewEntity;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(description = "게시글 작성 DTO")
 public class Boards {
 
-    private int boardNum;
-    @ApiModelProperty(value = "게시글 제목", required = true)
-    @NonNull
+    @Schema(hidden = true)
+    private Long boardNum;
+    @NotBlank
+    @Schema(description = "제목", example = "test")
     private String title;
-    @ApiModelProperty(value = "게시글 내용", required = true)
-    @NonNull
+    @NotBlank
+    @Schema(description = "내용", example = "test 입니다.")
     private String content;
-    @ApiModelProperty(value = "게시글 작성자", required = true)
-    @NonNull
+    @NotBlank
+    @Schema(description = "작성자 이메일", example = "test@test.com")
     private String writerEmail;
 
+    @Schema(hidden = true)
     private LocalDateTime createAt;
+    @Schema(hidden = true)
     private LocalDateTime updateAt;
+    @Schema(hidden = true)
     private int viewCount;
-    private int commentCount;
-//    private int favoriteCount;
+    @Schema(hidden = true)
+    private int status;
 
     public Boards(BoardEntity BoardEntity) {
         this.boardNum = BoardEntity.getBoardNum();
@@ -42,7 +43,5 @@ public class Boards {
         this.createAt = BoardEntity.getCreateAt();
         this.updateAt = BoardEntity.getUpdateAt();
         this.viewCount = BoardEntity.getViewCount();
-        this.commentCount = BoardEntity.getCommentCount();
-//        this.favoriteCount = BoardEntity.getFavoriteCount();
     }
 }

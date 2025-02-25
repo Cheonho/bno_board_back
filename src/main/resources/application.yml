@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: ghtp8571
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: 'true'
+  application:
+    name: Bnoboard
+  jpa:
+    properties:
+      hibernate:
+        default_schema: boards
+    show-sql: 'true'
+    hibernate:
+      ddl-auto: none
+server:
+  tomcat:
+    use-relative-redirects: 'true'
+  servlet:
+    context-path: /api/v1
+springdoc:
+  packages-to-scan: com.bno.board_back.controller
+
+env:
+  tsid:
+    tz: Asia/Seoul
+    nodeBit: 10

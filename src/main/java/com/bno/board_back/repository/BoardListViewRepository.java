@@ -7,14 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface BoardListViewRepository extends JpaRepository<BoardListViewEntity, Long>, BoardListViewCustomRepository {
 
     Page<BoardListViewEntity> findByOrderByCreateAtDesc(Pageable pageable);
-    Page<BoardListViewEntity> findByTitleContainsOrContentContainsOrWriterNicknameContainsOrderByCreateAtDesc(String title, String content, String writerNickname, Pageable pageable);
-    Page<BoardListViewEntity> findByWriterNicknameContainsOrderByCreateAtDesc(String writerNickname, Pageable pageable);
-    Page<BoardListViewEntity> findByTitleContainsOrderByCreateAtDesc(String title, Pageable pageable);
-    Page<BoardListViewEntity> findByContentContainsOrderByCreateAtDesc(String content, Pageable pageable);
 }

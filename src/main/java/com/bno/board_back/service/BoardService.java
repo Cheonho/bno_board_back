@@ -1,6 +1,5 @@
 package com.bno.board_back.service;
 
-import com.bno.board_back.dto.object.BoardViewList;
 import com.bno.board_back.dto.object.Boards;
 import com.bno.board_back.dto.response.board.GetBoardListResponseDto;
 import com.bno.board_back.dto.response.board.GetSearchBoardListResponseDto;

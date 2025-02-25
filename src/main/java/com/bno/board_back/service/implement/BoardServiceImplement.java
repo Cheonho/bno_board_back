@@ -11,9 +11,9 @@ import com.bno.board_back.repository.BoardListViewRepository;
 import com.bno.board_back.repository.BoardRepository;
 import com.bno.board_back.repository.UserRepository;
 import com.bno.board_back.service.BoardService;
+import com.bno.board_back.service.mapper.BoardMapper;
 import com.bno.board_back.utils.TsidUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +28,7 @@ public class BoardServiceImplement implements BoardService {
     private final UserRepository userRepository;
 
     private final TsidUtil tsidUtil;
+    private final BoardMapper boardMapper;
 
     @Override
     public ResponseEntity<? super GetBoardListResponseDto> getBoardList(Pageable pageable) {
@@ -51,22 +52,6 @@ public class BoardServiceImplement implements BoardService {
 
         try {
             boardSearchListViewEntities = boardListViewRepository.findSearch(searchWord, category, pageable);
-//            switch (category) {
-//                case 1:
-//                    boardSearchListViewEntities = boardListViewRepository.findByTitleContainsOrContentContainsOrWriterNicknameContainsOrderByCreateAtDesc(searchWord, searchWord, searchWord, pageable);
-//                    break;
-//                case 2:
-//                    boardSearchListViewEntities = boardListViewRepository.findByWriterNicknameContainsOrderByCreateAtDesc(searchWord, pageable);
-//                    break;
-//                case 3:
-//                    boardSearchListViewEntities = boardListViewRepository.findByTitleContainsOrderByCreateAtDesc(searchWord, pageable);
-//                    break;
-//                case 4:
-//                    boardSearchListViewEntities = boardListViewRepository.findByContentContainsOrderByCreateAtDesc(searchWord, pageable);
-//                    break;
-//                default:
-//                    throw new Exception();
-//            }
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.databseError();
@@ -79,14 +64,16 @@ public class BoardServiceImplement implements BoardService {
     @Override
     public ResponseEntity<? super PostWriteBoardResponseDto> postWriteBoard(Boards board) {
 
-        Boolean checkUser = false;
+        boolean checkUser = false;
         System.out.println("----------------------- tsidUtil.getTsid() : " + tsidUtil.getTsid() + "-----------------------");
 
         try {
             checkUser = userRepository.existsByEmail(board.getWriterEmail());
             if (!checkUser) return ResponseDto.authError();
 
-            BoardEntity boardEntity = BoardEntity.createBoard(tsidUtil.getTsid(), board.getTitle(), board.getContent(), board.getWriterEmail());
+//            BoardEntity boardEntity = BoardEntity.createBoard(tsidUtil.getTsid(), board.getTitle(), board.getContent(), board.getWriterEmail());
+            BoardEntity boardEntity = boardMapper.toEntity(board);
+
             boardRepository.save(boardEntity);
         } catch (Exception e) {
             e.printStackTrace();

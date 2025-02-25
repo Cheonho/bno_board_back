@@ -1,6 +1,5 @@
 package com.bno.board_back.dto.object;
 
-import com.bno.board_back.entity.BoardEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -33,15 +32,5 @@ public class Boards {
     @Schema(hidden = true)
     private int viewCount;
     @Schema(hidden = true)
-    private int status;
-
-    public Boards(BoardEntity BoardEntity) {
-        this.boardNum = BoardEntity.getBoardNum();
-        this.title = BoardEntity.getTitle();
-        this.content = BoardEntity.getContent();
-        this.writerEmail = BoardEntity.getWriterEmail();
-        this.createAt = BoardEntity.getCreateAt();
-        this.updateAt = BoardEntity.getUpdateAt();
-        this.viewCount = BoardEntity.getViewCount();
-    }
+    private boolean status;
 }

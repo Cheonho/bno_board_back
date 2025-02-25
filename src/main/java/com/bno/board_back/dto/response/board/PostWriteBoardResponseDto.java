@@ -3,10 +3,8 @@ package com.bno.board_back.dto.response.board;
 import com.bno.board_back.common.ResponseCode;
 import com.bno.board_back.common.ResponseMessage;
 import com.bno.board_back.dto.response.ResponseDto;
-import com.bno.board_back.entity.BoardListViewEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

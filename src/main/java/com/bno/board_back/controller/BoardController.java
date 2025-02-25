@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.PageRequest;
@@ -31,7 +30,7 @@ public class BoardController {
     @Operation(summary = "게시글 전체 조회", description = "등록된 게시글을 조회 합니다.")
     @GetMapping("board-list")
     public ResponseEntity<? super GetBoardListResponseDto> getBoardList(@RequestParam(value = "page", defaultValue = "0") int page) {
-        int size = 3;
+        int size = 5;
         Pageable pageable = PageRequest.of(page, size);
         ResponseEntity<? super GetBoardListResponseDto> response = boardService.getBoardList(pageable);
         return response;
@@ -41,12 +40,10 @@ public class BoardController {
     @GetMapping("search-list/{category}/{searchWord}")
     public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(
             @PathVariable int category,
-
             @PathVariable String searchWord,
-
             @RequestParam(value = "page", defaultValue = "0") int page
     ) {
-        int size = 3;
+        int size = 5;
         Pageable pageable = PageRequest.of(page, size);
         ResponseEntity<? super GetSearchBoardListResponseDto> response = boardService.getSearchBoardList(category, searchWord, pageable);
         return response;

@@ -1,19 +1,16 @@
-package com.bno.board_back.entity;
+package com.bno.board_back.dto.object;
 
-import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Entity(name="board")
-@Table(name="boards")
-public class BoardEntity {
+public class BoardListView {
 
-    @Id
     private Long boardNum;
     private String title;
     private String content;
@@ -21,5 +18,5 @@ public class BoardEntity {
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
     private int viewCount;
-    private boolean status;
+    private String writerNickname;
 }

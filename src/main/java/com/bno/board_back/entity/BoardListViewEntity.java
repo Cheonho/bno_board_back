@@ -2,13 +2,12 @@ package com.bno.board_back.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.View;
 
 import java.time.LocalDateTime;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name="board_list_view")

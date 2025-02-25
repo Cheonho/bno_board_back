@@ -4,7 +4,7 @@ import com.bno.board_back.dto.object.UpdateBoards;
 import com.bno.board_back.dto.object.WriteBoards;
 import com.bno.board_back.dto.response.board.GetBoardListResponseDto;
 import com.bno.board_back.dto.response.board.GetSearchBoardListResponseDto;
-import com.bno.board_back.dto.response.board.PostUpdateBoardResponseDto;
+import com.bno.board_back.dto.response.board.PatchUpdateBoardResponseDto;
 import com.bno.board_back.dto.response.board.PostWriteBoardResponseDto;
 import com.bno.board_back.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -69,11 +69,11 @@ public class BoardController {
     }
 
     @Operation(summary = "게시글 수정", description = "등록된 게시글 수정")
-    @PostMapping("update")
-    public ResponseEntity<? super PostUpdateBoardResponseDto> postUpdateBoard(
+    @PatchMapping("update")
+    public ResponseEntity<? super PatchUpdateBoardResponseDto> patchUpdateBoard(
             @Valid @RequestBody UpdateBoards board
     ) {
-        ResponseEntity<? super PostUpdateBoardResponseDto> response = boardService.postUpdateBoard(board);
+        ResponseEntity<? super PatchUpdateBoardResponseDto> response = boardService.postUpdateBoard(board);
         return response;
     }
 }

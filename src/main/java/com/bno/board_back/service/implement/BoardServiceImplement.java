@@ -5,7 +5,7 @@ import com.bno.board_back.dto.object.WriteBoards;
 import com.bno.board_back.dto.response.ResponseDto;
 import com.bno.board_back.dto.response.board.GetBoardListResponseDto;
 import com.bno.board_back.dto.response.board.GetSearchBoardListResponseDto;
-import com.bno.board_back.dto.response.board.PostUpdateBoardResponseDto;
+import com.bno.board_back.dto.response.board.PatchUpdateBoardResponseDto;
 import com.bno.board_back.dto.response.board.PostWriteBoardResponseDto;
 import com.bno.board_back.entity.BoardEntity;
 import com.bno.board_back.entity.BoardListViewEntity;
@@ -89,7 +89,7 @@ public class BoardServiceImplement implements BoardService {
     }
 
     @Override
-    public ResponseEntity<? super PostUpdateBoardResponseDto> postUpdateBoard(UpdateBoards board) {
+    public ResponseEntity<? super PatchUpdateBoardResponseDto> postUpdateBoard(UpdateBoards board) {
 
         boolean checkUser = false;
         BoardEntity updateBoard;
@@ -107,6 +107,6 @@ public class BoardServiceImplement implements BoardService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
 
-        return PostUpdateBoardResponseDto.success();
+        return PatchUpdateBoardResponseDto.success();
     }
 }

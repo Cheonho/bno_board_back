@@ -10,15 +10,15 @@ import org.springframework.http.ResponseEntity;
 
 @Schema(description = "게시글 수정 응답 DTO")
 @Getter
-public class PostUpdateBoardResponseDto extends ResponseDto {
+public class PatchUpdateBoardResponseDto extends ResponseDto {
 
-    private PostUpdateBoardResponseDto() {
+    private PatchUpdateBoardResponseDto() {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
     }
 
     @Schema(description = "수정 성공", example = "true")
-    public static ResponseEntity<PostUpdateBoardResponseDto> success() {
-        PostUpdateBoardResponseDto result = new PostUpdateBoardResponseDto();
+    public static ResponseEntity<PatchUpdateBoardResponseDto> success() {
+        PatchUpdateBoardResponseDto result = new PatchUpdateBoardResponseDto();
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

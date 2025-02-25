@@ -3,15 +3,15 @@ package com.bno.board_back.dto.object;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Boards {
+public class WriteBoards {
 
     @Schema(hidden = true)
     private Long boardNum;
@@ -24,13 +24,4 @@ public class Boards {
     @NotBlank
     @Schema(description = "작성자 이메일", example = "test@test.com")
     private String writerEmail;
-
-    @Schema(hidden = true)
-    private LocalDateTime createAt;
-    @Schema(hidden = true)
-    private LocalDateTime updateAt;
-    @Schema(hidden = true)
-    private int viewCount;
-    @Schema(hidden = true)
-    private boolean status;
 }

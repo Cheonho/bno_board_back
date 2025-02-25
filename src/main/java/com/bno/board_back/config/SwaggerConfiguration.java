@@ -1,15 +1,18 @@
 package com.bno.board_back.config;
 
+import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 @Configuration
 public class SwaggerConfiguration {
 
-    // http://localhost:8080/swagger-ui/index.html
+    // http://localhost:8080/api/v1/swagger-ui/index.html
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()

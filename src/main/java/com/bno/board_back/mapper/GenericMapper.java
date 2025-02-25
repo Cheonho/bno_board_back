@@ -1,4 +1,4 @@
-package com.bno.board_back.service.mapper;
+package com.bno.board_back.mapper;
 
 import org.mapstruct.BeanMapping;
 import org.mapstruct.MappingTarget;

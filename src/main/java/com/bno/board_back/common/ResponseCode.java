@@ -9,6 +9,8 @@ public interface ResponseCode {
     // Http status 400
     String VALIDATION_FAILED = "VF";
     String DUPLICATE_NICK = "DN";
+
+    // Http status 404
     String NOT_EXISTED_USER = "NU";
     String NOT_EXISTED_BOARD = "NB";
 

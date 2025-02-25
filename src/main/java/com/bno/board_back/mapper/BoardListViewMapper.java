@@ -1,4 +1,4 @@
-package com.bno.board_back.service.mapper;
+package com.bno.board_back.mapper;
 
 import com.bno.board_back.dto.object.BoardListView;
 import com.bno.board_back.entity.BoardListViewEntity;

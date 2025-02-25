@@ -1,8 +1,10 @@
 package com.bno.board_back.controller;
 
-import com.bno.board_back.dto.object.Boards;
+import com.bno.board_back.dto.object.UpdateBoards;
+import com.bno.board_back.dto.object.WriteBoards;
 import com.bno.board_back.dto.response.board.GetBoardListResponseDto;
 import com.bno.board_back.dto.response.board.GetSearchBoardListResponseDto;
+import com.bno.board_back.dto.response.board.PostUpdateBoardResponseDto;
 import com.bno.board_back.dto.response.board.PostWriteBoardResponseDto;
 import com.bno.board_back.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,7 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/board/")
+@RequestMapping("/board/")
 @Tag(name="Board", description = "Board API")
 public class BoardController {
 
@@ -58,11 +60,20 @@ public class BoardController {
                     schema = @Schema(implementation = GetBoardListResponseDto.class)
             ))
     })
-    @PostMapping("/write")
+    @PostMapping("write")
     public ResponseEntity<? super PostWriteBoardResponseDto> postSaveBoard(
-            @Valid @RequestBody Boards board
+            @Valid @RequestBody WriteBoards board
     ) {
         ResponseEntity<? super PostWriteBoardResponseDto> response = boardService.postWriteBoard(board);
+        return response;
+    }
+
+    @Operation(summary = "게시글 수정", description = "등록된 게시글 수정")
+    @PostMapping("update")
+    public ResponseEntity<? super PostUpdateBoardResponseDto> postUpdateBoard(
+            @Valid @RequestBody UpdateBoards board
+    ) {
+        ResponseEntity<? super PostUpdateBoardResponseDto> response = boardService.postUpdateBoard(board);
         return response;
     }
 }

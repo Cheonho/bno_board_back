@@ -28,4 +28,14 @@ public class ResponseDto {
         ResponseDto responseDto = new ResponseDto(ResponseCode.SIGN_IN_FAIL, ResponseMessage.SIGN_IN_FAIL);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseDto);
     }
+
+    public static ResponseEntity<ResponseDto> notFoundBoard() {
+        ResponseDto responseDto = new ResponseDto(ResponseCode.NOT_EXISTED_BOARD, ResponseMessage.NOT_EXISTED_BOARD);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
+    }
+
+    public static ResponseEntity<ResponseDto> notFoundUser() {
+        ResponseDto responseDto = new ResponseDto(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
+    }
 }

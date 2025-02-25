@@ -14,6 +14,7 @@ import com.bno.board_back.service.BoardService;
 import com.bno.board_back.mapper.BoardWriteMapper;
 import com.bno.board_back.utils.TsidUtil;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -21,9 +22,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.slf4j.Logger;
+
 @Service
 @RequiredArgsConstructor
 public class BoardServiceImplement implements BoardService {
+
+    private static final Logger logger = LoggerFactory.getLogger(BoardServiceImplement.class);
 
     private final BoardListViewRepository boardListViewRepository;
     private final BoardRepository boardRepository;
@@ -116,12 +121,13 @@ public class BoardServiceImplement implements BoardService {
 
         try {
             board = boardRepository.findByBoardNum(boardNum);
-            if (board == null) return ResponseDto.notFoundBoard();
+//            if (board == null) return ResponseDto.notFoundBoard();
+            if (board == null) throw new Exception();
 
             board.setViewCount(board.getViewCount() + 1);
-
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("error", e);
+            System.out.println("test");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
         return PatchIncreaseViewCountDto.success();

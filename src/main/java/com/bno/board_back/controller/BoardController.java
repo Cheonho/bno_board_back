@@ -2,10 +2,7 @@ package com.bno.board_back.controller;
 
 import com.bno.board_back.dto.object.UpdateBoards;
 import com.bno.board_back.dto.object.WriteBoards;
-import com.bno.board_back.dto.response.board.GetBoardListResponseDto;
-import com.bno.board_back.dto.response.board.GetSearchBoardListResponseDto;
-import com.bno.board_back.dto.response.board.PatchUpdateBoardResponseDto;
-import com.bno.board_back.dto.response.board.PostWriteBoardResponseDto;
+import com.bno.board_back.dto.response.board.*;
 import com.bno.board_back.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -74,6 +71,15 @@ public class BoardController {
             @Valid @RequestBody UpdateBoards board
     ) {
         ResponseEntity<? super PatchUpdateBoardResponseDto> response = boardService.postUpdateBoard(board);
+        return response;
+    }
+
+    @Operation(summary = "조회수 증가", description = "게시글 조회수 증가")
+    @PatchMapping("{boardNum}/view")
+    public ResponseEntity<? super PatchIncreaseViewCountDto> patchViewBoard(
+            @PathVariable Long boardNum
+    ) {
+        ResponseEntity<? super PatchIncreaseViewCountDto> response = boardService.increaseCount(boardNum);
         return response;
     }
 }

@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
 
     BoardEntity findByBoardNumAndWriterEmail(Long boardNum, String writerEmail);
+    BoardEntity findByBoardNum(Long boardNum);
 }

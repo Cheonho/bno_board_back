@@ -7,6 +7,7 @@ import com.bno.board_back.dto.response.ResponseDto;
 import com.bno.board_back.entity.BoardListViewEntity;
 import com.bno.board_back.mapper.BoardListViewMapper;
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @Getter
+@ToString
 public class GetBoardListResponseDto extends ResponseDto {
 
     private final List<BoardListView> boardList;

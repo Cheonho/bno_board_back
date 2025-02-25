@@ -3,10 +3,7 @@ package com.bno.board_back.service.implement;
 import com.bno.board_back.dto.object.UpdateBoards;
 import com.bno.board_back.dto.object.WriteBoards;
 import com.bno.board_back.dto.response.ResponseDto;
-import com.bno.board_back.dto.response.board.GetBoardListResponseDto;
-import com.bno.board_back.dto.response.board.GetSearchBoardListResponseDto;
-import com.bno.board_back.dto.response.board.PatchUpdateBoardResponseDto;
-import com.bno.board_back.dto.response.board.PostWriteBoardResponseDto;
+import com.bno.board_back.dto.response.board.*;
 import com.bno.board_back.entity.BoardEntity;
 import com.bno.board_back.entity.BoardListViewEntity;
 import com.bno.board_back.mapper.BoardUpdateMapper;
@@ -22,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -104,9 +102,28 @@ public class BoardServiceImplement implements BoardService {
             boardRepository.save(updateBoard);
         } catch (Exception e){
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
         return PatchUpdateBoardResponseDto.success();
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<? super PatchIncreaseViewCountDto> increaseCount(Long boardNum) {
+
+        BoardEntity board;
+
+        try {
+            board = boardRepository.findByBoardNum(boardNum);
+            if (board == null) return ResponseDto.notFoundBoard();
+
+            board.setViewCount(board.getViewCount() + 1);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        return PatchIncreaseViewCountDto.success();
     }
 }

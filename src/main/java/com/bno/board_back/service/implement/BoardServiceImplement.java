@@ -50,22 +50,23 @@ public class BoardServiceImplement implements BoardService {
         Page<BoardListViewEntity> boardSearchListViewEntities;
 
         try {
-            switch (category) {
-                case 1:
-                    boardSearchListViewEntities = boardListViewRepository.findByTitleContainsOrContentContainsOrWriterNicknameContainsOrderByCreateAtDesc(searchWord, searchWord, searchWord, pageable);
-                    break;
-                case 2:
-                    boardSearchListViewEntities = boardListViewRepository.findByWriterNicknameContainsOrderByCreateAtDesc(searchWord, pageable);
-                    break;
-                case 3:
-                    boardSearchListViewEntities = boardListViewRepository.findByTitleContainsOrderByCreateAtDesc(searchWord, pageable);
-                    break;
-                case 4:
-                    boardSearchListViewEntities = boardListViewRepository.findByContentContainsOrderByCreateAtDesc(searchWord, pageable);
-                    break;
-                default:
-                    throw new Exception();
-            }
+            boardSearchListViewEntities = boardListViewRepository.findSearch(searchWord, category, pageable);
+//            switch (category) {
+//                case 1:
+//                    boardSearchListViewEntities = boardListViewRepository.findByTitleContainsOrContentContainsOrWriterNicknameContainsOrderByCreateAtDesc(searchWord, searchWord, searchWord, pageable);
+//                    break;
+//                case 2:
+//                    boardSearchListViewEntities = boardListViewRepository.findByWriterNicknameContainsOrderByCreateAtDesc(searchWord, pageable);
+//                    break;
+//                case 3:
+//                    boardSearchListViewEntities = boardListViewRepository.findByTitleContainsOrderByCreateAtDesc(searchWord, pageable);
+//                    break;
+//                case 4:
+//                    boardSearchListViewEntities = boardListViewRepository.findByContentContainsOrderByCreateAtDesc(searchWord, pageable);
+//                    break;
+//                default:
+//                    throw new Exception();
+//            }
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.databseError();

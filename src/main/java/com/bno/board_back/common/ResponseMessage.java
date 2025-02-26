@@ -8,6 +8,8 @@ public interface ResponseMessage {
     // Http status 400
     String VALIDATION_FAILED = "Validation failed";
     String DUPLICATE_NICK = "Duplicated nickname";
+
+    // Http status 404
     String NOT_EXISTED_USER = "User does not exist.";
     String NOT_EXISTED_BOARD = "Board does not exist.";
 

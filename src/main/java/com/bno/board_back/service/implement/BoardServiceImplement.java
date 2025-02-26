@@ -47,7 +47,7 @@ public class BoardServiceImplement implements BoardService {
             page = boardListViewRepository.findByOrderByCreateAtDesc(pageable);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseDto.databseError();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
         return GetBoardListResponseDto.sucess(page);
@@ -62,7 +62,7 @@ public class BoardServiceImplement implements BoardService {
             boardSearchListViewEntities = boardListViewRepository.findSearch(searchWord, category, pageable);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseDto.databseError();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
         return GetSearchBoardListResponseDto.success(boardSearchListViewEntities);
@@ -79,13 +79,12 @@ public class BoardServiceImplement implements BoardService {
             checkUser = userRepository.existsByEmail(board.getWriterEmail());
             if (!checkUser) return ResponseDto.notFoundUser();
 
-//            BoardEntity boardEntity = BoardEntity.createBoard(tsidUtil.getTsid(), board.getTitle(), board.getContent(), board.getWriterEmail());
             BoardEntity boardEntity = boardWriteMapper.toEntity(board);
 
             boardRepository.save(boardEntity);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseDto.databseError();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
         return PostWriteBoardResponseDto.success();

@@ -4,6 +4,7 @@ import com.bno.board_back.dto.object.Users;
 import com.bno.board_back.dto.response.ResponseDto;
 import com.bno.board_back.dto.response.user.GetLoginUserDto;
 import com.bno.board_back.entity.UserEntity;
+import com.bno.board_back.utils.TsidUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,12 @@ public class UserService {
     final
     UserRepository repo ;
     private final PasswordEncoder passwordEncoder;
+    private final TsidUtil tsidUtil;
 
-    public UserService(UserRepository repo, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository repo, PasswordEncoder passwordEncoder, TsidUtil tsidUtil) {
         this.repo = repo;
         this.passwordEncoder = passwordEncoder;
+        this.tsidUtil = tsidUtil;
     }
 
     public ResponseEntity<? super GetLoginUserDto> loginPage(Users user) {
@@ -41,14 +44,17 @@ public class UserService {
                     return GetLoginUserDto.success(foundUser);
                 } else {
                     // 비밀번호가 일치하지 않는 경우
+                    System.out.println("1");
                     return ResponseDto.signFailed();
                 }
             } else {
                 // 아이디가 일치하지 않는 경우
+                System.out.println("2");
                 return ResponseDto.signFailed();
             }
         } else {
             // 사용자가 존재하지 않는 경우
+            System.out.println("3");
             return ResponseDto.signFailed();
         }
 
@@ -58,6 +64,7 @@ public class UserService {
         System.out.println(user);
         String userSalt = passwordEncoder.encode(user.getPassword());
         UserEntity userEntity = UserEntity.builder()
+                .id(tsidUtil.getTsid())
                 .email(user.getEmail())
                 .password(userSalt)
                 .userNickname(user.getUserName())

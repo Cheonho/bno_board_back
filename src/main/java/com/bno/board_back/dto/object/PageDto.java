@@ -13,6 +13,7 @@ public class PageDto extends ResponseDto {
     private final long totalElements;
     private final int pageNumber;
     private final int pageSize;
+    private final int currentSection;
     private final int firstPageNumber;
     private final int lastPageNumber;
 
@@ -23,7 +24,7 @@ public class PageDto extends ResponseDto {
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
 
-        int currentSection = (pageNumber / pageNumSize) + 1;
+        this.currentSection = (pageNumber / pageNumSize) + 1;
         this.firstPageNumber = pageNumSize * (currentSection - 1) + 1;
         this.lastPageNumber = Math.min(currentSection * pageNumSize, totalPage);
     }

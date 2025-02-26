@@ -5,10 +5,18 @@ import com.bno.board_back.entity.BoardEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface BoardUpdateMapper extends GenericMapper<UpdateBoards, BoardEntity> {
+
+    @Named("mapStringToLong")
+    default Long mapStringToLong(String value) {
+        return value != null ? Long.parseLong(value) : null;
+    }
+
+    @Mapping(target = "boardNum", source = "boardNum", qualifiedByName = "mapStringToLong")
     @Mapping(target = "updateAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "createAt", ignore = true)
     @Mapping(target = "viewCount", ignore = true)

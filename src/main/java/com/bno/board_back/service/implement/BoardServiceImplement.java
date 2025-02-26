@@ -98,8 +98,10 @@ public class BoardServiceImplement implements BoardService {
 
         try{
             checkUser = userRepository.existsByEmail(board.getWriterEmail());
-            updateBoard = boardRepository.findByBoardNumAndWriterEmail(board.getBoardNum(), board.getWriterEmail());
             if (!checkUser) return ResponseDto.notFoundUser();
+
+            Long boardNum = board.getBoardNum() != null ? Long.parseLong(board.getBoardNum()) : null;
+            updateBoard = boardRepository.findByBoardNumAndWriterEmail(boardNum, board.getWriterEmail());
             if (updateBoard == null) return ResponseDto.notFoundBoard();
 
             boardUpdateMapper.updateFormDto(board, updateBoard);

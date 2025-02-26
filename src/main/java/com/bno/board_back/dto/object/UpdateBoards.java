@@ -16,7 +16,7 @@ public class UpdateBoards {
 
     @NotNull
     @Schema(description = "게시글 번호", example = "682082415071726242")
-    private Long boardNum;
+    private String boardNum;
     @NotBlank
     @Schema(description = "제목", example = "test")
     private String title;

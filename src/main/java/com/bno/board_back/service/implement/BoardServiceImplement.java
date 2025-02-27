@@ -1,11 +1,13 @@
 package com.bno.board_back.service.implement;
 
+import com.bno.board_back.dto.object.BoardListView;
 import com.bno.board_back.dto.object.UpdateBoards;
 import com.bno.board_back.dto.object.WriteBoards;
 import com.bno.board_back.dto.response.ResponseDto;
 import com.bno.board_back.dto.response.board.*;
 import com.bno.board_back.entity.BoardEntity;
 import com.bno.board_back.entity.BoardListViewEntity;
+import com.bno.board_back.mapper.BoardListViewMapper;
 import com.bno.board_back.mapper.BoardUpdateMapper;
 import com.bno.board_back.repository.BoardListViewRepository;
 import com.bno.board_back.repository.BoardRepository;
@@ -91,7 +93,7 @@ public class BoardServiceImplement implements BoardService {
     }
 
     @Override
-    public ResponseEntity<? super PatchUpdateBoardResponseDto> postUpdateBoard(UpdateBoards board) {
+    public ResponseEntity<? super PutUpdateBoardResponseDto> postUpdateBoard(UpdateBoards board) {
 
         boolean checkUser = false;
         BoardEntity updateBoard;
@@ -111,7 +113,7 @@ public class BoardServiceImplement implements BoardService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
-        return PatchUpdateBoardResponseDto.success();
+        return PutUpdateBoardResponseDto.success();
     }
 
     @Override
@@ -132,5 +134,21 @@ public class BoardServiceImplement implements BoardService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
         return PatchIncreaseViewCountDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super GetDetailBoardResponseDto> getDetailBoard(Long boardNum) {
+
+        BoardListViewEntity boardListViewEntity;
+
+        try {
+            boardListViewEntity = boardListViewRepository.findByBoardNum(boardNum);
+            if (boardListViewEntity == null) return ResponseDto.notFoundBoard();
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        return GetDetailBoardResponseDto.success(boardListViewEntity);
     }
 }

@@ -48,6 +48,16 @@ public class BoardController {
         return response;
     }
 
+    @Operation(summary = "한개의 게시글 조회", description = "한개의 게시글 가져오기")
+    @GetMapping("detailBoard")
+    public ResponseEntity<? super GetDetailBoardResponseDto> getDetailBoard(
+            @RequestParam(value = "boardNum", required = true) String boardNum
+    ) {
+        Long boardNumLong = Long.parseLong(boardNum);
+        ResponseEntity<? super GetDetailBoardResponseDto> response = boardService.getDetailBoard(boardNumLong);
+        return response;
+    }
+
     @Operation(summary = "게시글 등록", description = "등록된 게시글을 등록 합니다.",
     responses = {
             @ApiResponse(responseCode = "200",
@@ -66,11 +76,11 @@ public class BoardController {
     }
 
     @Operation(summary = "게시글 수정", description = "등록된 게시글 수정")
-    @PatchMapping("update")
-    public ResponseEntity<? super PatchUpdateBoardResponseDto> patchUpdateBoard(
+    @PutMapping("update")
+    public ResponseEntity<? super PutUpdateBoardResponseDto> patchUpdateBoard(
             @Valid @RequestBody UpdateBoards board
     ) {
-        ResponseEntity<? super PatchUpdateBoardResponseDto> response = boardService.postUpdateBoard(board);
+        ResponseEntity<? super PutUpdateBoardResponseDto> response = boardService.postUpdateBoard(board);
         return response;
     }
 

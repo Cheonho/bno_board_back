@@ -10,6 +10,7 @@ public interface BoardService {
     ResponseEntity<? super GetBoardListResponseDto> getBoardList(Pageable pageable);
     ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(int category, String searchWord, Pageable pageable);
     ResponseEntity<? super PostWriteBoardResponseDto> postWriteBoard(WriteBoards board);
-    ResponseEntity<? super PatchUpdateBoardResponseDto> postUpdateBoard(UpdateBoards board);
+    ResponseEntity<? super PutUpdateBoardResponseDto> postUpdateBoard(UpdateBoards board);
     ResponseEntity<? super PatchIncreaseViewCountDto> increaseCount(Long boardNum);
+    ResponseEntity<? super GetDetailBoardResponseDto> getDetailBoard(Long boardNum);
 }

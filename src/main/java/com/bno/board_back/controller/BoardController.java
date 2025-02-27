@@ -77,9 +77,10 @@ public class BoardController {
     @Operation(summary = "조회수 증가", description = "게시글 조회수 증가")
     @PatchMapping("{boardNum}/view")
     public ResponseEntity<? super PatchIncreaseViewCountDto> patchViewBoard(
-            @PathVariable Long boardNum
+            @PathVariable String boardNum
     ) {
-        ResponseEntity<? super PatchIncreaseViewCountDto> response = boardService.increaseCount(boardNum);
+        Long boardNumLong = Long.parseLong(boardNum);
+        ResponseEntity<? super PatchIncreaseViewCountDto> response = boardService.increaseCount(boardNumLong);
         return response;
     }
 }

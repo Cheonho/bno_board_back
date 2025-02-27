@@ -1,10 +1,13 @@
 package com.bno.board_back.controller;
 
+import com.bno.board_back.dto.object.Comment;
 import com.bno.board_back.dto.response.ResponseDto;
 import com.bno.board_back.dto.response.board.GetBoardResponseDto;
 import com.bno.board_back.dto.response.comment.GetCommentListResponseDto;
+import com.bno.board_back.dto.response.comment.PostCommentResponseDto;
 import com.bno.board_back.service.BoardService;
 import com.bno.board_back.service.CommentService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +43,13 @@ public class BoardController {
     public ResponseEntity<ResponseDto> deleteComment(@PathVariable Long commentNum) {
         return commentService.deleteCommentById(commentNum);
     }
+
+    @PostMapping("/{boardNum}/comment")
+    public ResponseEntity<? super PostCommentResponseDto> postComment(@RequestBody @Valid Comment comment) {
+        ResponseEntity<? super PostCommentResponseDto> response = commentService.postComment(comment);
+        return response;
+    }
+
 
 
 

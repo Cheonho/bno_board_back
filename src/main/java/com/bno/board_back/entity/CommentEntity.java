@@ -1,5 +1,6 @@
 package com.bno.board_back.entity;
 
+import com.bno.board_back.dto.object.Comment;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,4 +26,6 @@ public class CommentEntity {
     private LocalDateTime updateAt;
     private Boolean status = true;
 
+    public CommentEntity(Comment comment) {
+    }
 }

@@ -12,11 +12,10 @@ import java.util.Optional;
 
 @Repository
 public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
-        @Query("SELECT c FROM comment c WHERE c.boardNum = :boardNum " +
-                "ORDER BY COALESCE(c.parentNum, c.commentNum) ASC, c.commentNum ASC")
-        List<CommentEntity> findCommentsByBoardNum(@Param("boardNum") Long boardNum);
+        @Query("SELECT c FROM comment c WHERE c.boardNum = :boardNum and c.status = true" +
+                " ORDER BY COALESCE(c.parentNum, c.commentNum) ASC, c.commentNum ASC")
+        List<CommentEntity> findCommentsByBoardNumAndStatusTrue(@Param("boardNum") Long boardNum);
 
-        Optional<CommentEntity> findByCommentNumAndStatusTrue(Long commentNum);
-
+        boolean existsByBoardNum(Long boardNum);
 }
 

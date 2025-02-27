@@ -1,6 +1,8 @@
 package com.bno.board_back.service.implement;
+import com.bno.board_back.dto.object.Comment;
 import com.bno.board_back.dto.response.ResponseDto;
 import com.bno.board_back.dto.response.comment.GetCommentListResponseDto;
+import com.bno.board_back.dto.response.comment.PostCommentResponseDto;
 import com.bno.board_back.entity.CommentEntity;
 import com.bno.board_back.repository.CommentRepository;
 import com.bno.board_back.service.CommentService;
@@ -21,7 +23,7 @@ public class CommentServiceImplement implements CommentService {
         List<CommentEntity> commentList;
 
         try {
-            commentList = commentRepository.findCommentsByBoardNum(boardNum);
+            commentList = commentRepository.findCommentsByBoardNumAndStatusTrue(boardNum);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.databseError();
@@ -44,6 +46,29 @@ public class CommentServiceImplement implements CommentService {
             return ResponseDto.databseError();
         }
     }
+
+
+    @Override
+    public ResponseEntity<? super PostCommentResponseDto> postComment(Comment comment) {
+
+        try{
+            boolean existedBoard = commentRepository.existsByBoardNum(comment.getBoardNum());
+            if(!existedBoard) return PostCommentResponseDto.noExistBoard();
+
+//          boolean existdUser = userRepository.existsByEmail(email);
+//          if(!existdUser) return PostCommentResponseDto.noExistUser();
+
+            CommentEntity commentEntity = new CommentEntity(comment);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databseError();
+        }
+        return PostCommentResponseDto.success();
+
+    }
+
+
 
 
 

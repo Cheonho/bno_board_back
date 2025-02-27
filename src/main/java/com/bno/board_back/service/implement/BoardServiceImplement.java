@@ -17,10 +17,6 @@ public class BoardServiceImplement implements BoardService {
 
     private final BoardRepository boardRepository;
 
-//    public BoardServiceImplement(BoardRepository boardRepository) {
-//        this.boardRepository = boardRepository;
-//    }
-
     @Override
     public ResponseEntity<? super GetBoardResponseDto> getBoardById(Long boardNum) {
         BoardEntity boardEntity;

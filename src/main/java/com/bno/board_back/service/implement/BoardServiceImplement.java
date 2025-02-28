@@ -27,7 +27,7 @@ public class BoardServiceImplement implements BoardService {
             boardRepository.save(boardEntity);
         }catch (Exception e) {
             e.printStackTrace();
-            return ResponseDto.databseError();
+            return ResponseDto.databaseError();
         }
         return GetBoardResponseDto.success(boardEntity);
     }
@@ -44,7 +44,7 @@ public class BoardServiceImplement implements BoardService {
                 return ResponseDto.success();
             } catch (Exception e) {
                 e.printStackTrace();
-                return ResponseDto.databseError();
+                return ResponseDto.databaseError();
             }
         }
 

@@ -19,7 +19,7 @@ public class CommentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentNum;
     private Long boardNum;
-    private Long parentNum;
+    private Long parentNum; // 부모 댓글, 부모 댓글이 없을 시 null
     private String content;
     private String writerEmail;
     private LocalDateTime createAt;

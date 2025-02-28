@@ -11,5 +11,5 @@ public interface CommentService {
     ResponseEntity<? super GetCommentListResponseDto> getCommentsByBoardNum(Long boardNum);
     ResponseEntity<ResponseDto> deleteCommentById(Long commentNum);
     ResponseEntity<? super PostCommentResponseDto> postComment(Comment comment);
-
+    ResponseEntity<ResponseDto> updateComment(Long commentNum, Comment comment);
 }

@@ -50,6 +50,12 @@ public class BoardController {
         return response;
     }
 
+    @PatchMapping("/{boardNum}/comment/{commentNum}")
+    public ResponseEntity<ResponseDto> modifyComment(@PathVariable Long commentNum, @RequestBody @Valid Comment comment) {
+        return commentService.updateComment(commentNum, comment);
+    }
+
+
 
 
 

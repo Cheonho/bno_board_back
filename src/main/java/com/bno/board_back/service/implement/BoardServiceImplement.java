@@ -1,13 +1,11 @@
 package com.bno.board_back.service.implement;
 
-import com.bno.board_back.dto.object.BoardListView;
 import com.bno.board_back.dto.object.UpdateBoards;
 import com.bno.board_back.dto.object.WriteBoards;
 import com.bno.board_back.dto.response.ResponseDto;
 import com.bno.board_back.dto.response.board.*;
 import com.bno.board_back.entity.BoardEntity;
 import com.bno.board_back.entity.BoardListViewEntity;
-import com.bno.board_back.mapper.BoardListViewMapper;
 import com.bno.board_back.mapper.BoardUpdateMapper;
 import com.bno.board_back.repository.BoardListViewRepository;
 import com.bno.board_back.repository.BoardRepository;
@@ -48,8 +46,9 @@ public class BoardServiceImplement implements BoardService {
         try {
             page = boardListViewRepository.findByOrderByCreateAtDesc(pageable);
         } catch (Exception e) {
+            logger.error("error", e);
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
         }
 
         return GetBoardListResponseDto.sucess(page);
@@ -63,8 +62,9 @@ public class BoardServiceImplement implements BoardService {
         try {
             boardSearchListViewEntities = boardListViewRepository.findSearch(searchWord, category, pageable);
         } catch (Exception e) {
+            logger.error("error", e);
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
         }
 
         return GetSearchBoardListResponseDto.success(boardSearchListViewEntities);
@@ -85,8 +85,9 @@ public class BoardServiceImplement implements BoardService {
 
             boardRepository.save(boardEntity);
         } catch (Exception e) {
+            logger.error("error", e);
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
         }
 
         return PostWriteBoardResponseDto.success();
@@ -109,8 +110,9 @@ public class BoardServiceImplement implements BoardService {
             boardUpdateMapper.updateFormDto(board, updateBoard);
             boardRepository.save(updateBoard);
         } catch (Exception e){
+            logger.error("error", e);
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
         }
 
         return PutUpdateBoardResponseDto.success();
@@ -131,7 +133,7 @@ public class BoardServiceImplement implements BoardService {
         } catch (Exception e) {
             logger.error("error", e);
             System.out.println("test");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
         }
         return PatchIncreaseViewCountDto.success();
     }
@@ -146,8 +148,9 @@ public class BoardServiceImplement implements BoardService {
             if (boardListViewEntity == null) return ResponseDto.notFoundBoard();
 
         }catch (Exception e){
+            logger.error("error", e);
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
         }
         return GetDetailBoardResponseDto.success(boardListViewEntity);
     }

@@ -14,6 +14,7 @@ spring:
     properties:
       hibernate:
         default_schema: boards
+        format_sql: true
     show-sql: 'true'
     hibernate:
       ddl-auto: none
@@ -24,6 +25,14 @@ server:
     context-path: /api/v1
 springdoc:
   packages-to-scan: com.bno.board_back.controller
+
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
 
 env:
   tsid:

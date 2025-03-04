@@ -38,6 +38,17 @@ public class BoardServiceImplement implements BoardService {
     private final BoardWriteMapper boardWriteMapper;
     private final BoardUpdateMapper boardUpdateMapper;
 
+    public boolean saveBoard(WriteBoards writeBoards) {
+        if (writeBoards.getTitle() == null || writeBoards.getTitle().isEmpty()) { return false; }
+        if (writeBoards.getContent() == null || writeBoards.getContent().isEmpty()) { return false; }
+        if (writeBoards.getWriterEmail() == null || writeBoards.getWriterEmail().isEmpty()) { return false; }
+
+        BoardEntity boardEntity = boardWriteMapper.toEntity(writeBoards);
+
+        boardRepository.save(boardEntity);
+        return true;
+    }
+
     @Override
     public ResponseEntity<? super GetBoardListResponseDto> getBoardList(Pageable pageable) {
 
@@ -75,22 +86,25 @@ public class BoardServiceImplement implements BoardService {
     public ResponseEntity<? super PostWriteBoardResponseDto> postWriteBoard(WriteBoards board) {
 
         boolean checkUser = false;
+        boolean checkBoard = false;
         System.out.println("----------------------- tsidUtil.getTsid() : " + tsidUtil.getTsid() + "-----------------------");
 
         try {
             checkUser = userRepository.existsByEmail(board.getWriterEmail());
             if (!checkUser) return ResponseDto.notFoundUser();
 
-            BoardEntity boardEntity = boardWriteMapper.toEntity(board);
-
-            boardRepository.save(boardEntity);
+            checkBoard = saveBoard(board);
         } catch (Exception e) {
             logger.error("error", e);
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
         }
 
-        return PostWriteBoardResponseDto.success();
+        if (checkBoard) {
+            return PostWriteBoardResponseDto.success();
+        } else {
+            return ResponseDto.authError();
+        }
     }
 
     @Override

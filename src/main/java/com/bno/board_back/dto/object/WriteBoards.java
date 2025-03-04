@@ -4,17 +4,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
+@EqualsAndHashCode(callSuper = false, of = "boardNum")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WriteBoards {
+public class WriteBoards extends AbstractIdDto<String> {
 
     @Schema(hidden = true)
-    private Long boardNum;
+    private String boardNum;
     @NotBlank
     @Schema(description = "제목", example = "test")
     private String title;

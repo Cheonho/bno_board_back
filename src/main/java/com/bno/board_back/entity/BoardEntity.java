@@ -5,13 +5,14 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+@EqualsAndHashCode(callSuper = false, of = "boardNum")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity(name="board")
 @Table(name="boards")
-public class BoardEntity {
+public class BoardEntity extends AbstractBoardNumEntity {
 
     @Id
     private Long boardNum;

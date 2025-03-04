@@ -7,13 +7,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
+// entity mapper 
 @Mapper(componentModel = "spring")
 public interface BoardListViewMapper extends GenericMapper<BoardListView, BoardListViewEntity> {
-
-    @Named("mapLongToString")
-    default String mapLongToString(Long value) {
-        return value != null ? String.valueOf(value) : null;
-    }
 
     @Mapping(target = "boardNum", source = "boardNum", qualifiedByName = "mapLongToString")
     BoardListView toDTO(BoardListViewEntity boardListViewEntity);

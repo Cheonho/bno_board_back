@@ -35,7 +35,6 @@ public class BoardServiceImplement implements BoardService {
     private final UserRepository userRepository;
 
     private final TsidUtil tsidUtil;
-    private final BoardWriteMapper boardWriteMapper;
     private final BoardUpdateMapper boardUpdateMapper;
 
     public boolean saveBoard(WriteBoards writeBoards) {
@@ -43,7 +42,7 @@ public class BoardServiceImplement implements BoardService {
         if (writeBoards.getContent() == null || writeBoards.getContent().isEmpty()) { return false; }
         if (writeBoards.getWriterEmail() == null || writeBoards.getWriterEmail().isEmpty()) { return false; }
 
-        BoardEntity boardEntity = boardWriteMapper.toEntity(writeBoards);
+        BoardEntity boardEntity = BoardWriteMapper.INSTANCE.toEntity(writeBoards);
 
         boardRepository.save(boardEntity);
         return true;

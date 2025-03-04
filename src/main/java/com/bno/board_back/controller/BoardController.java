@@ -4,6 +4,7 @@ import com.bno.board_back.dto.object.UpdateBoards;
 import com.bno.board_back.dto.object.WriteBoards;
 import com.bno.board_back.dto.response.board.*;
 import com.bno.board_back.service.BoardService;
+import com.bno.board_back.utils.TsidUtilUseSystem;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

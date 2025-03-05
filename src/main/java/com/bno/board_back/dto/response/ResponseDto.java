@@ -20,7 +20,7 @@ public class ResponseDto {
     }
 
     public static ResponseEntity<ResponseDto> authError() {
-        ResponseDto responseDto = new ResponseDto(ResponseCode.AUTHORIZATION_FAIL, ResponseMessage.AUTHORIZATION_FAIL);
+        ResponseDto responseDto = new ResponseDto(ResponseCode.AUTHORIZATION_FAILED, ResponseMessage.AUTHORIZATION_FAILED);
         return ResponseEntity.status(HttpStatus.NON_AUTHORITATIVE_INFORMATION).body(responseDto);
     }
 
@@ -35,7 +35,7 @@ public class ResponseDto {
     }
 
     public static ResponseEntity<ResponseDto> notFoundUser() {
-        ResponseDto responseDto = new ResponseDto(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER);
+        ResponseDto responseDto = new ResponseDto(ResponseCode.NOT_EXISTED_USER, ResponseMessage.USER_NOT_FOUND);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
     }
 }

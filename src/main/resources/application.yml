@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://192.168.35.43:5433/bnosoft
     username: postgres
-    password: ghtp8571
+    password: postgres
   mvc:
     hiddenmethod:
       filter:
@@ -13,7 +13,7 @@ spring:
   jpa:
     properties:
       hibernate:
-        default_schema: boards
+        default_schema: board2025
         format_sql: true
     show-sql: 'true'
     hibernate:
@@ -38,3 +38,6 @@ env:
   tsid:
     tz: Asia/Seoul
     nodeBit: 10
+
+jwt:
+  secret: fthl4TRfGF0sDwEUqhL/L5JZ/NEIfaTHdai7FD51FMN5

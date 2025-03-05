@@ -1,4 +1,4 @@
-package com.bno.board_back.config;
+package com.bno.board_back.controller;
 
 import com.bno.board_back.dto.responseDto.GetUserCheckEmailDto;
 import com.bno.board_back.dto.responseDto.GetUserCheckNicknameDto;

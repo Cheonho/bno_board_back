@@ -7,6 +7,7 @@ import com.bno.board_back.dto.object.PageDto;
 import com.bno.board_back.dto.response.ResponseDto;
 import com.bno.board_back.entity.BoardListViewEntity;
 import com.bno.board_back.mapper.BoardListViewMapper;
+import com.bno.board_back.utils.PaginationUtil;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.data.domain.Page;
@@ -21,24 +22,16 @@ import java.util.List;
 public class GetBoardListResponseDto extends ResponseDto {
 
     private final List<BoardListView> boardList;
-    private static PageDto pageDto = null;
 
     private GetBoardListResponseDto(Page<BoardListViewEntity> page) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
         this.boardList = BoardListViewMapper.INSTANCE.toDtoList(page.getContent());
     }
 
-    public static ResponseEntity<GetBoardListResponseDto> sucess(Page<BoardListViewEntity> page) {
+    public static ResponseEntity<GetBoardListResponseDto> success(Page<BoardListViewEntity> page) {
         GetBoardListResponseDto result = new GetBoardListResponseDto(page);
-        pageDto = new PageDto(page.getTotalPages(), page.getTotalElements(), page.getNumber(), page.getSize());
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("X-Total-Elements", String.valueOf(pageDto.getTotalElements()));
-        headers.add("X-Total-Page", String.valueOf(pageDto.getTotalPage()));
-        headers.add("X-Page-Number", String.valueOf(pageDto.getPageNumber()));
-        headers.add("X-Page-Size", String.valueOf(pageDto.getPageSize()));
-        headers.add("X-Current-Section", String.valueOf(pageDto.getCurrentSection()));
-        headers.add("X-First-Page-Number", String.valueOf(pageDto.getFirstPageNumber()));
-        headers.add("X-Last-Page-Number", String.valueOf(pageDto.getLastPageNumber()));
+        PageDto pageDto = new PageDto(page.getTotalPages(), page.getTotalElements(), page.getNumber(), page.getSize());
+        HttpHeaders headers = PaginationUtil.generatePageHeaders(pageDto);
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(result);
     }
 }

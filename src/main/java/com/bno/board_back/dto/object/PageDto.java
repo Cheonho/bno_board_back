@@ -21,7 +21,7 @@ public class PageDto extends ResponseDto {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
         this.totalPage = totalPage;
         this.totalElements = totalElements;
-        this.pageNumber = pageNumber;
+        this.pageNumber = pageNumber + 1;
         this.pageSize = pageSize;
 
         this.currentSection = (pageNumber / pageNumSize) + 1;

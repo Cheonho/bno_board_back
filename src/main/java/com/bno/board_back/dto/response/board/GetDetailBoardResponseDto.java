@@ -15,11 +15,11 @@ import org.springframework.http.ResponseEntity;
 @ToString
 public class GetDetailBoardResponseDto extends ResponseDto {
 
-    private final BoardListView boardListView;
+    private final BoardListView detailBoard;
 
     private GetDetailBoardResponseDto(BoardListViewEntity boardListView) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
-        this.boardListView = BoardListViewMapper.INSTANCE.toDTO(boardListView);
+        this.detailBoard = BoardListViewMapper.INSTANCE.toDTO(boardListView);
     }
 
     public static ResponseEntity<GetDetailBoardResponseDto> success(BoardListViewEntity boardListView) {

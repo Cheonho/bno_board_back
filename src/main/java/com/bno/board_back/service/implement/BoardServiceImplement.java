@@ -61,7 +61,7 @@ public class BoardServiceImplement implements BoardService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
         }
 
-        return GetBoardListResponseDto.sucess(page);
+        return GetBoardListResponseDto.success(page);
     }
 
     @Override

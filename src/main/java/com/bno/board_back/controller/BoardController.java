@@ -31,7 +31,7 @@ public class BoardController {
     @GetMapping("board-list")
     public ResponseEntity<? super GetBoardListResponseDto> getBoardList(@RequestParam(value = "page", defaultValue = "0") int page) {
         int size = 5;
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of((page-1), size);
         ResponseEntity<? super GetBoardListResponseDto> response = boardService.getBoardList(pageable);
         return response;
     }
@@ -44,7 +44,7 @@ public class BoardController {
             @RequestParam(value = "page", defaultValue = "0") int page
     ) {
         int size = 5;
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of((page-1), size);
         ResponseEntity<? super GetSearchBoardListResponseDto> response = boardService.getSearchBoardList(category, searchWord, pageable);
         return response;
     }

@@ -1,36 +1,30 @@
 package com.bno.board_back.configuration;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
+@RequiredArgsConstructor
 @Configuration
-@EnableWebSecurity
 public class SecurityConfig {
 
-    // PasswordEncoder 인터페이스 구현체로 BCryptPasswordEncoder 등록
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
-    // Spring Security 설정
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // CSRF 보호 비활성화 (API 개발 시 주로 사용)
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable()) // CSRF 비활성화
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless 세션 설정
 
-                // 모든 요청 허용 (추후 경로별 접근 제한 가능)
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
-                ) ;
+                        .requestMatchers("/login/**", "/join", "/idcheck/**", "/namecheck/**" ,"/nicknamecorrection/**").permitAll() // 특정 URL에 대한 접근 허용
+                        .anyRequest().authenticated() // 나머지 요청은 인증 필요
+                );
 
 
         return http.build();
     }
 }
+

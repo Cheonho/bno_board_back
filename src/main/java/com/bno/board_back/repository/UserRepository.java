@@ -1,15 +1,17 @@
 package com.bno.board_back.repository;
 
-import com.bno.board_back.dto.UserModel ;
+import com.bno.board_back.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserModel, Integer > {
+public interface UserRepository extends JpaRepository<UserEntity, Long > {
 
-    Optional findByUserId(String userId) ;
-    boolean existsByUserId(String userId) ;
-    boolean existsByUserName(String userName) ;
+    Optional<UserEntity> findByEmail(String email) ;
+    Optional<UserEntity> findByUserNickname(String userNickname) ;
+    boolean existsByEmail(String email) ;
+    boolean existsByUserNickname(String userNickname) ;
+
 }

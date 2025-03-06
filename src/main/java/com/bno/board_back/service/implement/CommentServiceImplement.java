@@ -62,7 +62,6 @@ public class CommentServiceImplement implements CommentService {
                 }
             }
             commentRepository.save(commentEntity);
-
             return ResponseDto.success();
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,7 +77,6 @@ public class CommentServiceImplement implements CommentService {
             if (comment.getWriterEmail() == null) {
                 comment.setWriterEmail("user1@example.com");
             }
-
             boolean checkUser = userRepository.existsByEmail(comment.getWriterEmail());
             if (!checkUser) return ResponseDto.notFoundUser();
 
@@ -92,8 +90,6 @@ public class CommentServiceImplement implements CommentService {
             return ResponseDto.databaseError();
         }
     }
-
-
 
 
     @Override

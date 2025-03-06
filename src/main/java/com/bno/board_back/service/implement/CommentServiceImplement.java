@@ -82,9 +82,6 @@ public class CommentServiceImplement implements CommentService {
             boolean checkUser = userRepository.existsByEmail(comment.getWriterEmail());
             if (!checkUser) return ResponseDto.notFoundUser();
 
-//            boolean existedBoard = boardRepository.existsByBoardNum(comment.getBoardNum());
-//            if (!existedBoard) return ResponseDto.notFoundBoard();
-
             CommentEntity commentEntity = commentRepository.findById(commentNum)
                     .orElseThrow(() -> new RuntimeException("댓글이 존재하지 않습니다."));
             commentUpdateMapper.updateFormDto(comment, commentEntity);

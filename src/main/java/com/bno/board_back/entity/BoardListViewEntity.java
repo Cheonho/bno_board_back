@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.View;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +12,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name="board_list_view")
-@Table(name="board_list_view")
 public class BoardListViewEntity {
 
     @Id

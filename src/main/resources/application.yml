@@ -15,9 +15,14 @@ spring:
       hibernate:
         default_schema: board2025
         format_sql: true
+      org.hibernate.envers:
+        audit_table_suffix: History # 이력 테이블 이름의 _AUD를 History로 변경
+        revision_field_name: revisionId # 이력 테이블 REV 컬럼명
+        revision_type_field_name: revisionType # 이력 테이블 REVTYPE 컬럼명
+        store_data_at_delete: true # 삭제시 저장 여부, 기본은 false
     show-sql: 'true'
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
 server:
   tomcat:
     use-relative-redirects: 'true'

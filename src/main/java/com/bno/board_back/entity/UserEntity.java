@@ -3,10 +3,12 @@ package com.bno.board_back.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Audited
 @AllArgsConstructor
 @Table(name = "users")
 @Builder

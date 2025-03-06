@@ -44,11 +44,11 @@ public class UserController {
     }
 
 
-   @PostMapping("/join")
+    @PostMapping("/join")
     public ResponseEntity<? super GetUserJoinResponseDto> JoinPage(@RequestBody @Valid JoinRequestDto joinRequestDto, BindingResult bindingResult) {
-        ResponseEntity<? super GetUserJoinResponseDto> response = userService.joinPage(joinRequestDto, bindingResult) ;
-            return response ;
-        }
+        ResponseEntity<? super GetUserJoinResponseDto> response = userService.joinPage(joinRequestDto, bindingResult);
+        return response;
+    }
 
 
     @GetMapping("/idcheck")

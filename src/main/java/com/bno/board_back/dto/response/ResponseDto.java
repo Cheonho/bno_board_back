@@ -19,6 +19,10 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
     }
 
+    public static ResponseEntity<ResponseDto> success() {
+        return ResponseEntity.ok(new ResponseDto(ResponseCode.SUCCESS, ResponseMessage.SUCCESS));
+    }
+
     public static ResponseEntity<ResponseDto> authError() {
         ResponseDto responseDto = new ResponseDto(ResponseCode.AUTHORIZATION_FAILED, ResponseMessage.AUTHORIZATION_FAILED);
         return ResponseEntity.status(HttpStatus.NON_AUTHORITATIVE_INFORMATION).body(responseDto);

@@ -167,4 +167,36 @@ public class BoardServiceImplement implements BoardService {
         }
         return GetDetailBoardResponseDto.success(boardListViewEntity);
     }
+
+    @Override
+    public ResponseEntity<? super GetBoardResponseDto> getBoardById(Long boardNum) {
+        BoardEntity boardEntity;
+        try {
+            boardEntity = boardRepository.findByBoardNumAndStatusTrue(boardNum)
+                    .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
+            boardEntity.increaseViewCount();
+            boardRepository.save(boardEntity);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetBoardResponseDto.success(boardEntity);
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> deleteBoardById(Long boardNum) {
+        try {
+            BoardEntity boardEntity = boardRepository.findById(boardNum)
+                    .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
+
+            boardEntity.setStatus(false);
+            boardRepository.save(boardEntity);
+
+            return ResponseDto.success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+    }
+
 }

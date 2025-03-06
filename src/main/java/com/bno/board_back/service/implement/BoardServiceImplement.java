@@ -174,7 +174,7 @@ public class BoardServiceImplement implements BoardService {
         try {
             boardEntity = boardRepository.findByBoardNumAndStatusTrue(boardNum)
                     .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
-            boardEntity.increaseViewCount();
+//            boardEntity.increaseViewCount();
             boardRepository.save(boardEntity);
         }catch (Exception e) {
             e.printStackTrace();
@@ -192,7 +192,7 @@ public class BoardServiceImplement implements BoardService {
             boardEntity.setStatus(false);
             boardRepository.save(boardEntity);
 
-            return ResponseDto.success();
+            return ResponseDto.resSuccess();
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.databaseError();

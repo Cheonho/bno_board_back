@@ -62,7 +62,7 @@ public class CommentServiceImplement implements CommentService {
                 }
             }
             commentRepository.save(commentEntity);
-            return ResponseDto.success();
+            return ResponseDto.resSuccess();
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.databaseError();
@@ -84,7 +84,7 @@ public class CommentServiceImplement implements CommentService {
                     .orElseThrow(() -> new RuntimeException("댓글이 존재하지 않습니다."));
             commentUpdateMapper.updateFormDto(comment, commentEntity);
             commentRepository.save(commentEntity);
-            return ResponseDto.success();
+            return ResponseDto.resSuccess();
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.databaseError();

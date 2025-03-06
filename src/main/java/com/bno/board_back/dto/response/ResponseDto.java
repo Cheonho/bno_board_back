@@ -14,12 +14,12 @@ public class ResponseDto {
     private String code;
     private String message;
 
-    public static ResponseEntity<ResponseDto> databseError() {
+    public static ResponseEntity<ResponseDto> databaseError() {
         ResponseDto responseDto = new ResponseDto(ResponseCode.DATABASE_ERROR, ResponseMessage.DATABASE_ERROR);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
     }
 
-    public static ResponseEntity<ResponseDto> success() {
+    public static ResponseEntity<ResponseDto> resSuccess() {
         return ResponseEntity.ok(new ResponseDto(ResponseCode.SUCCESS, ResponseMessage.SUCCESS));
     }
 

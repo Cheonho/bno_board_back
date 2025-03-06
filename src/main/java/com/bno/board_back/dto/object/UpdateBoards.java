@@ -34,5 +34,5 @@ public class UpdateBoards {
     @Schema(hidden = true)
     private int viewCount;
     @Schema(hidden = true)
-    private boolean status;
+    private Boolean status;
 }

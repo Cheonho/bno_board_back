@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Audited
+//@Audited
 @Entity(name="board")
 @Table(name="boards")
 public class BoardEntity extends AbstractBoardNumEntity {
@@ -24,5 +24,5 @@ public class BoardEntity extends AbstractBoardNumEntity {
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
     private int viewCount;
-    private boolean status;
+    private Boolean status;
 }

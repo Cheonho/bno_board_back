@@ -30,7 +30,7 @@ public class BoardController {
     private final BoardService boardService;
     private final CommentService commentService;
 
-    public BoardController(BoardService boardService) {
+    public BoardController(BoardService boardService, CommentService commentService) {
         this.boardService = boardService;
         this.commentService = commentService;
     }

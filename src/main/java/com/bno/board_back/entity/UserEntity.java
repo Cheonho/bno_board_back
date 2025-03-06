@@ -8,7 +8,7 @@ import org.hibernate.envers.Audited;
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Audited
+//@Audited
 @AllArgsConstructor
 @Table(name = "users")
 @Builder

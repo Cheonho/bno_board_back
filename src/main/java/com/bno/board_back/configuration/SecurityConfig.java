@@ -19,7 +19,13 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless 세션 설정
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login/**", "/join", "/idcheck/**", "/namecheck/**" ,"/nicknamecorrection/**", "/board/board-list", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // 특정 URL에 대한 접근 허용
+                        .requestMatchers("/login/**", "/join",
+                                "/idcheck/**", "/namecheck/**" ,
+                                "/nicknamecorrection/**", "/board/board-list",
+                                "/search-list/**", "detailBoard",
+                                "*/view", "/swagger-ui/**", "/v3/api-docs/**",
+                                "/**"
+                        ).permitAll() // 특정 URL에 대한 접근 허용
                         .anyRequest().authenticated() // 나머지 요청은 인증 필요
                 );
 

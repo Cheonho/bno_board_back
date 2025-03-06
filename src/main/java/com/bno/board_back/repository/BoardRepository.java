@@ -11,4 +11,5 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
 
     Optional<BoardEntity> findByBoardNumAndStatusTrue(Long boardNum);
 
+    boolean existsByBoardNum(Long boardNum);
 }

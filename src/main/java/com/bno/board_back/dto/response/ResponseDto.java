@@ -21,4 +21,25 @@ public class ResponseDto {
     public static ResponseEntity<ResponseDto> success() {
         return ResponseEntity.ok(new ResponseDto(ResponseCode.SUCCESS, ResponseMessage.SUCCESS));
     }
+
+    public static ResponseEntity<ResponseDto> authError() {
+        ResponseDto responseDto = new ResponseDto(ResponseCode.AUTHORIZATION_FAIL, ResponseMessage.AUTHORIZATION_FAIL);
+        return ResponseEntity.status(HttpStatus.NON_AUTHORITATIVE_INFORMATION).body(responseDto);
+    }
+
+    public static ResponseEntity<ResponseDto> signFailed() {
+        ResponseDto responseDto = new ResponseDto(ResponseCode.SIGN_IN_FAIL, ResponseMessage.SIGN_IN_FAIL);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseDto);
+    }
+
+    public static ResponseEntity<ResponseDto> notFoundBoard() {
+        ResponseDto responseDto = new ResponseDto(ResponseCode.NOT_EXISTED_BOARD, ResponseMessage.NOT_EXISTED_BOARD);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
+    }
+
+    public static ResponseEntity<ResponseDto> notFoundUser() {
+        ResponseDto responseDto = new ResponseDto(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
+    }
+
 }

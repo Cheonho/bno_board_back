@@ -45,8 +45,10 @@ public class BoardController {
     }
 
     @PostMapping("/{boardNum}/comment")
-    public ResponseEntity<? super PostCommentResponseDto> postComment(@RequestBody @Valid Comment comment) {
-        ResponseEntity<? super PostCommentResponseDto> response = commentService.postComment(comment);
+    public ResponseEntity<? super PostCommentResponseDto> postComment
+            (@RequestBody @Valid Comment comment
+            , @PathVariable Long boardNum) {
+        ResponseEntity<? super PostCommentResponseDto> response = commentService.postComment(comment, boardNum);
         return response;
     }
 

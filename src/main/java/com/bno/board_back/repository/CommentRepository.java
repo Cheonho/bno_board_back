@@ -16,6 +16,8 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
                 " ORDER BY COALESCE(c.parentNum, c.commentNum) ASC, c.commentNum ASC")
         List<CommentEntity> findCommentsByBoardNumAndStatusTrue(@Param("boardNum") Long boardNum);
 
-        boolean existsByBoardNum(Long boardNum);
+        List<CommentEntity> findByParentNum(Long parentNum);
+
+        Object findByCommentNumAndWriterEmail(Long commentNum, String writerEmail);
 }
 

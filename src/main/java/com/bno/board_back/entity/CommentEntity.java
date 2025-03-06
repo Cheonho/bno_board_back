@@ -28,4 +28,15 @@ public class CommentEntity {
 
     public CommentEntity(Comment comment) {
     }
+
+    public CommentEntity(Long boardNum, Long parentNum, String content, String writerEmail) {
+        this.boardNum = boardNum;
+        this.parentNum = parentNum;
+        this.content = content;
+        this.writerEmail = writerEmail;
+        this.createAt = LocalDateTime.now();
+        this.updateAt = LocalDateTime.now();
+        this.status = true;
+    }
+
 }

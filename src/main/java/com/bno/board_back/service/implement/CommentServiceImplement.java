@@ -104,8 +104,8 @@ public class CommentServiceImplement implements CommentService {
             boolean checkUser = userRepository.existsByEmail(comment.getWriterEmail());
             if (!checkUser) return PostCommentResponseDto.notFoundUser();
 
-            boolean existedBoard = boardRepository.existsByBoardNum(boardNum);
-            if (!existedBoard) return PostCommentResponseDto.notFoundBoard();
+            //boolean existedBoard = boardRepository.existsByBoardNum(boardNum);
+            //if (!existedBoard) return PostCommentResponseDto.notFoundBoard();
 
             comment.setBoardNum(boardNum);
             Long parentNum = comment.getParentNum();

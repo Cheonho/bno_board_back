@@ -101,7 +101,7 @@ public class BoardController {
     public ResponseEntity<? super PutUpdateBoardResponseDto> patchUpdateBoard(
             @Valid @RequestBody UpdateBoards board
     ) {
-        ResponseEntity<? super PutUpdateBoardResponseDto> response = boardService.postUpdateBoard(board);
+        ResponseEntity<? super PutUpdateBoardResponseDto> response = boardService.patchUpdateBoard(board);
         return response;
     }
 
@@ -116,7 +116,7 @@ public class BoardController {
     }
 
     @GetMapping("/{boardNum}/comment")
-    public ResponseEntity<? super GetCommentListResponseDto> getCommentById(@PathVariable Long boardNum) {
+    public ResponseEntity<? super GetCommentListResponseDto> getCommentById(@PathVariable String boardNum) {
         return commentService.getCommentsByBoardNum(boardNum);
     }
 
@@ -128,7 +128,7 @@ public class BoardController {
     @PostMapping("/{boardNum}/comment")
     public ResponseEntity<? super PostCommentResponseDto> postComment
             (@RequestBody @Valid Comment comment
-                    , @PathVariable Long boardNum) {
+                    , @PathVariable String boardNum) {
         ResponseEntity<? super PostCommentResponseDto> response = commentService.postComment(comment, boardNum);
         return response;
     }

@@ -11,7 +11,6 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
 
     BoardEntity findByBoardNumAndWriterEmail(Long boardNum, String writerEmail);
     BoardEntity findByBoardNum(Long boardNum);
-    Optional<BoardEntity> findByBoardNumAndStatusTrue(Long boardNum);
 
     boolean existsByBoardNum(Long boardNum);
 }

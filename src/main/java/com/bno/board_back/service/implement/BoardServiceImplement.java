@@ -107,7 +107,7 @@ public class BoardServiceImplement implements BoardService {
     }
 
     @Override
-    public ResponseEntity<? super PutUpdateBoardResponseDto> postUpdateBoard(UpdateBoards board) {
+    public ResponseEntity<? super PutUpdateBoardResponseDto> patchUpdateBoard(UpdateBoards board) {
 
         boolean checkUser = false;
         BoardEntity updateBoard;
@@ -170,17 +170,18 @@ public class BoardServiceImplement implements BoardService {
 
     @Override
     public ResponseEntity<? super GetBoardResponseDto> getBoardById(Long boardNum) {
-        BoardEntity boardEntity;
+        BoardListViewEntity boardListViewEntity;
         try {
-            boardEntity = boardRepository.findByBoardNumAndStatusTrue(boardNum)
-                    .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
+            boardListViewEntity = boardListViewRepository.findByBoardNum(boardNum);
+            if (boardListViewEntity==null) return ResponseDto.notFoundBoard();
+//                    .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
 //            boardEntity.increaseViewCount();
-            boardRepository.save(boardEntity);
+//            boardListViewRepository.save(boardListViewEntity);
         }catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.databaseError();
         }
-        return GetBoardResponseDto.success(boardEntity);
+        return GetBoardResponseDto.success(boardListViewEntity);
     }
 
     @Override

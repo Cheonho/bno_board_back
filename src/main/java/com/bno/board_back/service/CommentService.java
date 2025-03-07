@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 
 public interface CommentService {
 
-    ResponseEntity<? super GetCommentListResponseDto> getCommentsByBoardNum(Long boardNum);
+    ResponseEntity<? super GetCommentListResponseDto> getCommentsByBoardNum(String boardNum);
     ResponseEntity<ResponseDto> deleteCommentById(Long commentNum);
-    ResponseEntity<? super PostCommentResponseDto> postComment(Comment comment, Long boardNum);
+    ResponseEntity<? super PostCommentResponseDto> postComment(Comment comment, String boardNum);
     ResponseEntity<ResponseDto> updateComment(Long commentNum, Comment comment);
 }

@@ -17,7 +17,6 @@ public class JoinRequestDto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id ;
     @Email(message = "유효한 이메일을 입력하세요.")
     @NotBlank(message = "이메일은 필수 입력 항목입니다.")

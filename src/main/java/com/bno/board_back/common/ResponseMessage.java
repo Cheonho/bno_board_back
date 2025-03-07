@@ -9,26 +9,30 @@ public interface ResponseMessage {
     String JOIN_SUCCESS = "회원가입 성공" ; // 회원가입 성공
     String LOGIN_SUCCESS = "로그인 성공" ; // 로그인 성공
     String CHANGE_SUCCESS = "변경되었습니다." ; // 변경 성공
-    String PASSWORD_SUCCESS = "비밀번호가 일치합니다." ; // 비밀번호 일치
-    
-    // Http status 400
+    String PASSWORD_SUCCESS = "비밀번호가 일치합니다" ; // 비밀번호 일치
+    String DUPLICATE_ADDRESS = "주소지가 일치합니다." ;// 똑같은 주소지
+
+    // status 400
     String INVALID_INPUT = "잘못된 입력";  // 잘못된 입력
     String DUPLICATE_NICKNAME = "닉네임이 존재합니다."; // 닉네임 중복
     String DUPLICATE_EMAIL = "이메일이 존재합니다."; // 잘못된 이메일 형식
     String PASSWORD_TOO_WEAK = "비밀번호가 너무 약함"; // 비밀번호가 너무 약함
     String DUPLICATE_USER = "중복 확인을 해 주세요." ;
-    String DUPLICATE_ADDRESS = "이전과 같은 주소지입니다." ;
+
+    String VALIDATION_FAILED = "Validation failed";
 
     // Http status 404
     String USER_NOT_FOUND = "사용자를 찾을 수 없습니다."; // 사용자 찾을 수 없음
     String EMAIL_NOT_FOUND = "이메일을 찾을 수 없습니다."; // 이메일 찾을 수 없음
     String NICKNAME_NOT_FOUND = "닉네임을 찾을 수 없습니다."; // 닉네임 찾을 수 없음
-    String PASSWORD_NOT_FOUND = "비밀번호를 다시 입력해 주세요."; // 비밀번호 찾을 수 없음
+    String PASSWORD_NOT_FOUND = "비밀번호를 찾을 수 없습니다."; // 비밀번호 찾을 수 없음
     String ADDRESS_NOT_FOUND = "주소를 찾을 수 없습니다."; // 주소 찾을 수 없음
+    String NOT_EXISTED_BOARD = "Board does not exist.";
 
     // Http status 401
-    String SIGN_IN_FAILED = "아이디 혹은 비밀번호 오류입니다."; // 로그인 실패
-    String AUTHORIZATION_FAILED = "권한 인증에 실패하였습니다."; // 권한 인증 실패
+    String SIGN_IN_FAILED = "로그인 실패"; // 로그인 실패
+    String AUTHORIZATION_FAILED = "권한 인증 실패"; // 권한 인증 실패
+    String SIGN_IN_FAIL = "Login fail";
 
     // Http status 403
     String NO_PERMISSION = "권한이 없습니다."; // 권한 없음

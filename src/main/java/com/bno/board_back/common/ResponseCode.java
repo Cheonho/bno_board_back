@@ -19,6 +19,9 @@ public interface ResponseCode {
     String DUPLICATE_USER = "DU" ; // 중복된 사용자
     String DUPLICATE_ADDRESS = "DA" ;// 똑같은 주소지
 
+    String VALIDATION_FAILED = "VF";
+    String DUPLICATE_NICK = "DN";
+
     // Http status 404
     String USER_NOT_FOUND = "UNF"; // 사용자 찾을 수 없음
     String EMAIL_NOT_FOUND = "ENF"; // 이메일 찾을 수 없음
@@ -26,9 +29,14 @@ public interface ResponseCode {
     String PASSWORD_NOT_FOUND = "PNF"; // 비밀번호 찾을 수 없음
     String ADDRESS_NOT_FOUND = "ANF"; // 주소 찾을 수 없음
 
+    String NOT_EXISTED_USER = "NU";
+    String NOT_EXISTED_BOARD = "NB";
+
     // Http status 401
     String SIGN_IN_FAILED = "SIF"; // 로그인 실패
     String AUTHORIZATION_FAILED = "AF"; // 권한 실패
+
+    String SIGN_IN_FAIL = "LF";
 
     // Http status 403
     String NO_PERMISSION = "NP"; // 권한 없음

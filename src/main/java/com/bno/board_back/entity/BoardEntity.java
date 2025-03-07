@@ -1,37 +1,28 @@
 package com.bno.board_back.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.envers.Audited;
 
 import java.time.LocalDateTime;
 
+@EqualsAndHashCode(callSuper = false, of = "boardNum")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "boards")
-@Entity(name = "board")
-public class BoardEntity {
+@AllArgsConstructor
+@Builder
+//@Audited
+@Entity(name="board")
+@Table(name="boards")
+public class BoardEntity extends AbstractBoardNumEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long boardNum;
     private String title;
-    private String writerEmail;
     private String content;
+    private String writerEmail;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
-    private int viewCount = 0;
-    private Boolean status = true;
-
-
-    public void increaseViewCount() {
-        this.viewCount++;
-    }
-
-
-
-
-
+    private int viewCount;
+    private Boolean status;
 }

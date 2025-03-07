@@ -2,19 +2,20 @@ package com.bno.board_back.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.envers.Audited;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+//@Audited
+@AllArgsConstructor
 @Table(name = "users")
+@Builder
+
 public class UserEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id ;
     @NotNull
     private String email ;

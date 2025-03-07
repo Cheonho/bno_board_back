@@ -31,14 +31,15 @@ public class CommentServiceImplement implements CommentService {
     private final BoardRepository boardRepository;
 
 
-    public ResponseEntity<? super GetCommentListResponseDto> getCommentsByBoardNum(Long boardNum) {
+    public ResponseEntity<? super GetCommentListResponseDto> getCommentsByBoardNum(String boardNum) {
         List<CommentEntity> commentList;
 
         try {
-            boolean existedBoard = boardRepository.existsByBoardNum(boardNum);
+            Long boardNumLong = Long.parseLong(boardNum);
+            boolean existedBoard = boardRepository.existsByBoardNum(boardNumLong);
             if (!existedBoard) return GetCommentListResponseDto.notFoundBoard();
 
-            commentList = commentRepository.findCommentsByBoardNumAndStatusTrue(boardNum);
+            commentList = commentRepository.findCommentsByBoardNumAndStatusTrue(boardNumLong);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.databaseError();
@@ -62,7 +63,7 @@ public class CommentServiceImplement implements CommentService {
                 }
             }
             commentRepository.save(commentEntity);
-            return ResponseDto.success();
+            return ResponseDto.resSuccess();
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.databaseError();
@@ -84,7 +85,7 @@ public class CommentServiceImplement implements CommentService {
                     .orElseThrow(() -> new RuntimeException("댓글이 존재하지 않습니다."));
             commentUpdateMapper.updateFormDto(comment, commentEntity);
             commentRepository.save(commentEntity);
-            return ResponseDto.success();
+            return ResponseDto.resSuccess();
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.databaseError();
@@ -93,7 +94,7 @@ public class CommentServiceImplement implements CommentService {
 
 
     @Override
-    public ResponseEntity<? super PostCommentResponseDto> postComment(Comment comment, Long boardNum) {
+    public ResponseEntity<? super PostCommentResponseDto> postComment(Comment comment, String boardNum) {
 
         try {
 
@@ -104,8 +105,9 @@ public class CommentServiceImplement implements CommentService {
             boolean checkUser = userRepository.existsByEmail(comment.getWriterEmail());
             if (!checkUser) return PostCommentResponseDto.notFoundUser();
 
-            //boolean existedBoard = boardRepository.existsByBoardNum(boardNum);
-            //if (!existedBoard) return PostCommentResponseDto.notFoundBoard();
+            Long boardNumLong = Long.parseLong(boardNum);
+            boolean existedBoard = boardRepository.existsByBoardNum(boardNumLong);
+            if (!existedBoard) return PostCommentResponseDto.notFoundBoard();
 
             comment.setBoardNum(boardNum);
             Long parentNum = comment.getParentNum();

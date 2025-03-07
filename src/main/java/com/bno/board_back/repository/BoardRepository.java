@@ -9,7 +9,8 @@ import java.util.Optional;
 @Repository
 public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
 
-    Optional<BoardEntity> findByBoardNumAndStatusTrue(Long boardNum);
+    BoardEntity findByBoardNumAndWriterEmail(Long boardNum, String writerEmail);
+    BoardEntity findByBoardNum(Long boardNum);
 
     boolean existsByBoardNum(Long boardNum);
 }

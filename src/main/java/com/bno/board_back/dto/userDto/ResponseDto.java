@@ -20,6 +20,11 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
+    // 회원 정보 변경 성공
+    public static ResponseEntity<ResponseDto> changesuccess() {
+        ResponseDto responseDto = new ResponseDto(ResponseCode.CHANGE_SUCCESS, ResponseMessage.CHANGE_SUCCESS);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
     public static ResponseEntity<ResponseDto> usedemail() {
         ResponseDto responseDto = new ResponseDto(ResponseCode.USED_EMAIL, ResponseMessage.USED_EMAIL);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
@@ -39,6 +44,12 @@ public class ResponseDto {
         ResponseDto responseDto = new ResponseDto(ResponseCode.LOGIN_SUCCESS, ResponseMessage.LOGIN_SUCCESS);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
+
+    public static ResponseEntity<ResponseDto> passwordchecksuccess() {
+        ResponseDto responseDto = new ResponseDto(ResponseCode.PASSWORD_SUCCESS, ResponseMessage.PASSWORD_SUCCESS);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
     // 데이터베이스 오류
     public static ResponseEntity<ResponseDto> databaseError() {
         ResponseDto responseDto = new ResponseDto(ResponseCode.DATABASE_ERROR, ResponseMessage.DATABASE_ERROR);
@@ -108,6 +119,12 @@ public class ResponseDto {
     // 중복된 사용자
     public static ResponseEntity<ResponseDto> duplicateUser() {
         ResponseDto responseDto = new ResponseDto(ResponseCode.DUPLICATE_USER, ResponseMessage.DUPLICATE_USER);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
+    }
+
+    // 중복된 사용자
+    public static ResponseEntity<ResponseDto> duplicateaddress() {
+        ResponseDto responseDto = new ResponseDto(ResponseCode.DUPLICATE_ADDRESS, ResponseMessage.DUPLICATE_ADDRESS);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
     }
 }

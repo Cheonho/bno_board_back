@@ -8,6 +8,8 @@ public interface ResponseCode {
     String USED_NICKNAME = "UNS" ; // 닉네임 사용 가능
     String JOIN_SUCCESS = "JS" ; // 회원가입 성공
     String LOGIN_SUCCESS = "LS" ; // 로그인 성공
+    String CHANGE_SUCCESS = "CS" ; // 변경 성공
+    String PASSWORD_SUCCESS = "PS" ; // 비밀번호 일치
 
     // Http status 400
     String INVALID_INPUT = "II";  // 잘못된 입력
@@ -15,6 +17,7 @@ public interface ResponseCode {
     String DUPLICATE_EMAIL = "DE"; // 이메일 중복
     String PASSWORD_TOO_WEAK = "PW"; // 비밀번호가 너무 약함
     String DUPLICATE_USER = "DU" ; // 중복된 사용자
+    String DUPLICATE_ADDRESS = "DA" ;// 똑같은 주소지
 
     // Http status 404
     String USER_NOT_FOUND = "UNF"; // 사용자 찾을 수 없음

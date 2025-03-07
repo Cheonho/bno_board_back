@@ -17,14 +17,16 @@ import org.springframework.http.ResponseEntity;
 public class GetUserLoginResponseDto extends ResponseDto {
 
     private final LoginResponseDto loginResponseDto ;
+    private final String token ;
 
-    private GetUserLoginResponseDto(UserEntity userEntity) {
+    private GetUserLoginResponseDto(UserEntity userEntity, String token) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS) ;
         this.loginResponseDto = UserLoginMapper.INSTANCE.toDTO(userEntity) ;
+        this.token = token;
     }
 
-    public static ResponseEntity<GetUserLoginResponseDto> success(UserEntity userEntity) {
-        GetUserLoginResponseDto result = new GetUserLoginResponseDto(userEntity) ;
+    public static ResponseEntity<GetUserLoginResponseDto> success(UserEntity userEntity, String token) {
+        GetUserLoginResponseDto result = new GetUserLoginResponseDto(userEntity, token) ;
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

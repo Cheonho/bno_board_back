@@ -1,7 +1,5 @@
 package com.bno.board_back.dto.userDto;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -16,8 +14,7 @@ import lombok.NoArgsConstructor;
 public class JoinRequestDto {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id ;
+    private String id ;
     @Email(message = "유효한 이메일을 입력하세요.")
     @NotBlank(message = "이메일은 필수 입력 항목입니다.")
     @NotNull

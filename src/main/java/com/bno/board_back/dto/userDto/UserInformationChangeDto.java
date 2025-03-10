@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 
 public class UserInformationChangeDto {
-    private Long id ;
+    private String id ;
     private String userNickname ;
     private String password ;
     private String nowpassword ;

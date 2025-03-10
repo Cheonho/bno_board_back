@@ -23,7 +23,7 @@ public class GetUserJoinResponseDto extends ResponseDto {
         this.joinResponseDto = UserJoinMapper.INSTANCE.toDTO(userEntity);
     }
 
-    public static ResponseEntity<GetUserJoinResponseDto> success(UserEntity userEntity) {
+    public static ResponseEntity<ResponseDto> success(UserEntity userEntity) {
         GetUserJoinResponseDto result = new GetUserJoinResponseDto(userEntity) ;
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }

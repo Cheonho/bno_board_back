@@ -23,6 +23,7 @@ public class SecurityConfig {
                                 "/idcheck/**", "/namecheck/**" ,
                                 "/nicknamecorrection/**", "/addresscorrection/**",
                                 "/passwordcorrection/**","/board/board-list",
+                                "/mypage/**",
                                 "/search-list/**", "detailBoard",
                                 "*/view", "/swagger-ui/**", "/v3/api-docs/**",
                                 "/**"

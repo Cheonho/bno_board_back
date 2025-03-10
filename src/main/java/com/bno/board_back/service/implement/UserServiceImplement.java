@@ -7,6 +7,7 @@ import com.bno.board_back.entity.UserEntity;
 import com.bno.board_back.provider.jwt.JwtTokenProvider;
 import com.bno.board_back.repository.UserRepository;
 import com.bno.board_back.service.UserService;
+import com.bno.board_back.utils.TsidUtilUseSystem;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -81,6 +82,7 @@ public class UserServiceImplement implements UserService {
 
         // 3. 새로운 UserEntity 생성
         UserEntity userEntity = UserEntity.builder()
+                .id(TsidUtilUseSystem.getTsid())
                 .email(joinRequestDto.getEmail())
                 .userNickname(joinRequestDto.getUserNickname())
                 .password(bCryptPasswordEncoder.encode(joinRequestDto.getPassword())) // 비밀번호 암호화

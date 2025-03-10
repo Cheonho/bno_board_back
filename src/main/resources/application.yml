@@ -22,7 +22,7 @@ spring:
         store_data_at_delete: true # 삭제시 저장 여부, 기본은 false
     show-sql: 'true'
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
 server:
   tomcat:
     use-relative-redirects: 'true'
@@ -46,3 +46,15 @@ env:
 
 jwt:
   secret: fthl4TRfGF0sDwEUqhL/L5JZ/NEIfaTHdai7FD51FMN5
+
+file:
+  allowed:
+    file_extension: txt,xlsx,png,jpg
+
+minio:
+  url: http://localhost:9000
+  bucket:
+    name: bnoboard
+  access:
+    key: ufShJ6zijnHjumMNh2og
+    secret: bXEffSWJ1Lxr99SiUJdSlzSrkU3zsAxId9SEaTyf

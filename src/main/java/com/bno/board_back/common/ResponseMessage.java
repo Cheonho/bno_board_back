@@ -18,6 +18,7 @@ public interface ResponseMessage {
     String DUPLICATE_EMAIL = "이메일이 존재합니다."; // 잘못된 이메일 형식
     String PASSWORD_TOO_WEAK = "비밀번호가 너무 약함"; // 비밀번호가 너무 약함
     String DUPLICATE_USER = "중복 확인을 해 주세요." ;
+    String FILE_EXTENSION = "허용하지 않는 파일입니다." ;
 
     String VALIDATION_FAILED = "Validation failed";
 

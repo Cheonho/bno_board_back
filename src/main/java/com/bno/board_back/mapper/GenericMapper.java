@@ -1,5 +1,6 @@
 package com.bno.board_back.mapper;
 
+import com.bno.board_back.dto.object.AbstractBoardNumDto;
 import com.bno.board_back.dto.object.AbstractIdDto;
 import com.bno.board_back.utils.TsidUtilUseSystem;
 import org.mapstruct.*;
@@ -22,11 +23,24 @@ public interface GenericMapper<DTO, Entity> {
     default void generateBoardNum(DTO dto) {
         if (dto == null) return;
 
-        if (dto instanceof AbstractIdDto) {
-            AbstractIdDto abstractDto = (AbstractIdDto) dto;
+        if (dto instanceof AbstractBoardNumDto) {
+            AbstractBoardNumDto abstractDto = (AbstractBoardNumDto) dto;
 
             if (abstractDto.getBoardNum() == null) {
                 abstractDto.setBoardNum(String.valueOf(TsidUtilUseSystem.getTsid()));
+            }
+        }
+    }
+
+    @BeforeMapping
+    default void generateId(DTO dto) {
+        if (dto == null) return;
+
+        if (dto instanceof AbstractIdDto) {
+            AbstractIdDto abstractDto = (AbstractIdDto) dto;
+
+            if (abstractDto.getId() == null) {
+                abstractDto.setId(String.valueOf(TsidUtilUseSystem.getTsid()));
             }
         }
     }

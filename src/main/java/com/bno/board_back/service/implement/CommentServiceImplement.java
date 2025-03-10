@@ -35,11 +35,10 @@ public class CommentServiceImplement implements CommentService {
         List<CommentEntity> commentList;
 
         try {
-            Long boardNumLong = Long.parseLong(boardNum);
-            boolean existedBoard = boardRepository.existsByBoardNum(boardNumLong);
+            boolean existedBoard = boardRepository.existsByBoardNum(boardNum);
             if (!existedBoard) return GetCommentListResponseDto.notFoundBoard();
 
-            commentList = commentRepository.findCommentsByBoardNumAndStatusTrue(boardNumLong);
+            commentList = commentRepository.findCommentsByBoardNumAndStatusTrue(boardNum);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.databaseError();
@@ -48,7 +47,7 @@ public class CommentServiceImplement implements CommentService {
     }
 
     @Override
-    public ResponseEntity<ResponseDto> deleteCommentById(Long commentNum) {
+    public ResponseEntity<ResponseDto> deleteCommentById(String commentNum) {
         try {
             CommentEntity commentEntity = commentRepository.findById(commentNum)
                     .orElseThrow(() -> new RuntimeException("댓글을 찾을 수 없습니다."));
@@ -72,7 +71,7 @@ public class CommentServiceImplement implements CommentService {
 
 
     @Override
-    public ResponseEntity<ResponseDto> updateComment(Long commentNum, @RequestBody @Valid Comment comment) {
+    public ResponseEntity<ResponseDto> updateComment(String commentNum, @RequestBody @Valid Comment comment) {
 
         try {
             if (comment.getWriterEmail() == null) {
@@ -105,12 +104,11 @@ public class CommentServiceImplement implements CommentService {
             boolean checkUser = userRepository.existsByEmail(comment.getWriterEmail());
             if (!checkUser) return PostCommentResponseDto.notFoundUser();
 
-            Long boardNumLong = Long.parseLong(boardNum);
-            boolean existedBoard = boardRepository.existsByBoardNum(boardNumLong);
+            boolean existedBoard = boardRepository.existsByBoardNum(boardNum);
             if (!existedBoard) return PostCommentResponseDto.notFoundBoard();
 
             comment.setBoardNum(boardNum);
-            Long parentNum = comment.getParentNum();
+            String parentNum = comment.getParentNum();
             if (parentNum != null) {
                 commentRepository.findById(parentNum)
                         .orElseThrow(() -> new RuntimeException("부모 댓글이 존재하지 않습니다."));

@@ -17,9 +17,9 @@ import java.util.List;
 @AllArgsConstructor
 public class Comment {
 
-    private Long commentNum;
+    private String commentNum;
     private String boardNum;
-    private Long parentNum;
+    private String parentNum;
     private String content;
     private String writerEmail;
     private LocalDateTime createAt;

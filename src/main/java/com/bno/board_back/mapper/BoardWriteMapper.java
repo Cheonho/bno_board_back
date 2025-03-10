@@ -9,7 +9,6 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface BoardWriteMapper extends GenericMapper<WriteBoards, BoardEntity> {
 
-    @Mapping(target = "boardNum", source = "boardNum", qualifiedByName = "mapStringToLong")
     @Mapping(target = "createAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "viewCount", expression = "java(0)")
     @Mapping(target = "status", expression="java(true)")

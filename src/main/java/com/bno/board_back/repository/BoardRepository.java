@@ -7,10 +7,10 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
+public interface BoardRepository extends JpaRepository<BoardEntity, String> {
 
-    BoardEntity findByBoardNumAndWriterEmail(Long boardNum, String writerEmail);
-    BoardEntity findByBoardNum(Long boardNum);
+    BoardEntity findByBoardNumAndWriterEmail(String boardNum, String writerEmail);
+    BoardEntity findByBoardNum(String boardNum);
 
-    boolean existsByBoardNum(Long boardNum);
+    boolean existsByBoardNum(String boardNum);
 }

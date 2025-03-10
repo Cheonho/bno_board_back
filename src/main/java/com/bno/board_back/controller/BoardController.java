@@ -36,12 +36,12 @@ public class BoardController {
     }
 
     @GetMapping("/{boardNum}")
-    public ResponseEntity<? super GetBoardResponseDto> getBoardById(@PathVariable Long boardNum) {
+    public ResponseEntity<? super GetBoardResponseDto> getBoardById(@PathVariable String boardNum) {
         return boardService.getBoardById(boardNum);
     }
 
     @DeleteMapping("/{boardNum}")
-    public ResponseEntity<ResponseDto> deleteBoard(@PathVariable Long boardNum) {
+    public ResponseEntity<ResponseDto> deleteBoard(@PathVariable String boardNum) {
         return boardService.deleteBoardById(boardNum);
     }
 
@@ -74,8 +74,7 @@ public class BoardController {
     public ResponseEntity<? super GetDetailBoardResponseDto> getDetailBoard(
             @RequestParam(value = "boardNum", required = true) String boardNum
     ) {
-        Long boardNumLong = Long.parseLong(boardNum);
-        ResponseEntity<? super GetDetailBoardResponseDto> response = boardService.getDetailBoard(boardNumLong);
+        ResponseEntity<? super GetDetailBoardResponseDto> response = boardService.getDetailBoard(boardNum);
         return response;
     }
 
@@ -110,8 +109,7 @@ public class BoardController {
     public ResponseEntity<? super PatchIncreaseViewCountDto> patchViewBoard(
             @PathVariable String boardNum
     ) {
-        Long boardNumLong = Long.parseLong(boardNum);
-        ResponseEntity<? super PatchIncreaseViewCountDto> response = boardService.increaseCount(boardNumLong);
+        ResponseEntity<? super PatchIncreaseViewCountDto> response = boardService.increaseCount(boardNum);
         return response;
     }
 
@@ -121,7 +119,7 @@ public class BoardController {
     }
 
     @DeleteMapping("/{boardNum}/comment/{commentNum}")
-    public ResponseEntity<ResponseDto> deleteComment(@PathVariable Long commentNum) {
+    public ResponseEntity<ResponseDto> deleteComment(@PathVariable String commentNum) {
         return commentService.deleteCommentById(commentNum);
     }
 
@@ -134,7 +132,7 @@ public class BoardController {
     }
 
     @PatchMapping("/{boardNum}/comment/{commentNum}")
-    public ResponseEntity<ResponseDto> modifyComment(@PathVariable Long commentNum, @RequestBody @Valid Comment comment) {
+    public ResponseEntity<ResponseDto> modifyComment(@PathVariable String commentNum, @RequestBody @Valid Comment comment) {
         return commentService.updateComment(commentNum, comment);
     }
 }

@@ -15,5 +15,5 @@ public interface BoardListViewRepository extends JpaRepository<BoardListViewEnti
 
     Page<BoardListViewEntity> findByOrderByCreateAtDesc(Pageable pageable);
 
-    BoardListViewEntity findByBoardNum(Long boardNum);
+    BoardListViewEntity findByBoardNum(String boardNum);
 }

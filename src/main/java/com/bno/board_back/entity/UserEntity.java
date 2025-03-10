@@ -21,7 +21,7 @@ public class UserEntity implements UserDetails {
 
 
     @Id
-    private Long id;
+    private String id;
 
     @NotNull
     @Column(length = 100, nullable = false, unique = true)

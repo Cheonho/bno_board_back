@@ -52,7 +52,7 @@ dependencies {
 
 	// TSID
 	implementation 'com.github.f4b6a3:tsid-creator:5.2.4'
-	implementation 'io.hypersistence:hypersistence-utils-hibernate-60:3.5.1'
+//	implementation 'io.hypersistence:hypersistence-utils-hibernate-60:3.5.2'
 
 	// QUERY DSL
 	implementation 'com.querydsl:querydsl-apt:5.0.0'

@@ -10,7 +10,6 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface BoardUpdateMapper extends GenericMapper<UpdateBoards, BoardEntity> {
 
-    @Mapping(target = "boardNum", source = "boardNum", qualifiedByName = "mapStringToLong")
     @Mapping(target = "updateAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "createAt", ignore = true)
     @Mapping(target = "viewCount", ignore = true)

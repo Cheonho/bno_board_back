@@ -11,13 +11,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
+public interface CommentRepository extends JpaRepository<CommentEntity, String> {
         @Query("SELECT c FROM comment c WHERE c.boardNum = :boardNum and c.status = true" +
                 " ORDER BY COALESCE(c.parentNum, c.commentNum) ASC, c.commentNum ASC")
-        List<CommentEntity> findCommentsByBoardNumAndStatusTrue(@Param("boardNum") Long boardNum);
+        List<CommentEntity> findCommentsByBoardNumAndStatusTrue(@Param("boardNum") String boardNum);
 
-        List<CommentEntity> findByParentNum(Long parentNum);
+        List<CommentEntity> findByParentNum(String parentNum);
 
-        Object findByCommentNumAndWriterEmail(Long commentNum, String writerEmail);
+        Object findByCommentNumAndWriterEmail(String commentNum, String writerEmail);
 }
 

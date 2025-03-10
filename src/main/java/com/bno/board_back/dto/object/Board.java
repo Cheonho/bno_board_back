@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Board {
 
-    private Long boardNum;
+    private String boardNum;
     private String title;
     private String content;
     private String writerEmail;

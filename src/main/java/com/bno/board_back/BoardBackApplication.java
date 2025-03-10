@@ -8,7 +8,7 @@ public class BoardBackApplication {
 
 	public static void main(String[] args) {
 		System.setProperty("tsid.tz", "Asia/Seoul");
-		System.setProperty("tsid.note.bit", "10");
+		System.setProperty("tsid.note.bit", "5");
 		SpringApplication.run(BoardBackApplication.class, args);
 	}
 

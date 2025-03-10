@@ -42,7 +42,7 @@ logging:
 env:
   tsid:
     tz: Asia/Seoul
-    nodeBit: 10
+    nodeBit: 5
 
 jwt:
   secret: fthl4TRfGF0sDwEUqhL/L5JZ/NEIfaTHdai7FD51FMN5

@@ -17,10 +17,9 @@ import java.time.LocalDateTime;
 public class CommentEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long commentNum;
-    private Long boardNum;
-    private Long parentNum; // 부모 댓글, 부모 댓글이 없을 시 null
+    private String commentNum;
+    private String boardNum;
+    private String parentNum; // 부모 댓글, 부모 댓글이 없을 시 null
     private String content;
     private String writerEmail;
     private LocalDateTime createAt;
@@ -30,7 +29,7 @@ public class CommentEntity {
     public CommentEntity(Comment comment) {
     }
 
-    public CommentEntity(Long boardNum, Long parentNum, String content, String writerEmail) {
+    public CommentEntity(String boardNum, String parentNum, String content, String writerEmail) {
         this.boardNum = boardNum;
         this.parentNum = parentNum;
         this.content = content;

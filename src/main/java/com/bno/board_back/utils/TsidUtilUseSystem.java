@@ -27,7 +27,8 @@ public class TsidUtilUseSystem {
                 .build();
     }
 
-    public static Long getTsid() {
-        return TSID_FACTORY.create().toLong();
+    public static String getTsid() {
+//        return TSID_FACTORY.create().toString();
+        return TSID_FACTORY.create().toString();
     }
 }

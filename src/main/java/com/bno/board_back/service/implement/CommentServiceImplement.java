@@ -5,9 +5,11 @@ import com.bno.board_back.dto.response.ResponseDto;
 import com.bno.board_back.dto.response.comment.GetCommentListResponseDto;
 import com.bno.board_back.dto.response.comment.PostCommentResponseDto;
 import com.bno.board_back.entity.CommentEntity;
+import com.bno.board_back.entity.CommentListViewEntity;
 import com.bno.board_back.mapper.CommentUpdateMapper;
 import com.bno.board_back.mapper.CommentWriteMapper;
 import com.bno.board_back.repository.BoardRepository;
+import com.bno.board_back.repository.CommentListViewRepository;
 import com.bno.board_back.repository.CommentRepository;
 import com.bno.board_back.repository.UserRepository;
 import com.bno.board_back.service.CommentService;
@@ -29,17 +31,18 @@ public class CommentServiceImplement implements CommentService {
     private final CommentUpdateMapper commentUpdateMapper;
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
+    private final CommentListViewRepository commentListViewRepository;
 
 
     public ResponseEntity<? super GetCommentListResponseDto> getCommentsByBoardNum(String boardNum) {
-        List<CommentEntity> commentList;
+        List<CommentListViewEntity> commentList;
 
         try {
             Long boardNumLong = Long.parseLong(boardNum);
             boolean existedBoard = boardRepository.existsByBoardNum(boardNumLong);
             if (!existedBoard) return GetCommentListResponseDto.notFoundBoard();
 
-            commentList = commentRepository.findCommentsByBoardNumAndStatusTrue(boardNumLong);
+            commentList = commentListViewRepository.findCommentsByBoardNumAndStatusTrueOrderByCreateAtAsc(boardNumLong);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.databaseError();
@@ -74,11 +77,10 @@ public class CommentServiceImplement implements CommentService {
     @Override
     public ResponseEntity<ResponseDto> updateComment(Long commentNum, @RequestBody @Valid Comment comment) {
 
+        boolean checkUser = false;
+
         try {
-            if (comment.getWriterEmail() == null) {
-                comment.setWriterEmail("user1@example.com");
-            }
-            boolean checkUser = userRepository.existsByEmail(comment.getWriterEmail());
+            checkUser = userRepository.existsByEmail(comment.getWriterEmail());
             if (!checkUser) return ResponseDto.notFoundUser();
 
             CommentEntity commentEntity = commentRepository.findById(commentNum)
@@ -94,28 +96,28 @@ public class CommentServiceImplement implements CommentService {
 
 
     @Override
-    public ResponseEntity<? super PostCommentResponseDto> postComment(Comment comment, String boardNum) {
+    public ResponseEntity<? super PostCommentResponseDto> postComment(Comment comment, Long boardNum) {
+
+        boolean checkUser = false;
 
         try {
 
-            if (comment.getWriterEmail() == null) {
-                comment.setWriterEmail("user1@example.com");
-            }
-
-            boolean checkUser = userRepository.existsByEmail(comment.getWriterEmail());
+            checkUser = userRepository.existsByEmail(comment.getWriterEmail());
             if (!checkUser) return PostCommentResponseDto.notFoundUser();
 
-            Long boardNumLong = Long.parseLong(boardNum);
-            boolean existedBoard = boardRepository.existsByBoardNum(boardNumLong);
-            if (!existedBoard) return PostCommentResponseDto.notFoundBoard();
 
-            comment.setBoardNum(boardNum);
             Long parentNum = comment.getParentNum();
             if (parentNum != null) {
-                commentRepository.findById(parentNum)
+                CommentEntity parentComment = commentRepository.findById(parentNum)
                         .orElseThrow(() -> new RuntimeException("부모 댓글이 존재하지 않습니다."));
-                comment.setParentNum(parentNum);
+
+                comment.setParentNum(parentComment.getParentNum() == null ?
+                        parentComment.getCommentNum() : parentComment.getParentNum());
+
+                boardNum = parentComment.getBoardNum();
             }
+
+            comment.setBoardNum(boardNum);
 
             CommentEntity commentEntity = commentWriteMapper.toEntity(comment);
             commentRepository.save(commentEntity);

@@ -1,9 +1,6 @@
 package com.bno.board_back.controller;
 
-import com.bno.board_back.dto.responseDto.GetUserCheckEmailDto;
-import com.bno.board_back.dto.responseDto.GetUserCheckNicknameDto;
-import com.bno.board_back.dto.responseDto.GetUserJoinResponseDto;
-import com.bno.board_back.dto.responseDto.GetUserLoginResponseDto;
+import com.bno.board_back.dto.responseDto.*;
 import com.bno.board_back.dto.userDto.*;
 import com.bno.board_back.service.OtpResultServlet;
 import com.bno.board_back.service.OtpServlet;
@@ -37,7 +34,6 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<? super GetUserLoginResponseDto> LoginPage(@RequestBody LoginRequestDto loginRequestDto, HttpSession session) {
-
         ResponseEntity<? super GetUserLoginResponseDto> response = userService.loginPage(loginRequestDto);
         session.setAttribute("loginDto", response);
         return response ;
@@ -63,18 +59,31 @@ public class UserController {
         return response ;
     }
 
-    /*
-    @PostMapping("/nicknamecorrection")
-    public ResponseEntity<UserDto> Nicknamecorrection (@RequestBody @Valid UserDto userDto) {
-        UserDto usermodel = userService.NicknameUpdate(userDto);
-        return new ResponseEntity<>(usermodel,HttpStatus.OK);
-    }*/
 
-  /*  @PostMapping("/passwordcorrection")
-    public ResponseEntity<UserDto> Passwordcorrection (@RequestBody UserDto userDto) {
-        UserDto usermodel = userService.PasswordUpdate(userDto) ;
-        return new
-    }*/
+    @PostMapping("/nicknamecorrection")
+    public ResponseEntity<? super GetUserInformationChangeDto> Nicknamecorrection (@RequestBody @Valid UserInformationChangeDto userInformationChangeDto) {
+    ResponseEntity<? super GetUserInformationChangeDto> response = userService.changeNickname(userInformationChangeDto) ;
+    return response ;
+    }
+
+   @PostMapping("/passwordcorrection")
+    public ResponseEntity<? super GetUserInformationChangeDto> Passwordcorrection (@RequestBody @Valid UserInformationChangeDto userInformationChangeDto) {
+    ResponseEntity<? super GetUserInformationChangeDto> response = userService.changePassword(userInformationChangeDto) ;
+    return response ;
+    }
+
+    @PostMapping("/addresscorrection")
+    public ResponseEntity<? super GetUserInformationChangeDto> Addresscorrection (@RequestBody @Valid UserInformationChangeDto userInformationChangeDto) {
+        ResponseEntity<? super GetUserInformationChangeDto> response = userService.changeAddress(userInformationChangeDto) ;
+        return response ;
+    }
+
+    @PostMapping("/mypage/apitokendata")
+    public ResponseEntity<? super GetUserApiTokenDto> ApiTokenData(@RequestHeader("Authorization") String authorizationHeader) {
+        ResponseEntity<? super GetUserApiTokenDto> response = userService.apitokendata(authorizationHeader);
+        return response;
+    }
+;
 
     @RequestMapping("/otp")
     public String generateOtp(HttpServletRequest request, ModelMap modelMap) {

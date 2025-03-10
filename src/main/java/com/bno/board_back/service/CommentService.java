@@ -10,6 +10,6 @@ public interface CommentService {
 
     ResponseEntity<? super GetCommentListResponseDto> getCommentsByBoardNum(String boardNum);
     ResponseEntity<ResponseDto> deleteCommentById(Long commentNum);
-    ResponseEntity<? super PostCommentResponseDto> postComment(Comment comment, String boardNum);
+    ResponseEntity<? super PostCommentResponseDto> postComment(Comment comment, Long boardNum);
     ResponseEntity<ResponseDto> updateComment(Long commentNum, Comment comment);
 }

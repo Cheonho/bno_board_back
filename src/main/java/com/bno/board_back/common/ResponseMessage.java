@@ -8,8 +8,11 @@ public interface ResponseMessage {
     String USED_NICKNAME = "사용 가능한 닉네임입니다." ; // 닉네임 사용 가능
     String JOIN_SUCCESS = "회원가입 성공" ; // 회원가입 성공
     String LOGIN_SUCCESS = "로그인 성공" ; // 로그인 성공
+    String CHANGE_SUCCESS = "변경되었습니다." ; // 변경 성공
+    String PASSWORD_SUCCESS = "비밀번호가 일치합니다" ; // 비밀번호 일치
+    String DUPLICATE_ADDRESS = "주소지가 일치합니다." ;// 똑같은 주소지
 
-    // Http status 400
+    // status 400
     String INVALID_INPUT = "잘못된 입력";  // 잘못된 입력
     String DUPLICATE_NICKNAME = "닉네임이 존재합니다."; // 닉네임 중복
     String DUPLICATE_EMAIL = "이메일이 존재합니다."; // 잘못된 이메일 형식

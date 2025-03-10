@@ -129,7 +129,8 @@ public class BoardController {
     public ResponseEntity<? super PostCommentResponseDto> postComment
             (@RequestBody @Valid Comment comment
                     , @PathVariable String boardNum) {
-        ResponseEntity<? super PostCommentResponseDto> response = commentService.postComment(comment, boardNum);
+        Long boardNumLong = Long.parseLong(boardNum);
+        ResponseEntity<? super PostCommentResponseDto> response = commentService.postComment(comment, boardNumLong);
         return response;
     }
 

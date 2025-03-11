@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ApitokendataDto {
 
-    private Long id ;
+    private String id ;
     private String email ;
     private String userNickname ;
     private String role ;

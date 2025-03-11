@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 // 서버가 클라이언트에 요청을 보낼때 사용하는 DTO
 // 토큰, 사용자 정보, 권한 정보를 포함해서 반환
 public class LoginResponseDto {
-    private Long id;
+    private String id;
     private String email;
     private String userNickname;
     private String role;

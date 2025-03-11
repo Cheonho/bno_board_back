@@ -8,7 +8,6 @@ import com.bno.board_back.provider.jwt.JwtTokenProvider;
 import com.bno.board_back.repository.UserRepository;
 import com.bno.board_back.service.UserService;
 import com.bno.board_back.utils.TsidUtilUseSystem;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -80,7 +79,6 @@ public class UserServiceImplement implements UserService {
             // 오류 메시지와 함께 BAD_REQUEST 상태 반환
             return ResponseEntity.badRequest().body(errorMessages.toString());
         }
-
         // 3. 새로운 UserEntity 생성
         UserEntity userEntity = UserEntity.builder()
                 .id(TsidUtilUseSystem.getTsid())
@@ -91,6 +89,7 @@ public class UserServiceImplement implements UserService {
                 .role(Collections.singletonList("USER").toString())
                 .build();
 
+        System.out.println("UserEntity ID: " + userEntity.getId());
         // 4. 저장
         userRepository.save(userEntity);
 
@@ -186,12 +185,11 @@ public class UserServiceImplement implements UserService {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("유효하지 않은 토큰입니다.");
         }
 
-        // 3. 토큰에서 사용자 정보 추출 (id, role, nickname, email)
-        Long id = Long.valueOf(jwtTokenProvider.getUserPk(token));
-        Claims claims = jwtTokenProvider.getClaims(token);
+        // 3. 토큰에서 사용자 정보 추출
+        String id = jwtTokenProvider.getUserPk(token);
 
         // 4. 사용자 정보 조회
-        Optional<UserEntity> user = userRepository.findById(id); // 이메일로 사용자 조회
+        Optional<UserEntity> user = userRepository.findById(id); // 아이디로 사용자 조회
         if (user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자를 찾을 수 없습니다.");
         }
@@ -200,7 +198,7 @@ public class UserServiceImplement implements UserService {
         UserEntity userEntity = user.get();
 
         ApitokendataDto apitokendataDto = ApitokendataDto.builder()
-                .id(userEntity.getId())
+                .id((userEntity.getId()))
                 .userNickname(userEntity.getUserNickname())
                 .email(userEntity.getEmail())
                 .role(userEntity.getRole())

@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 public class UserDto {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id ;
     private String email ;
     private String userNickname ;

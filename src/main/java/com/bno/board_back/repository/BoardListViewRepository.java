@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface BoardListViewRepository extends JpaRepository<BoardListViewEntity, Long>, BoardListViewCustomRepository {
+public interface BoardListViewRepository extends JpaRepository<BoardListViewEntity, String>, BoardListViewCustomRepository {
 
     Page<BoardListViewEntity> findByOrderByCreateAtDesc(Pageable pageable);
 

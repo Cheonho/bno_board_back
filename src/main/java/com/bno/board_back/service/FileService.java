@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface FileService {
 
-    boolean fileUpload(MultipartFile fileDto, String boardNum);
-    void uploadFileSizeCheck(MultipartFile file);
+    String fileUpload(MultipartFile fileDto, String boardNum);
+    void uploadFileExtensionCheck(MultipartFile file);
+    String dbSaveFile(MultipartFile file, String boardNum, String filePath, String fileUrl);
 }

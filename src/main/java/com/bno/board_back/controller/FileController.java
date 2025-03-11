@@ -29,7 +29,7 @@ public class FileController {
             @RequestPart("file") MultipartFile file,
             @RequestPart("boardNum") String boardNum
     ) {
-        boolean test = fileService.fileUpload(file, boardNum);
+        String test = fileService.fileUpload(file, boardNum);
         return null;
     }
 }

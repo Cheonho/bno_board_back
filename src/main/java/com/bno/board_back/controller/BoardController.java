@@ -9,8 +9,8 @@ import com.bno.board_back.dto.response.board.GetBoardResponseDto;
 import com.bno.board_back.dto.response.comment.GetCommentListResponseDto;
 import com.bno.board_back.dto.response.comment.PostCommentResponseDto;
 import com.bno.board_back.service.BoardService;
-import com.bno.board_back.utils.TsidUtilUseSystem;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,6 +19,7 @@ import com.bno.board_back.service.CommentService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -79,20 +80,23 @@ public class BoardController {
         return response;
     }
 
-    @Operation(summary = "게시글 등록", description = "등록된 게시글을 등록 합니다.",
-    responses = {
-            @ApiResponse(responseCode = "200",
-            description = "게시글 작성 성공",
-            content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = GetBoardListResponseDto.class)
-            ))
-    })
-    @PostMapping("write")
+    @Operation(summary = "게시글 등록", description = "등록된 게시글을 등록 합니다.")
+    @PostMapping(value = "write",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<? super PostWriteBoardResponseDto> postSaveBoard(
-            @Valid @RequestBody WriteBoards board
+            @RequestPart(value = "board", required = true)
+            @Parameter(
+                    description = "게시판 정보(JSON 형식)",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = WriteBoards.class)
+                    )
+            )
+            WriteBoards board,
+            @RequestPart(value = "file", required = false) MultipartFile file
     ) {
-        ResponseEntity<? super PostWriteBoardResponseDto> response = boardService.postWriteBoard(board);
+        ResponseEntity<? super PostWriteBoardResponseDto> response = boardService.postWriteBoard(board, file);
         return response;
     }
 

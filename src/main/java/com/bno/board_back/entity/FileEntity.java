@@ -2,12 +2,14 @@ package com.bno.board_back.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = false, of = "id")
-@Entity(name="file")
+@Entity(name="files")
+@Table(name="files")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,7 +17,7 @@ import java.time.LocalDateTime;
 public class FileEntity extends AbstractIdEntity {
 
     @Id
-    private Long id;
+    private String id;
     private String fileName;  // 파일 원본 이름
     private String boardNum; // 파일이 올라간 board
     private String filePath; // 파일 fullpath
@@ -23,7 +25,7 @@ public class FileEntity extends AbstractIdEntity {
     private String contentType; // 타입
     private Long size; // 파일 크기
     private String fileExtension; // 파일 확장자
-    private LocalDateTime uploadedAt;
-    private LocalDateTime createdAt;
+    private LocalDateTime updateAt;
+    private LocalDateTime createAt;
     private Boolean status;
 }

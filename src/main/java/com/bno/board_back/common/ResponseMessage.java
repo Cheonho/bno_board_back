@@ -18,7 +18,6 @@ public interface ResponseMessage {
     String DUPLICATE_EMAIL = "이메일이 존재합니다."; // 잘못된 이메일 형식
     String PASSWORD_TOO_WEAK = "비밀번호가 너무 약함"; // 비밀번호가 너무 약함
     String DUPLICATE_USER = "중복 확인을 해 주세요." ;
-    String FILE_EXTENSION = "허용하지 않는 파일입니다." ;
 
     String VALIDATION_FAILED = "Validation failed";
 
@@ -28,7 +27,7 @@ public interface ResponseMessage {
     String NICKNAME_NOT_FOUND = "닉네임을 찾을 수 없습니다."; // 닉네임 찾을 수 없음
     String PASSWORD_NOT_FOUND = "비밀번호를 찾을 수 없습니다."; // 비밀번호 찾을 수 없음
     String ADDRESS_NOT_FOUND = "주소를 찾을 수 없습니다."; // 주소 찾을 수 없음
-    String NOT_EXISTED_BOARD = "Board does not exist.";
+    String NOT_EXISTED_BOARD = "게시글을 찾을 수 없습니다.";
 
     // Http status 401
     String SIGN_IN_FAILED = "로그인 실패"; // 로그인 실패
@@ -40,4 +39,8 @@ public interface ResponseMessage {
 
     // Http status 500
     String DATABASE_ERROR = "데이터베이스 오류"; // 데이터베이스 오류
+
+    // file
+    String FILE_EXTENSION = "허용하지 않는 파일입니다." ;
+    String NON_FILE_EXISTED = "파일이 존재하지 않습니다.";
 }

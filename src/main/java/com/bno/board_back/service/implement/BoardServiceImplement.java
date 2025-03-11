@@ -1,17 +1,20 @@
 package com.bno.board_back.service.implement;
 
+import com.bno.board_back.common.ResponseMessage;
 import com.bno.board_back.dto.object.UpdateBoards;
 import com.bno.board_back.dto.object.WriteBoards;
 import com.bno.board_back.dto.response.ResponseDto;
 import com.bno.board_back.dto.response.board.*;
 import com.bno.board_back.entity.BoardEntity;
 import com.bno.board_back.entity.BoardListViewEntity;
+import com.bno.board_back.exception.CustomException;
 import com.bno.board_back.mapper.BoardUpdateMapper;
 import com.bno.board_back.repository.BoardListViewRepository;
 import com.bno.board_back.repository.BoardRepository;
 import com.bno.board_back.repository.UserRepository;
 import com.bno.board_back.service.BoardService;
 import com.bno.board_back.mapper.BoardWriteMapper;
+import com.bno.board_back.service.FileService;
 import com.bno.board_back.utils.TsidUtil;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
@@ -23,6 +26,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.slf4j.Logger;
+import org.springframework.web.multipart.MultipartFile;
+
+import static com.bno.board_back.common.ResponseMessage.INVALID_INPUT;
+import static com.bno.board_back.common.ResponseMessage.SUCCESS;
 
 @Service
 @RequiredArgsConstructor
@@ -34,18 +41,19 @@ public class BoardServiceImplement implements BoardService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
 
+    private final FileService fileService;
+
     private final TsidUtil tsidUtil;
     private final BoardUpdateMapper boardUpdateMapper;
 
-    public boolean saveBoard(WriteBoards writeBoards) {
-        if (writeBoards.getTitle() == null || writeBoards.getTitle().isEmpty()) { return false; }
-        if (writeBoards.getContent() == null || writeBoards.getContent().isEmpty()) { return false; }
-        if (writeBoards.getWriterEmail() == null || writeBoards.getWriterEmail().isEmpty()) { return false; }
+    public BoardEntity saveBoard(WriteBoards writeBoards) {
+        if (writeBoards.getTitle() == null || writeBoards.getTitle().isEmpty()) { return null; }
+        if (writeBoards.getContent() == null || writeBoards.getContent().isEmpty()) { return null; }
+        if (writeBoards.getWriterEmail() == null || writeBoards.getWriterEmail().isEmpty()) { return null; }
 
         BoardEntity boardEntity = BoardWriteMapper.INSTANCE.toEntity(writeBoards);
 
-        boardRepository.save(boardEntity);
-        return true;
+        return boardRepository.save(boardEntity);
     }
 
     @Override
@@ -81,29 +89,35 @@ public class BoardServiceImplement implements BoardService {
 
     }
 
+    @Transactional
     @Override
-    public ResponseEntity<? super PostWriteBoardResponseDto> postWriteBoard(WriteBoards board) {
+    public ResponseEntity<? super PostWriteBoardResponseDto> postWriteBoard(WriteBoards board, MultipartFile file) {
 
-        boolean checkUser = false;
-        boolean checkBoard = false;
+        boolean checkUser;
+        String fileMessage = "";
+        BoardEntity newBoard;
         System.out.println("----------------------- tsidUtil.getTsid() : " + tsidUtil.getTsid() + "-----------------------");
 
         try {
             checkUser = userRepository.existsByEmail(board.getWriterEmail());
             if (!checkUser) return ResponseDto.notFoundUser();
 
-            checkBoard = saveBoard(board);
+            newBoard = saveBoard(board);
+
+            if (file != null && newBoard != null) {
+                fileMessage = fileService.fileUpload(file, newBoard.getBoardNum());  // 파일 업로드 서비스 호출
+
+                if (!fileMessage.equals(SUCCESS)) {
+                    throw new CustomException(fileMessage, fileMessage, "BadRequest", HttpStatus.BAD_REQUEST);
+                }
+            }
         } catch (Exception e) {
             logger.error("error", e);
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
+            throw new CustomException(INVALID_INPUT, INVALID_INPUT, "BadRequest", HttpStatus.BAD_REQUEST);
         }
 
-        if (checkBoard) {
-            return PostWriteBoardResponseDto.success();
-        } else {
-            return ResponseDto.authError();
-        }
+        return PostWriteBoardResponseDto.success();
     }
 
     @Override

@@ -4,7 +4,6 @@ import com.bno.board_back.common.ResponseCode;
 import com.bno.board_back.common.ResponseMessage;
 import com.bno.board_back.dto.userDto.ApitokendataDto;
 import com.bno.board_back.dto.userDto.ResponseDto;
-import com.bno.board_back.entity.UserEntity;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.http.HttpStatus;
@@ -16,13 +15,13 @@ public class GetUserApiTokenDto extends ResponseDto {
 
     private final ApitokendataDto apitokendataDto;
 
-    public GetUserApiTokenDto(UserEntity userEntity) {
+    public GetUserApiTokenDto(ApitokendataDto apitokendataDto) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
-        this.apitokendataDto = new ApitokendataDto();
+        this.apitokendataDto = apitokendataDto; // 이렇게 해야 받은 데이터 저장
     }
 
-    public static ResponseEntity<GetUserApiTokenDto> usedemail(UserEntity userEntity) {
-        GetUserApiTokenDto result = new GetUserApiTokenDto(userEntity);
+    public static ResponseEntity<GetUserApiTokenDto> apiSuccess(ApitokendataDto apitokendataDto) {
+        GetUserApiTokenDto result = new GetUserApiTokenDto(apitokendataDto);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

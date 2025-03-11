@@ -3,7 +3,6 @@ package com.bno.board_back.service.Mapper;
 import com.bno.board_back.dto.userDto.JoinResponseDto;
 import com.bno.board_back.entity.UserEntity;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
@@ -15,7 +14,6 @@ public interface UserJoinMapper extends GenericMapper<JoinResponseDto, UserEntit
         return value != null ? String.valueOf(value) : null ;
     }
 
-    @Mapping(target = "id", source = "id", qualifiedByName = "mapLongToString")
     JoinResponseDto toDTO(UserEntity userEntity) ;
 
     UserJoinMapper INSTANCE = Mappers.getMapper(UserJoinMapper.class) ;

@@ -19,6 +19,7 @@ import java.util.List;
 
 public class UserEntity implements UserDetails {
 
+
     @Id
     private String id;
 
@@ -27,7 +28,7 @@ public class UserEntity implements UserDetails {
     private String email;
 
     @NotNull
-    @Column(length = 300, nullable = false)
+    @Column( name = "user_nickname", length = 300, nullable = false)
     private String userNickname;
 
     @NotNull
@@ -37,8 +38,9 @@ public class UserEntity implements UserDetails {
     private String address;
 
     @NotNull
-    private String role;  // 기존 List<String> 대신 단일 String 사용
+    private String role;
 
+    @Column(name = "is_available")
     private String isAvailable;
 
     @Override

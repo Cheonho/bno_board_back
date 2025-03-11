@@ -1,7 +1,5 @@
 package com.bno.board_back.dto.userDto;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,10 +14,6 @@ import lombok.NoArgsConstructor;
 public class UserDto {
 
     @Id
-<<<<<<< HEAD
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-=======
->>>>>>> fa556b3ca33c19721023f6d155d2d1e5e2c81162
     private String id ;
     private String email ;
     private String userNickname ;

@@ -1,11 +1,15 @@
 package com.bno.board_back.service;
 
-import com.bno.board_back.dto.object.FileDto;
+import com.bno.board_back.entity.FileEntity;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface FileService {
 
-    String fileUpload(MultipartFile fileDto, String boardNum);
     void uploadFileExtensionCheck(MultipartFile file);
     String dbSaveFile(MultipartFile file, String boardNum, String filePath, String fileUrl);
+
+    String fileUpload(MultipartFile file, String boardNum);
+    List<FileEntity> fileList(String boardNum);
 }

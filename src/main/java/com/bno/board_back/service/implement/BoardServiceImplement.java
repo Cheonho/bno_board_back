@@ -7,6 +7,7 @@ import com.bno.board_back.dto.response.ResponseDto;
 import com.bno.board_back.dto.response.board.*;
 import com.bno.board_back.entity.BoardEntity;
 import com.bno.board_back.entity.BoardListViewEntity;
+import com.bno.board_back.entity.FileEntity;
 import com.bno.board_back.exception.CustomException;
 import com.bno.board_back.mapper.BoardUpdateMapper;
 import com.bno.board_back.repository.BoardListViewRepository;
@@ -27,6 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.slf4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 import static com.bno.board_back.common.ResponseMessage.INVALID_INPUT;
 import static com.bno.board_back.common.ResponseMessage.SUCCESS;
@@ -182,20 +185,21 @@ public class BoardServiceImplement implements BoardService {
         return GetDetailBoardResponseDto.success(boardListViewEntity);
     }
 
+    @Transactional
     @Override
     public ResponseEntity<? super GetBoardResponseDto> getBoardById(String boardNum) {
         BoardListViewEntity boardListViewEntity;
+        List<FileEntity> fileEntity;
         try {
             boardListViewEntity = boardListViewRepository.findByBoardNum(boardNum);
             if (boardListViewEntity==null) return ResponseDto.notFoundBoard();
-//                    .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
-//            boardEntity.increaseViewCount();
-//            boardListViewRepository.save(boardListViewEntity);
+
+            fileEntity = fileService.fileList(boardNum);
         }catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.databaseError();
         }
-        return GetBoardResponseDto.success(boardListViewEntity);
+        return GetBoardResponseDto.success(boardListViewEntity, fileEntity);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.bno.board_back.service.implement;
 import com.bno.board_back.config.MinioConfig;
 import com.bno.board_back.dto.object.FileDto;
 import com.bno.board_back.entity.FileEntity;
+import com.bno.board_back.exception.CustomException;
 import com.bno.board_back.exception.FileException;
 import com.bno.board_back.repository.BoardRepository;
 import com.bno.board_back.repository.FileRepository;
@@ -14,12 +15,14 @@ import io.minio.http.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -146,5 +149,17 @@ public class FileServiceImplement implements FileService {
 //                    .build();
             throw new FileException(DATABASE_ERROR, DATABASE_ERROR);
         }
+    }
+
+    @Transactional
+    @Override
+    public List<FileEntity> fileList(String boardNum) {
+        List<FileEntity> fileList;
+        if (boardRepository.existsByBoardNum(boardNum)) {
+            fileList = fileRepository.findAllByBoardNumAndStatusTrue(boardNum);
+        } else {
+            throw new CustomException(NOT_EXISTED_BOARD, NOT_EXISTED_BOARD, "NotFound", HttpStatus.NOT_FOUND);
+        }
+        return fileList;
     }
 }

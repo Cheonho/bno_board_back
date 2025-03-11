@@ -93,7 +93,7 @@ public class BoardServiceImplement implements BoardService {
 
     @Transactional
     @Override
-    public ResponseEntity<? super PostWriteBoardResponseDto> postWriteBoard(WriteBoards board, MultipartFile file) {
+    public ResponseEntity<? super PostWriteBoardResponseDto> postWriteBoard(WriteBoards board, List<MultipartFile> files) {
 
         boolean checkUser;
         String fileMessage = "";
@@ -106,8 +106,8 @@ public class BoardServiceImplement implements BoardService {
 
             newBoard = saveBoard(board);
 
-            if (file != null && newBoard != null) {
-                fileMessage = fileService.fileUpload(file, newBoard.getBoardNum());  // 파일 업로드 서비스 호출
+            if (files != null && newBoard != null) {
+                fileMessage = fileService.fileUpload(files, newBoard.getBoardNum());  // 파일 업로드 서비스 호출
 
                 if (!fileMessage.equals(SUCCESS)) {
                     throw new CustomException(fileMessage, fileMessage, "BadRequest", HttpStatus.BAD_REQUEST);

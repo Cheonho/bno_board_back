@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/file/")
 @Tag(name = "File", description = "파일 관련 API")
@@ -23,10 +25,10 @@ public class FileController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseDto> uploadFile(
-            @RequestPart("file") MultipartFile file,
+            @RequestPart("files") List<MultipartFile> files,
             @RequestParam("boardNum") String boardNum
     ) {
-        String test = fileService.fileUpload(file, boardNum);
+        String test = fileService.fileUpload(files, boardNum);
         return null;
     }
 }

@@ -97,9 +97,9 @@ public class BoardController {
                     )
             )
             WriteBoards board,
-            @RequestPart(value = "file", required = false) MultipartFile file
+            @RequestPart(value = "file", required = false) List<MultipartFile> files
     ) {
-        ResponseEntity<? super PostWriteBoardResponseDto> response = boardService.postWriteBoard(board, file);
+        ResponseEntity<? super PostWriteBoardResponseDto> response = boardService.postWriteBoard(board, files);
         return response;
     }
 

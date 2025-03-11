@@ -10,7 +10,7 @@ public interface FileService {
     void uploadFileExtensionCheck(MultipartFile file);
     String dbSaveFile(MultipartFile file, String boardNum, String filePath, String fileUrl);
 
-    String fileUpload(MultipartFile file, String boardNum);
+    String fileUpload(List<MultipartFile> files, String boardNum);
     List<FileEntity> fileList(String boardNum);
     String deleteFile(String boardNum, List<String> filesId);
 }

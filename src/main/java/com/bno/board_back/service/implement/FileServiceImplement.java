@@ -57,6 +57,7 @@ public class FileServiceImplement implements FileService {
         }
     }
 
+    // db에 파일 정보 등록
     @Override
     public String dbSaveFile(MultipartFile file, String boardNum, String filePath, String fileUrl) {
         if (file.isEmpty() || file.getSize() <= 0) {return NON_FILE_EXISTED;}
@@ -85,70 +86,76 @@ public class FileServiceImplement implements FileService {
         }
     }
 
-    @Transactional
-    @Override
-    public String fileUpload(MultipartFile file, String boardNum) {
-        System.out.println("MinioConfig.getBucketName() : ---------- " + bucketName);
-        String originFileName = file.getOriginalFilename();
-        String path = UUID.randomUUID().toString().split("-")[0];
-        String fullPath = boardNum + "/" + path + "/" + originFileName;
-
-        this.uploadFileExtensionCheck(file);
-
-        try {
-            // bucket 존재여부 확인
-            boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
-            if(!found) {
-                minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
-            }
-            // 파일 업로드
-            minioClient.putObject(
-                PutObjectArgs.builder().bucket(bucketName)
-                    .object(fullPath) // 파일 경로
-                    .stream(file.getInputStream(), file.getSize(), -1) // minio 서버로 데이터 전송
-                    .contentType(file.getContentType())
-                    .build()
-            );
-
-            // 다운로드 URL
-            String url = minioClient.getPresignedObjectUrl(
-                GetPresignedObjectUrlArgs.builder()
-                    .method(Method.GET)
-                    .bucket(bucketName)
-                    .object(fullPath)
-                    .expiry(10, TimeUnit.MINUTES) // 다운로드 시간 제한
-                    .build());
-
-            String fileMessage = dbSaveFile(file, boardNum, fullPath, url);
-
-            if (fileMessage.equals(SUCCESS)) {
-                return SUCCESS;
-            } else {
+    // 업로드 실패 시 minio에 업로드된 파일 삭제
+    private void rollbackUploadedFiles(List<String> paths) {
+        for (String path : paths) {
+            try {
                 minioClient.removeObject(
                     RemoveObjectArgs.builder()
                         .bucket(bucketName)
-                        .object(fullPath)
-                        .build());
-                throw new FileException(fileMessage, fileMessage);
+                        .object(path)
+                        .build()
+                );
+            } catch (Exception ignored) {
+                logger.error("파일 삭제 실패: {}", path);
             }
-
-            // uploadDTO 객체 리턴
-//            return new FileDto().builder()
-//                    .fileName(originFileName)
-//                    .roomId(roomId)
-//                    .filePath(fullPath)
-//                    .minioDataUrl(url)
-//                    .contentType(file.getContentType())
-//                    .status(FileDto.Status.UPLOADED)
-//                    .build();
-        } catch (Exception e) {
-            e.printStackTrace();
-
-//            return new FileDto().builder()
-//                    .status(FileDto.Status.FAIL)
-//                    .build();
-            throw new FileException(DATABASE_ERROR, DATABASE_ERROR);
         }
+    }
+
+    @Transactional
+    @Override
+    public String fileUpload(List<MultipartFile> files, String boardNum) {
+        System.out.println("MinioConfig.getBucketName() : ---------- " + bucketName);
+        List<String> pathList = new ArrayList<>();
+        for (MultipartFile file : files) {
+            String originFileName = file.getOriginalFilename();
+            String path = UUID.randomUUID().toString().split("-")[0];
+            String fullPath = boardNum + "/" + path + "/" + originFileName;
+
+            this.uploadFileExtensionCheck(file);
+
+            try {
+                // bucket 존재여부 확인
+                boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
+                if(!found) {
+                    minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
+                }
+                // 파일 업로드
+                minioClient.putObject(
+                    PutObjectArgs.builder().bucket(bucketName)
+                        .object(fullPath) // 파일 경로
+                        .stream(file.getInputStream(), file.getSize(), -1) // minio 서버로 데이터 전송
+                        .contentType(file.getContentType())
+                        .build()
+                );
+
+                // 다운로드 URL
+                String url = minioClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs.builder()
+                        .method(Method.GET)
+                        .bucket(bucketName)
+                        .object(fullPath)
+                        .expiry(10, TimeUnit.MINUTES) // 다운로드 시간 제한
+                        .build());
+
+                String fileMessage = dbSaveFile(file, boardNum, fullPath, url);
+
+                if (!fileMessage.equals(SUCCESS)) {
+                    minioClient.removeObject(
+                        RemoveObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(fullPath)
+                            .build());
+                    throw new FileException(fileMessage, fileMessage);
+                }
+                pathList.add(fullPath);
+            } catch (Exception e) {
+                e.printStackTrace();
+                rollbackUploadedFiles(pathList);
+                throw new FileException(DATABASE_ERROR, DATABASE_ERROR);
+            }
+        }
+        return SUCCESS;
     }
 
     @Transactional

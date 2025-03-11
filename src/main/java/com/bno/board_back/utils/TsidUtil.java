@@ -30,11 +30,11 @@ public class TsidUtil {
                 .build();
     }
 
-    public Long getTsid() {
+    public String getTsid() {
         if (this.tsidFactory == null) {
             init();
         }
-//        return this.tsidFactory.create().toString();
-        return this.tsidFactory.create().toLong();
+        return this.tsidFactory.create().toString();
+//        return this.tsidFactory.create().toLong();
     }
 }

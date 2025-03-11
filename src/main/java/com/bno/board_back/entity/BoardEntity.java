@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class BoardEntity extends AbstractBoardNumEntity {
 
     @Id
-    private Long boardNum;
+    private String boardNum;
     private String title;
     private String content;
     private String writerEmail;

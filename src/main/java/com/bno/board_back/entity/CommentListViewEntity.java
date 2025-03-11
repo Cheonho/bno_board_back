@@ -17,9 +17,9 @@ import java.time.LocalDateTime;
 public class CommentListViewEntity {
 
     @Id
-    private Long commentNum;
-    private Long boardNum;
-    private Long parentNum;
+    private String commentNum;
+    private String boardNum;
+    private String parentNum;
     private String content;
     private String writerEmail;
     private String writerNickname;

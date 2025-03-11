@@ -2,6 +2,6 @@ package com.bno.board_back.entity;
 
 public abstract class AbstractBoardNumEntity {
 
-    public abstract Long getBoardNum();
-    public abstract void setBoardNum(Long boardNum);
+    public abstract String getBoardNum();
+    public abstract void setBoardNum(String boardNum);
 }

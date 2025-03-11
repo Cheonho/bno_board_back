@@ -13,6 +13,7 @@ import com.bno.board_back.repository.CommentListViewRepository;
 import com.bno.board_back.repository.CommentRepository;
 import com.bno.board_back.repository.UserRepository;
 import com.bno.board_back.service.CommentService;
+import com.bno.board_back.utils.TsidUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,16 +34,16 @@ public class CommentServiceImplement implements CommentService {
     private final BoardRepository boardRepository;
     private final CommentListViewRepository commentListViewRepository;
 
+    private final TsidUtil tsidUtil;
 
     public ResponseEntity<? super GetCommentListResponseDto> getCommentsByBoardNum(String boardNum) {
         List<CommentListViewEntity> commentList;
 
         try {
-            Long boardNumLong = Long.parseLong(boardNum);
-            boolean existedBoard = boardRepository.existsByBoardNum(boardNumLong);
+            boolean existedBoard = boardRepository.existsByBoardNum(boardNum);
             if (!existedBoard) return GetCommentListResponseDto.notFoundBoard();
 
-            commentList = commentListViewRepository.findCommentsByBoardNumAndStatusTrueOrderByCreateAtAsc(boardNumLong);
+            commentList = commentListViewRepository.findCommentsByBoardNumAndStatusTrueOrderByCreateAtAsc(boardNum);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.databaseError();
@@ -51,9 +52,9 @@ public class CommentServiceImplement implements CommentService {
     }
 
     @Override
-    public ResponseEntity<ResponseDto> deleteCommentById(Long commentNum) {
+    public ResponseEntity<ResponseDto> deleteCommentById(String commentNum) {
         try {
-            CommentEntity commentEntity = commentRepository.findById(commentNum)
+            CommentEntity commentEntity = commentRepository.findByCommentNum(commentNum)
                     .orElseThrow(() -> new RuntimeException("댓글을 찾을 수 없습니다."));
 
             commentEntity.setStatus(false);
@@ -75,7 +76,7 @@ public class CommentServiceImplement implements CommentService {
 
 
     @Override
-    public ResponseEntity<ResponseDto> updateComment(Long commentNum, @RequestBody @Valid Comment comment) {
+    public ResponseEntity<ResponseDto> updateComment(String commentNum, @RequestBody @Valid Comment comment) {
 
         boolean checkUser = false;
 
@@ -83,7 +84,7 @@ public class CommentServiceImplement implements CommentService {
             checkUser = userRepository.existsByEmail(comment.getWriterEmail());
             if (!checkUser) return ResponseDto.notFoundUser();
 
-            CommentEntity commentEntity = commentRepository.findById(commentNum)
+            CommentEntity commentEntity = commentRepository.findByCommentNum(commentNum)
                     .orElseThrow(() -> new RuntimeException("댓글이 존재하지 않습니다."));
             commentUpdateMapper.updateFormDto(comment, commentEntity);
             commentRepository.save(commentEntity);
@@ -96,7 +97,7 @@ public class CommentServiceImplement implements CommentService {
 
 
     @Override
-    public ResponseEntity<? super PostCommentResponseDto> postComment(Comment comment, Long boardNum) {
+    public ResponseEntity<? super PostCommentResponseDto> postComment(Comment comment, String boardNum) {
 
         boolean checkUser = false;
 
@@ -106,9 +107,8 @@ public class CommentServiceImplement implements CommentService {
             if (!checkUser) return PostCommentResponseDto.notFoundUser();
 
 
-            Long parentNum = comment.getParentNum();
-            if (parentNum != null) {
-                CommentEntity parentComment = commentRepository.findById(parentNum)
+            if (comment.getParentNum() != null) {
+                CommentEntity parentComment = commentRepository.findByCommentNum(comment.getParentNum())
                         .orElseThrow(() -> new RuntimeException("부모 댓글이 존재하지 않습니다."));
 
                 comment.setParentNum(parentComment.getParentNum() == null ?

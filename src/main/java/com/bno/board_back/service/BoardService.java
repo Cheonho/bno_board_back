@@ -14,10 +14,10 @@ public interface BoardService {
     ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(int category, String searchWord, Pageable pageable);
     ResponseEntity<? super PostWriteBoardResponseDto> postWriteBoard(WriteBoards board);
     ResponseEntity<? super PutUpdateBoardResponseDto> patchUpdateBoard(UpdateBoards board);
-    ResponseEntity<? super PatchIncreaseViewCountDto> increaseCount(Long boardNum);
-    ResponseEntity<? super GetDetailBoardResponseDto> getDetailBoard(Long boardNum);
+    ResponseEntity<? super PatchIncreaseViewCountDto> increaseCount(String boardNum);
+    ResponseEntity<? super GetDetailBoardResponseDto> getDetailBoard(String boardNum);
 
-    ResponseEntity<? super GetBoardResponseDto> getBoardById(Long boardNum);
+    ResponseEntity<? super GetBoardResponseDto> getBoardById(String boardNum);
 
-    ResponseEntity<ResponseDto> deleteBoardById(Long boardNum);
+    ResponseEntity<ResponseDto> deleteBoardById(String boardNum);
 }

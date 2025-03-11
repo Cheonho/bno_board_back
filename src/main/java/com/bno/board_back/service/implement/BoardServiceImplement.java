@@ -116,7 +116,7 @@ public class BoardServiceImplement implements BoardService {
             checkUser = userRepository.existsByEmail(board.getWriterEmail());
             if (!checkUser) return ResponseDto.notFoundUser();
 
-            Long boardNum = board.getBoardNum() != null ? Long.parseLong(board.getBoardNum()) : null;
+            String boardNum = board.getBoardNum() != null ? board.getBoardNum() : null;
             updateBoard = boardRepository.findByBoardNumAndWriterEmail(boardNum, board.getWriterEmail());
             if (updateBoard == null) return ResponseDto.notFoundBoard();
 
@@ -133,7 +133,7 @@ public class BoardServiceImplement implements BoardService {
 
     @Override
     @Transactional
-    public ResponseEntity<? super PatchIncreaseViewCountDto> increaseCount(Long boardNum) {
+    public ResponseEntity<? super PatchIncreaseViewCountDto> increaseCount(String boardNum) {
 
         BoardEntity board;
 
@@ -152,7 +152,7 @@ public class BoardServiceImplement implements BoardService {
     }
 
     @Override
-    public ResponseEntity<? super GetDetailBoardResponseDto> getDetailBoard(Long boardNum) {
+    public ResponseEntity<? super GetDetailBoardResponseDto> getDetailBoard(String boardNum) {
 
         BoardListViewEntity boardListViewEntity;
 
@@ -169,7 +169,7 @@ public class BoardServiceImplement implements BoardService {
     }
 
     @Override
-    public ResponseEntity<? super GetBoardResponseDto> getBoardById(Long boardNum) {
+    public ResponseEntity<? super GetBoardResponseDto> getBoardById(String boardNum) {
         BoardListViewEntity boardListViewEntity;
         try {
             boardListViewEntity = boardListViewRepository.findByBoardNum(boardNum);
@@ -185,7 +185,7 @@ public class BoardServiceImplement implements BoardService {
     }
 
     @Override
-    public ResponseEntity<ResponseDto> deleteBoardById(Long boardNum) {
+    public ResponseEntity<ResponseDto> deleteBoardById(String boardNum) {
         try {
             BoardEntity boardEntity = boardRepository.findById(boardNum)
                     .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));

@@ -8,9 +8,9 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface CommentListViewRepository extends JpaRepository<CommentListViewEntity, Long> {
+public interface CommentListViewRepository extends JpaRepository<CommentListViewEntity, String> {
 
-    List<CommentListViewEntity> findCommentsByBoardNumAndStatusTrueOrderByCreateAtAsc(@Param("boardNum") Long boardNum);
+    List<CommentListViewEntity> findCommentsByBoardNumAndStatusTrueOrderByCreateAtAsc(@Param("boardNum") String boardNum);
 
 
 }

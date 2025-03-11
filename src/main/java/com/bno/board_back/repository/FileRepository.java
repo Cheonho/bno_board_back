@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface FileRepository extends JpaRepository<FileEntity,Long> {
+public interface FileRepository extends JpaRepository<FileEntity, String> {
     List<FileEntity> findAllByBoardNumAndStatusTrue(String boardNum);
-    FileEntity findByBoardNumAndById(String boardNum, String id);
+    FileEntity findByBoardNumAndId(String boardNum, String id);
 }

@@ -169,7 +169,7 @@ public class FileServiceImplement implements FileService {
         for (String fileId: filesId) {
             FileEntity fileEntity = null;
             if (fileId != null) {
-                fileEntity = fileRepository.findByBoardNumAndById(boardNum, fileId);
+                fileEntity = fileRepository.findByBoardNumAndId(boardNum, fileId);
             }
 
             if (fileEntity != null) {

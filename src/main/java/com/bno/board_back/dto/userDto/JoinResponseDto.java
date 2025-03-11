@@ -12,7 +12,6 @@ import lombok.Getter;
 public class JoinResponseDto {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id ;
     @NotNull
     private String email ;

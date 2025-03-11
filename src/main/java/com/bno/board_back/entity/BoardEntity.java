@@ -2,7 +2,6 @@ package com.bno.board_back.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.envers.Audited;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +10,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-//@Audited
 @Entity(name="board")
 @Table(name="boards")
 public class BoardEntity extends AbstractBoardNumEntity {

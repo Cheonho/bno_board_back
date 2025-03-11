@@ -165,8 +165,18 @@ public class FileServiceImplement implements FileService {
 
     @Override
     @Transactional
-    public String deleteFile(String boardNum, List<MultipartFile> files) {
+    public String deleteFile(String boardNum, List<String> filesId) {
+        for (String fileId: filesId) {
+            FileEntity fileEntity = null;
+            if (fileId != null) {
+                fileEntity = fileRepository.findByBoardNumAndById(boardNum, fileId);
+            }
 
-        return "";
+            if (fileEntity != null) {
+                fileEntity.setStatus(false);
+                fileRepository.save(fileEntity);
+            }
+        }
+        return SUCCESS;
     }
 }

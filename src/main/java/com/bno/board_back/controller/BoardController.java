@@ -109,9 +109,10 @@ public class BoardController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<? super PutUpdateBoardResponseDto> patchUpdateBoard(
             @RequestPart(value = "board", required = true) UpdateBoards board,
-            @RequestPart(value = "files", required = false) List<MultipartFile> files
+            @RequestPart(value = "files", required = false) List<MultipartFile> files,
+            @RequestParam(value = "deleteIdList", required = false) List<String> deleteIdList
     ) {
-        ResponseEntity<? super PutUpdateBoardResponseDto> response = boardService.patchUpdateBoard(board, files);
+        ResponseEntity<? super PutUpdateBoardResponseDto> response = boardService.patchUpdateBoard(board, files, deleteIdList);
         return response;
     }
 

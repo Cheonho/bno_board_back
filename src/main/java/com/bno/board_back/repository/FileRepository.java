@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface FileRepository extends JpaRepository<FileEntity,Long> {
     List<FileEntity> findAllByBoardNumAndStatusTrue(String boardNum);
+    FileEntity findByBoardNumAndById(String boardNum, String id);
 }

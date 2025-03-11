@@ -19,8 +19,6 @@ public interface ResponseMessage {
     String PASSWORD_TOO_WEAK = "비밀번호가 너무 약함"; // 비밀번호가 너무 약함
     String DUPLICATE_USER = "중복 확인을 해 주세요." ;
 
-    String VALIDATION_FAILED = "Validation failed";
-
     // Http status 404
     String USER_NOT_FOUND = "사용자를 찾을 수 없습니다."; // 사용자 찾을 수 없음
     String EMAIL_NOT_FOUND = "이메일을 찾을 수 없습니다."; // 이메일 찾을 수 없음
@@ -32,7 +30,6 @@ public interface ResponseMessage {
     // Http status 401
     String SIGN_IN_FAILED = "로그인 실패"; // 로그인 실패
     String AUTHORIZATION_FAILED = "권한 인증 실패"; // 권한 인증 실패
-    String SIGN_IN_FAIL = "Login fail";
 
     // Http status 403
     String NO_PERMISSION = "권한이 없습니다."; // 권한 없음

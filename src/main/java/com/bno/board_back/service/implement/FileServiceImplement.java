@@ -162,4 +162,11 @@ public class FileServiceImplement implements FileService {
         }
         return fileList;
     }
+
+    @Override
+    @Transactional
+    public String deleteFile(String boardNum, List<MultipartFile> files) {
+
+        return "";
+    }
 }

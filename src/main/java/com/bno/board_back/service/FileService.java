@@ -12,4 +12,5 @@ public interface FileService {
 
     String fileUpload(MultipartFile file, String boardNum);
     List<FileEntity> fileList(String boardNum);
+    String deleteFile(String boardNum, List<MultipartFile> files);
 }

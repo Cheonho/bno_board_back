@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = false, of = "id")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class FileDto extends AbstractIdDto<String> {

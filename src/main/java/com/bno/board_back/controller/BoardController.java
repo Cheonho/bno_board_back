@@ -1,5 +1,6 @@
 package com.bno.board_back.controller;
 
+import com.bno.board_back.dto.object.FileDto;
 import com.bno.board_back.dto.object.UpdateBoards;
 import com.bno.board_back.dto.object.WriteBoards;
 import com.bno.board_back.dto.response.board.*;
@@ -23,6 +24,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/board/")
@@ -101,11 +104,14 @@ public class BoardController {
     }
 
     @Operation(summary = "게시글 수정", description = "등록된 게시글 수정")
-    @PutMapping("update")
+    @PutMapping(value = "update",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<? super PutUpdateBoardResponseDto> patchUpdateBoard(
-            @Valid @RequestBody UpdateBoards board
+            @RequestPart(value = "board", required = true) UpdateBoards board,
+            @RequestPart(value = "files", required = false) List<MultipartFile> files
     ) {
-        ResponseEntity<? super PutUpdateBoardResponseDto> response = boardService.patchUpdateBoard(board);
+        ResponseEntity<? super PutUpdateBoardResponseDto> response = boardService.patchUpdateBoard(board, files);
         return response;
     }
 

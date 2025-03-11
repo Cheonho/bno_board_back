@@ -31,8 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static com.bno.board_back.common.ResponseMessage.INVALID_INPUT;
-import static com.bno.board_back.common.ResponseMessage.SUCCESS;
+import static com.bno.board_back.common.ResponseMessage.*;
 
 @Service
 @RequiredArgsConstructor
@@ -124,18 +123,23 @@ public class BoardServiceImplement implements BoardService {
     }
 
     @Override
-    public ResponseEntity<? super PutUpdateBoardResponseDto> patchUpdateBoard(UpdateBoards board) {
+    @Transactional
+    public ResponseEntity<? super PutUpdateBoardResponseDto> patchUpdateBoard(UpdateBoards board, List<MultipartFile> files) {
 
         boolean checkUser = false;
         BoardEntity updateBoard;
 
         try{
             checkUser = userRepository.existsByEmail(board.getWriterEmail());
-            if (!checkUser) return ResponseDto.notFoundUser();
+            if (!checkUser) throw new CustomException(USER_NOT_FOUND, USER_NOT_FOUND, "NotFound", HttpStatus.NOT_FOUND);
 
-            String boardNum = board.getBoardNum() != null ? board.getBoardNum() : null;
+            String boardNum = board.getBoardNum();
+            if (boardNum == null) throw new CustomException(INVALID_INPUT, INVALID_INPUT, "BadRequest", HttpStatus.BAD_REQUEST);
+
             updateBoard = boardRepository.findByBoardNumAndWriterEmail(boardNum, board.getWriterEmail());
-            if (updateBoard == null) return ResponseDto.notFoundBoard();
+            if (updateBoard == null) throw new CustomException(NOT_EXISTED_BOARD, NOT_EXISTED_BOARD, "NotFound", HttpStatus.NOT_FOUND);
+
+
 
             boardUpdateMapper.updateFormDto(board, updateBoard);
             boardRepository.save(updateBoard);

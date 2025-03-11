@@ -86,6 +86,11 @@ public class CommentServiceImplement implements CommentService {
 
             CommentEntity commentEntity = commentRepository.findByCommentNum(commentNum)
                     .orElseThrow(() -> new RuntimeException("댓글이 존재하지 않습니다."));
+
+            if (!commentEntity.getWriterEmail().equals(comment.getWriterEmail())) {
+                return ResponseDto.authError();
+            }
+
             commentUpdateMapper.updateFormDto(comment, commentEntity);
             commentRepository.save(commentEntity);
             return ResponseDto.resSuccess();

@@ -67,8 +67,8 @@ public class UserController {
     }
 
    @PostMapping("/passwordcorrection")
-    public ResponseEntity<? super GetUserInformationChangeDto> Passwordcorrection (@RequestBody @Valid UserInformationChangeDto userInformationChangeDto) {
-    ResponseEntity<? super GetUserInformationChangeDto> response = userService.changePassword(userInformationChangeDto) ;
+    public ResponseEntity<? super GetUserInformationChangeDto> Passwordcorrection (@RequestBody @Valid UserInformationChangeDto userInformationChangeDto, BindingResult bindingResult) {
+    ResponseEntity<? super GetUserInformationChangeDto> response = userService.changePassword(userInformationChangeDto, bindingResult) ;
     return response ;
     }
 

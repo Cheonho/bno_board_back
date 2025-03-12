@@ -100,8 +100,8 @@ public class ResponseDto {
     }
 
     // 잘못된 입력
-    public static ResponseEntity<ResponseDto> invalidInput() {
-        ResponseDto responseDto = new ResponseDto(ResponseCode.INVALID_INPUT, ResponseMessage.INVALID_INPUT);
+    public static ResponseEntity<ResponseDto> invalidpassword() {
+        ResponseDto responseDto = new ResponseDto(ResponseCode.INVALID_PASSWORD, ResponseMessage.INVALID_PASSWORD);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
     }
 

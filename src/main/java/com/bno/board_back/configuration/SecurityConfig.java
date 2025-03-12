@@ -20,7 +20,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // CSRF 비활성화
+                .csrf(AbstractHttpConfigurer::disable) // CSRF 비활성화
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless 세션 설정
 //                .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
@@ -30,7 +30,7 @@ public class SecurityConfig {
                                 "/passwordcorrection/**",
                                 "/mypage/**",
                                 "/search-list/**", "detailBoard",
-                                "*/view", "/swagger-ui/**", "/v3/api-docs/**",
+                                "*/view", "/swagger-ui/**", "/swagger-ui/*", "/v3/api-docs/**", "/v3/api-docs/*",
                                 "/board/board-list"
 //                                "/**", "/*"
                         ).permitAll() // 특정 URL에 대한 접근 허용
@@ -38,7 +38,6 @@ public class SecurityConfig {
                 )
 
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
 
         return http.build();
     }

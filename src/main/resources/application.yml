@@ -58,3 +58,6 @@ minio:
   access:
     key: OesszS3PCH6guojY0UiZ
     secret: bMhvsr2CrxIIHjFBSa8WgRQbwM0FuqbW6wci6YME
+
+# minio 실행
+# minio.exe server ./minio_data

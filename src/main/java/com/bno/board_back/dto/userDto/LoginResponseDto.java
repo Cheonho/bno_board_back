@@ -15,6 +15,7 @@ public class LoginResponseDto {
     private String email;
     private String userNickname;
     private String role;
+    private boolean otpEnabled;
 
     public static LoginResponseDto toLoginDto(UserDto userEntity) { // Entity → DTO 변환
         LoginResponseDto loginDto = new LoginResponseDto();

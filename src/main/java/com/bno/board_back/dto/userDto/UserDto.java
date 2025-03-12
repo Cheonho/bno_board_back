@@ -22,6 +22,7 @@ public class UserDto {
     private String password ;
     private String address ;
     private String role ;
+    private boolean otpEnabled ;
 
     public UserDto userNicknameDto(String id, String userNickname) {
         return UserDto.builder()

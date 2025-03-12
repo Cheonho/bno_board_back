@@ -15,4 +15,5 @@ public class UserInformationChangeDto {
     private String password ;
     private String nowpassword ;
     private String address ;
+    private boolean otpEnabled ;
 }

@@ -6,6 +6,7 @@ import com.bno.board_back.dto.userDto.*;
 import com.bno.board_back.entity.UserEntity;
 import com.bno.board_back.provider.jwt.JwtTokenProvider;
 import com.bno.board_back.repository.UserRepository;
+import com.bno.board_back.service.OtpService;
 import com.bno.board_back.service.UserService;
 import com.bno.board_back.utils.TsidUtilUseSystem;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class UserServiceImplement implements UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private UserService userService;
+    private OtpService otpService;
 
     @Override
     public ResponseEntity<? super GetUserLoginResponseDto> loginPage(LoginRequestDto loginRequestDto) {
@@ -87,9 +89,11 @@ public class UserServiceImplement implements UserService {
                 .password(bCryptPasswordEncoder.encode(joinRequestDto.getPassword())) // 비밀번호 암호화
                 .address(joinRequestDto.getAddress())
                 .role(Collections.singletonList("USER").toString())
+                .otpSecretKey(null)
                 .build();
 
         System.out.println("UserEntity ID: " + userEntity.getId());
+
         // 4. 저장
         userRepository.save(userEntity);
 

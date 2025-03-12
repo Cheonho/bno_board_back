@@ -8,7 +8,6 @@ import com.bno.board_back.provider.jwt.JwtTokenProvider;
 import com.bno.board_back.repository.UserRepository;
 import com.bno.board_back.service.UserService;
 import com.bno.board_back.utils.TsidUtilUseSystem;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +49,8 @@ public class UserServiceImplement implements UserService {
         }
 
         // 3. JWT 토큰 생성
-        String token = jwtTokenProvider.createToken(userEntity.getId(), userEntity.getRole(), userEntity.getUsername(), userEntity.getUserNickname());
+        String token = jwtTokenProvider.createToken(userEntity.getId(), userEntity.getUsername());
+        System.out.println(token);
         // 4. 로그인 성공 응답 반환
         return GetUserLoginResponseDto.success(userEntity, token);
     }
@@ -79,7 +79,6 @@ public class UserServiceImplement implements UserService {
             // 오류 메시지와 함께 BAD_REQUEST 상태 반환
             return ResponseEntity.badRequest().body(errorMessages.toString());
         }
-
         // 3. 새로운 UserEntity 생성
         UserEntity userEntity = UserEntity.builder()
                 .id(TsidUtilUseSystem.getTsid())
@@ -90,6 +89,7 @@ public class UserServiceImplement implements UserService {
                 .role(Collections.singletonList("USER").toString())
                 .build();
 
+        System.out.println("UserEntity ID: " + userEntity.getId());
         // 4. 저장
         userRepository.save(userEntity);
 
@@ -120,6 +120,8 @@ public class UserServiceImplement implements UserService {
 
     @Override
     public ResponseEntity<? super GetUserInformationChangeDto> changeNickname(UserInformationChangeDto userInformationChangeDto) {
+        System.out.println(userInformationChangeDto);
+
 
         // 중복된 닉네임인지 확인
         Optional<UserEntity> nickname = userRepository.findByUserNickname(userInformationChangeDto.getUserNickname());
@@ -128,15 +130,17 @@ public class UserServiceImplement implements UserService {
                     .body(ResponseDto.duplicateNickname());
         }
 
-        // 아이디로 유저 찾기
         Optional<UserEntity> originId = userRepository.findById(userInformationChangeDto.getId());
 
-        // 유저 아이디에 맞는 정보 가져오기
-        UserEntity userEntity = originId.get();
-        userEntity.setUserNickname(userInformationChangeDto.getUserNickname());
-        userRepository.save(userEntity);
+        if (originId.isPresent()) {
+            UserEntity userEntity = originId.get();
+            userEntity.setUserNickname(userInformationChangeDto.getUserNickname());
+            userRepository.save(userEntity);
 
-        return GetUserInformationChangeDto.changesuccess();
+            return GetUserInformationChangeDto.changesuccess();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자를 찾을 수 없습니다.");
+        }
     }
 
     // 비밀번호 바꾸기
@@ -174,7 +178,6 @@ public class UserServiceImplement implements UserService {
 
     @Override
     public ResponseEntity<? super GetUserApiTokenDto> apitokendata(String authorizationHeader) {
-        // 1. Authorization 헤더에서 토큰 추출 (Bearer {token} 형태)
         String token = authorizationHeader.replace("Bearer ", "");
 
         // 2. 토큰 유효성 검사
@@ -182,14 +185,11 @@ public class UserServiceImplement implements UserService {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("유효하지 않은 토큰입니다.");
         }
 
-        // 3. 토큰에서 사용자 정보 추출 (id, role, nickname, email)
-        String userEmail = jwtTokenProvider.getUserPk(token);
-        Claims claims = jwtTokenProvider.getClaims(token);
-        String role = claims.get("role", String.class);
-        String userNickname = claims.get("userNickname", String.class);
+        // 3. 토큰에서 사용자 정보 추출
+        String id = jwtTokenProvider.getUserPk(token);
 
         // 4. 사용자 정보 조회
-        Optional<UserEntity> user = userRepository.findByEmail(userEmail); // 이메일로 사용자 조회
+        Optional<UserEntity> user = userRepository.findById(id); // 아이디로 사용자 조회
         if (user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자를 찾을 수 없습니다.");
         }
@@ -197,6 +197,13 @@ public class UserServiceImplement implements UserService {
         // 5. 사용자 데이터 반환 (GetUserApiTokenDto 형식으로 반환)
         UserEntity userEntity = user.get();
 
-        return GetUserApiTokenDto.success();
+        ApitokendataDto apitokendataDto = ApitokendataDto.builder()
+                .id((userEntity.getId()))
+                .userNickname(userEntity.getUserNickname())
+                .email(userEntity.getEmail())
+                .role(userEntity.getRole())
+                .build() ;
+
+        return GetUserApiTokenDto.apiSuccess(apitokendataDto);
     }
 }

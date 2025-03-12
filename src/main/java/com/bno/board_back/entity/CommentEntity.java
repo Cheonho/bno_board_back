@@ -1,6 +1,7 @@
 package com.bno.board_back.entity;
 
 import com.bno.board_back.dto.object.Comment;
+import com.bno.board_back.utils.TsidUtilUseSystem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,6 +38,13 @@ public class CommentEntity {
         this.createAt = LocalDateTime.now();
         this.updateAt = LocalDateTime.now();
         this.status = true;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (this.commentNum == null) {
+            this.commentNum = String.valueOf(TsidUtilUseSystem.getTsid());
+        }
     }
 
 }

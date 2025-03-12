@@ -18,7 +18,7 @@ public class GetUserInformationChangeDto extends ResponseDto {
         this.userInformationChangeDto = UserInformationMapper.INSTANCE.toDTO(userEntity);
     }
 
-    public static ResponseEntity<GetUserInformationChangeDto> success(UserEntity userEntity) {
+    public static ResponseEntity<ResponseDto> success(UserEntity userEntity) {
         GetUserInformationChangeDto result = new GetUserInformationChangeDto(userEntity) ;
         return ResponseEntity.status(HttpStatus.OK).body(result) ;
     }

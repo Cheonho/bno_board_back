@@ -28,7 +28,7 @@ public class Comment {
 
     public Comment(CommentEntity commentEntity) {
         this.commentNum = commentEntity.getCommentNum();
-        this.boardNum = String.valueOf(commentEntity.getBoardNum());
+        this.boardNum = commentEntity.getBoardNum();
         this.parentNum = commentEntity.getParentNum();
         this.content = commentEntity.getContent();
         this.writerEmail = commentEntity.getWriterEmail();

@@ -20,8 +20,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
@@ -31,24 +29,27 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
-    private final OtpService otpService;
-    private final UserRepository userRepository;
+    private final OtpResultServlet otpResultServlet ;
+    private final OtpServlet otpServlet ;
     private final JwtTokenProvider jwtTokenProvider;
-
+    private final UserRepository userRepository;
+    private final OtpService otpService;
 
     @Autowired
-    public UserController(UserService userService, OtpService otpService, UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
+    public UserController(UserService userService, OtpResultServlet otpResultServlet, OtpServlet otpServlet, JwtTokenProvider jwtTokenProvider, UserRepository userRepository, OtpService otpService) {
         this.userService = userService;
-        this.otpService = otpService;
-        this.userRepository = userRepository;
+        this.otpResultServlet = otpResultServlet ;
+        this.otpServlet = otpServlet ;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userRepository = userRepository;
+        this.otpService = otpService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<? super GetUserLoginResponseDto> LoginPage(@RequestBody LoginRequestDto loginRequestDto, HttpSession session) {
         ResponseEntity<? super GetUserLoginResponseDto> response = userService.loginPage(loginRequestDto);
         session.setAttribute("loginDto", response);
-        return response;
+        return response ;
     }
 
 
@@ -61,33 +62,33 @@ public class UserController {
 
     @GetMapping("/idcheck")
     public ResponseEntity<? super GetUserCheckEmailDto> EmailCheckPage(@RequestParam String email) {
-        ResponseEntity<? super GetUserCheckEmailDto> response = userService.checkEmail(email);
-        return response;
+        ResponseEntity<? super GetUserCheckEmailDto> response = userService.checkEmail(email) ;
+        return response ;
     }
 
     @GetMapping("/namecheck")
     public ResponseEntity<? super GetUserCheckNicknameDto> NameCheckPage(@RequestParam String userNickname) {
-        ResponseEntity<? super GetUserCheckNicknameDto> response = userService.checkNickname(userNickname);
-        return response;
+        ResponseEntity<? super GetUserCheckNicknameDto> response = userService.checkNickname(userNickname) ;
+        return response ;
     }
 
 
     @PostMapping("/nicknamecorrection")
-    public ResponseEntity<? super GetUserInformationChangeDto> Nicknamecorrection(@RequestBody @Valid UserInformationChangeDto userInformationChangeDto) {
-        ResponseEntity<? super GetUserInformationChangeDto> response = userService.changeNickname(userInformationChangeDto);
-        return response;
+    public ResponseEntity<? super GetUserInformationChangeDto> Nicknamecorrection (@RequestBody @Valid UserInformationChangeDto userInformationChangeDto) {
+    ResponseEntity<? super GetUserInformationChangeDto> response = userService.changeNickname(userInformationChangeDto) ;
+    return response ;
     }
 
-    @PostMapping("/passwordcorrection")
-    public ResponseEntity<? super GetUserInformationChangeDto> Passwordcorrection(@RequestBody @Valid UserInformationChangeDto userInformationChangeDto) {
-        ResponseEntity<? super GetUserInformationChangeDto> response = userService.changePassword(userInformationChangeDto);
-        return response;
+   @PostMapping("/passwordcorrection")
+    public ResponseEntity<? super GetUserInformationChangeDto> Passwordcorrection (@RequestBody @Valid UserInformationChangeDto userInformationChangeDto, BindingResult bindingResult) {
+    ResponseEntity<? super GetUserInformationChangeDto> response = userService.changePassword(userInformationChangeDto, bindingResult) ;
+    return response ;
     }
 
     @PostMapping("/addresscorrection")
-    public ResponseEntity<? super GetUserInformationChangeDto> Addresscorrection(@RequestBody @Valid UserInformationChangeDto userInformationChangeDto) {
-        ResponseEntity<? super GetUserInformationChangeDto> response = userService.changeAddress(userInformationChangeDto);
-        return response;
+    public ResponseEntity<? super GetUserInformationChangeDto> Addresscorrection (@RequestBody @Valid UserInformationChangeDto userInformationChangeDto) {
+        ResponseEntity<? super GetUserInformationChangeDto> response = userService.changeAddress(userInformationChangeDto) ;
+        return response ;
     }
 
     @PostMapping("/mypage/apitokendata")
@@ -169,16 +170,5 @@ public class UserController {
                     .body("OTP 입력값이 올바르지 않습니다.");
         }
     }
-
-
-
-
-
-
-
-
-
-
-
 
 }

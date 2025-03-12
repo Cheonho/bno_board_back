@@ -173,6 +173,7 @@ public class FileServiceImplement implements FileService {
     @Override
     @Transactional
     public String deleteFile(String boardNum, List<String> filesId) {
+        if (filesId == null || filesId.size() <= 0) {return NON_FILE_EXISTED;}
         for (String fileId: filesId) {
             FileEntity fileEntity = null;
             if (fileId != null) {

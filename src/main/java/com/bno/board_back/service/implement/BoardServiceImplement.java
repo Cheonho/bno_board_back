@@ -142,8 +142,10 @@ public class BoardServiceImplement implements BoardService {
             boardUpdateMapper.updateFormDto(board, updateBoard);
             boardRepository.save(updateBoard);
 
-            String isDelete = fileService.deleteFile(boardNum, deleteIdList);
-            if (!isDelete.equals(SUCCESS)) {throw new CustomException(DATABASE_ERROR, DATABASE_ERROR, "DataBaseError", HttpStatus.INTERNAL_SERVER_ERROR);}
+            if (files != null && !files.isEmpty()) {
+                String isDelete = fileService.deleteFile(boardNum, deleteIdList);
+                if (!isDelete.equals(SUCCESS)) {throw new CustomException(DATABASE_ERROR, DATABASE_ERROR, "DataBaseError", HttpStatus.INTERNAL_SERVER_ERROR);}
+            }
 
 //            String isUpload = fileService.fileUpload(file)
         } catch (Exception e){

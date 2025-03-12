@@ -12,7 +12,7 @@ public interface ResponseCode {
     String PASSWORD_SUCCESS = "PS" ; // 비밀번호 일치
 
     // Http status 400
-    String INVALID_INPUT = "II";  // 잘못된 입력
+    String INVALID_PASSWORD = "IP";  // 잘못된 입력
     String DUPLICATE_NICKNAME = "DN"; // 닉네임 중복
     String DUPLICATE_EMAIL = "DE"; // 이메일 중복
     String PASSWORD_TOO_WEAK = "PW"; // 비밀번호가 너무 약함

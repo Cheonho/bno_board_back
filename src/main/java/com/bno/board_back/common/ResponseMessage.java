@@ -10,14 +10,15 @@ public interface ResponseMessage {
     String LOGIN_SUCCESS = "로그인 성공" ; // 로그인 성공
     String CHANGE_SUCCESS = "변경되었습니다." ; // 변경 성공
     String PASSWORD_SUCCESS = "비밀번호가 일치합니다" ; // 비밀번호 일치
-    String DUPLICATE_ADDRESS = "주소지가 일치합니다." ;// 똑같은 주소지
+
 
     // status 400
-    String INVALID_INPUT = "잘못된 입력";  // 잘못된 입력
-    String DUPLICATE_NICKNAME = "닉네임이 존재합니다."; // 닉네임 중복
+    String INVALID_PASSWORD = "새로운 비밀번호를 확인해 주세요.";  // 잘못된 입력
+    String DUPLICATE_NICKNAME = "닉네임을 다시 확인해 주세요."; // 닉네임 중복
     String DUPLICATE_EMAIL = "이메일이 존재합니다."; // 잘못된 이메일 형식
     String PASSWORD_TOO_WEAK = "비밀번호가 너무 약함"; // 비밀번호가 너무 약함
     String DUPLICATE_USER = "중복 확인을 해 주세요." ;
+    String DUPLICATE_ADDRESS = "주소를 다시 확인해 주세요." ;// 주소 변경 오류
 
     String VALIDATION_FAILED = "Validation failed";
 
@@ -30,7 +31,7 @@ public interface ResponseMessage {
     String NOT_EXISTED_BOARD = "Board does not exist.";
 
     // Http status 401
-    String SIGN_IN_FAILED = "로그인 실패"; // 로그인 실패
+    String SIGN_IN_FAILED = "아이디 또는 비밀번호를 확인해 주세요."; // 로그인 실패
     String AUTHORIZATION_FAILED = "권한 인증 실패"; // 권한 인증 실패
     String SIGN_IN_FAIL = "Login fail";
 

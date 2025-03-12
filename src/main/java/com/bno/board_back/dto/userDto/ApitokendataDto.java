@@ -14,6 +14,7 @@ public class ApitokendataDto {
     private String id ;
     private String email ;
     private String userNickname ;
+    private String address ;
     private String role ;
 }
 

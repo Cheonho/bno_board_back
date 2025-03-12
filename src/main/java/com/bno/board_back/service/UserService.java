@@ -13,7 +13,7 @@ public interface UserService {
      ResponseEntity<? super GetUserCheckEmailDto> checkEmail(String email) ;
      ResponseEntity<? super GetUserCheckNicknameDto> checkNickname(String userNickname) ;
      ResponseEntity<? super GetUserInformationChangeDto> changeNickname(UserInformationChangeDto userInformationChangeDto) ;
-     ResponseEntity<? super GetUserInformationChangeDto> changePassword(UserInformationChangeDto userInformationChangeDto) ;
+     ResponseEntity<? super GetUserInformationChangeDto> changePassword(UserInformationChangeDto userInformationChangeDto, BindingResult bindingResult) ;
      ResponseEntity<? super GetUserInformationChangeDto> changeAddress(UserInformationChangeDto userInformationChangeDto) ;
      ResponseEntity<? super GetUserApiTokenDto> apitokendata(String authorizationHeader) ;
 }

@@ -118,14 +118,14 @@ public class UserServiceImplement implements UserService {
         return GetUserCheckEmailDto.usednickname();
     }
 
+    // 닉네임 바꾸기
     @Override
     public ResponseEntity<? super GetUserInformationChangeDto> changeNickname(UserInformationChangeDto userInformationChangeDto) {
-        System.out.println(userInformationChangeDto);
-
 
         // 중복된 닉네임인지 확인
-        Optional<UserEntity> nickname = userRepository.findByUserNickname(userInformationChangeDto.getUserNickname());
-        if (!userInformationChangeDto.getUserNickname().isEmpty() && nickname.isPresent()) {
+        boolean existsUserNickname = userRepository.existsByUserNickname(userInformationChangeDto.getUserNickname());
+
+        if (userInformationChangeDto.getUserNickname().isEmpty() || existsUserNickname) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ResponseDto.duplicateNickname());
         }
@@ -145,7 +145,7 @@ public class UserServiceImplement implements UserService {
 
     // 비밀번호 바꾸기
     @Override
-    public ResponseEntity<? super GetUserInformationChangeDto> changePassword(UserInformationChangeDto userInformationChangeDto) {
+    public ResponseEntity<? super GetUserInformationChangeDto> changePassword(UserInformationChangeDto userInformationChangeDto, BindingResult bindingResult) {
 
         Optional<UserEntity> originId = userRepository.findById(userInformationChangeDto.getId());
         UserEntity userEntity = originId.get();
@@ -154,6 +154,23 @@ public class UserServiceImplement implements UserService {
         if (!nowPwCheck) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ResponseDto.notFoundPassword());
+        }
+
+        if(!userInformationChangeDto.getPassword().equals(userInformationChangeDto.getCheckpassword())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ResponseDto.invalidpassword()) ;
+        }
+
+        // 2. 유효성 검사 결과가 있을 때
+        if (bindingResult.hasErrors()) {
+            // 오류 메시지를 수집
+            StringBuilder errorMessages = new StringBuilder();
+            for (ObjectError error : bindingResult.getAllErrors()) {
+                errorMessages.append(error.getDefaultMessage()).append(" ");
+            }
+            // 오류 메시지와 함께 BAD_REQUEST 상태 반환
+
+            return ResponseEntity.badRequest().body(errorMessages.toString());
         }
         userEntity.setPassword((bCryptPasswordEncoder.encode(userInformationChangeDto.getPassword())));
         userRepository.save(userEntity);
@@ -166,8 +183,7 @@ public class UserServiceImplement implements UserService {
 
         Optional<UserEntity> originId = userRepository.findById(userInformationChangeDto.getId());
         UserEntity userEntity = originId.get();
-
-        if (userEntity.getAddress().equals(userInformationChangeDto.getAddress())) {
+        if (userEntity.getAddress().equals(userInformationChangeDto.getAddress()) || userInformationChangeDto.getAddress().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ResponseDto.duplicateaddress());
         }
@@ -202,6 +218,7 @@ public class UserServiceImplement implements UserService {
                 .userNickname(userEntity.getUserNickname())
                 .email(userEntity.getEmail())
                 .role(userEntity.getRole())
+                .address(userEntity.getAddress())
                 .build() ;
 
         return GetUserApiTokenDto.apiSuccess(apitokendataDto);

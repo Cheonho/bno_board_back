@@ -1,17 +1,21 @@
 package com.bno.board_back.service.implement;
 
+import com.bno.board_back.common.ResponseMessage;
 import com.bno.board_back.dto.object.UpdateBoards;
 import com.bno.board_back.dto.object.WriteBoards;
 import com.bno.board_back.dto.response.ResponseDto;
 import com.bno.board_back.dto.response.board.*;
 import com.bno.board_back.entity.BoardEntity;
 import com.bno.board_back.entity.BoardListViewEntity;
+import com.bno.board_back.entity.FileEntity;
+import com.bno.board_back.exception.CustomException;
 import com.bno.board_back.mapper.BoardUpdateMapper;
 import com.bno.board_back.repository.BoardListViewRepository;
 import com.bno.board_back.repository.BoardRepository;
 import com.bno.board_back.repository.UserRepository;
 import com.bno.board_back.service.BoardService;
 import com.bno.board_back.mapper.BoardWriteMapper;
+import com.bno.board_back.service.FileService;
 import com.bno.board_back.utils.TsidUtil;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
@@ -23,6 +27,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.slf4j.Logger;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+
+import static com.bno.board_back.common.ResponseMessage.*;
 
 @Service
 @RequiredArgsConstructor
@@ -34,18 +43,19 @@ public class BoardServiceImplement implements BoardService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
 
+    private final FileService fileService;
+
     private final TsidUtil tsidUtil;
     private final BoardUpdateMapper boardUpdateMapper;
 
-    public boolean saveBoard(WriteBoards writeBoards) {
-        if (writeBoards.getTitle() == null || writeBoards.getTitle().isEmpty()) { return false; }
-        if (writeBoards.getContent() == null || writeBoards.getContent().isEmpty()) { return false; }
-        if (writeBoards.getWriterEmail() == null || writeBoards.getWriterEmail().isEmpty()) { return false; }
+    public BoardEntity saveBoard(WriteBoards writeBoards) {
+        if (writeBoards.getTitle() == null || writeBoards.getTitle().isEmpty()) { return null; }
+        if (writeBoards.getContent() == null || writeBoards.getContent().isEmpty()) { return null; }
+        if (writeBoards.getWriterEmail() == null || writeBoards.getWriterEmail().isEmpty()) { return null; }
 
         BoardEntity boardEntity = BoardWriteMapper.INSTANCE.toEntity(writeBoards);
 
-        boardRepository.save(boardEntity);
-        return true;
+        return boardRepository.save(boardEntity);
     }
 
     @Override
@@ -81,47 +91,70 @@ public class BoardServiceImplement implements BoardService {
 
     }
 
+    @Transactional
     @Override
-    public ResponseEntity<? super PostWriteBoardResponseDto> postWriteBoard(WriteBoards board) {
+    public ResponseEntity<? super PostWriteBoardResponseDto> postWriteBoard(WriteBoards board, List<MultipartFile> files) {
 
-        boolean checkUser = false;
-        boolean checkBoard = false;
+        boolean checkUser;
+        String fileMessage = "";
+        BoardEntity newBoard;
         System.out.println("----------------------- tsidUtil.getTsid() : " + tsidUtil.getTsid() + "-----------------------");
 
         try {
             checkUser = userRepository.existsByEmail(board.getWriterEmail());
             if (!checkUser) return ResponseDto.notFoundUser();
 
-            checkBoard = saveBoard(board);
+            newBoard = saveBoard(board);
+
+            if (files != null && newBoard != null) {
+                fileMessage = fileService.fileUpload(files, newBoard.getBoardNum());  // 파일 업로드 서비스 호출
+
+                if (!fileMessage.equals(SUCCESS)) {
+                    throw new CustomException(fileMessage, fileMessage, "BadRequest", HttpStatus.BAD_REQUEST);
+                }
+            }
         } catch (Exception e) {
             logger.error("error", e);
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
+            throw new CustomException(INVALID_INPUT, INVALID_INPUT, "BadRequest", HttpStatus.BAD_REQUEST);
         }
 
-        if (checkBoard) {
-            return PostWriteBoardResponseDto.success();
-        } else {
-            return ResponseDto.authError();
-        }
+        return PostWriteBoardResponseDto.success();
     }
 
     @Override
-    public ResponseEntity<? super PutUpdateBoardResponseDto> patchUpdateBoard(UpdateBoards board) {
+    @Transactional
+    public ResponseEntity<? super PutUpdateBoardResponseDto> putUpdateBoard(UpdateBoards board, List<MultipartFile> files, List<String> deleteIdList) {
 
         boolean checkUser = false;
+        String fileMessage = "";
         BoardEntity updateBoard;
 
         try{
             checkUser = userRepository.existsByEmail(board.getWriterEmail());
-            if (!checkUser) return ResponseDto.notFoundUser();
+            if (!checkUser) throw new CustomException(USER_NOT_FOUND, USER_NOT_FOUND, "NotFound", HttpStatus.NOT_FOUND);
 
-            String boardNum = board.getBoardNum() != null ? board.getBoardNum() : null;
+            String boardNum = board.getBoardNum();
+            if (boardNum == null) throw new CustomException(INVALID_INPUT, INVALID_INPUT, "BadRequest", HttpStatus.BAD_REQUEST);
+
             updateBoard = boardRepository.findByBoardNumAndWriterEmail(boardNum, board.getWriterEmail());
-            if (updateBoard == null) return ResponseDto.notFoundBoard();
+            if (updateBoard == null) throw new CustomException(NOT_EXISTED_BOARD, NOT_EXISTED_BOARD, "NotFound", HttpStatus.NOT_FOUND);
 
             boardUpdateMapper.updateFormDto(board, updateBoard);
             boardRepository.save(updateBoard);
+
+            if (deleteIdList != null && !deleteIdList.isEmpty()) {
+                String isDelete = fileService.deleteFile(boardNum, deleteIdList);
+                if (!isDelete.equals(SUCCESS)) {throw new CustomException(DATABASE_ERROR, DATABASE_ERROR, "DataBaseError", HttpStatus.INTERNAL_SERVER_ERROR);}
+            }
+
+            if (files != null) {
+                fileMessage = fileService.fileUpload(files, board.getBoardNum());
+
+                if (!fileMessage.equals(SUCCESS)) {
+                    throw new CustomException(fileMessage, fileMessage, "BadRequest", HttpStatus.BAD_REQUEST);
+                }
+            }
         } catch (Exception e){
             logger.error("error", e);
             e.printStackTrace();
@@ -168,20 +201,21 @@ public class BoardServiceImplement implements BoardService {
         return GetDetailBoardResponseDto.success(boardListViewEntity);
     }
 
+    @Transactional
     @Override
     public ResponseEntity<? super GetBoardResponseDto> getBoardById(String boardNum) {
         BoardListViewEntity boardListViewEntity;
+        List<FileEntity> fileEntity;
         try {
             boardListViewEntity = boardListViewRepository.findByBoardNum(boardNum);
             if (boardListViewEntity==null) return ResponseDto.notFoundBoard();
-//                    .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
-//            boardEntity.increaseViewCount();
-//            boardListViewRepository.save(boardListViewEntity);
+
+            fileEntity = fileService.fileList(boardNum);
         }catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.databaseError();
         }
-        return GetBoardResponseDto.success(boardListViewEntity);
+        return GetBoardResponseDto.success(boardListViewEntity, fileEntity);
     }
 
     @Override

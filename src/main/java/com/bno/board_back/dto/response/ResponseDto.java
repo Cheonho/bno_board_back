@@ -29,7 +29,7 @@ public class ResponseDto {
     }
 
     public static ResponseEntity<ResponseDto> signFailed() {
-        ResponseDto responseDto = new ResponseDto(ResponseCode.SIGN_IN_FAIL, ResponseMessage.SIGN_IN_FAIL);
+        ResponseDto responseDto = new ResponseDto(ResponseCode.SIGN_IN_FAIL, ResponseMessage.SIGN_IN_FAILED);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseDto);
     }
 

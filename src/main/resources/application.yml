@@ -1,9 +1,10 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://192.168.35.43:5433/bnosoft
+#    url: jdbc:postgresql://192.168.35.43:5433/bnosoft
+    url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
-    password: postgres
+    password: ghtp8571
   mvc:
     hiddenmethod:
       filter:
@@ -13,7 +14,8 @@ spring:
   jpa:
     properties:
       hibernate:
-        default_schema: board2025
+#        default_schema: board2025
+        default_schema: boards
         format_sql: true
       org.hibernate.envers:
         audit_table_suffix: History # 이력 테이블 이름의 _AUD를 History로 변경
@@ -46,3 +48,18 @@ env:
 
 jwt:
   secret: fthl4TRfGF0sDwEUqhL/L5JZ/NEIfaTHdai7FD51FMN5
+
+file:
+  allowed:
+    file_extension: txt,xlsx,png,jpg
+
+minio:
+  url: http://localhost:9000
+  bucket:
+    name: bnoboard
+  access:
+    key: OesszS3PCH6guojY0UiZ
+    secret: bMhvsr2CrxIIHjFBSa8WgRQbwM0FuqbW6wci6YME
+
+# minio 실행
+# minio.exe server ./minio_data

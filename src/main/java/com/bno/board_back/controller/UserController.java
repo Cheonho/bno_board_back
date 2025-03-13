@@ -136,14 +136,13 @@ public class UserController {
         String token = authorizationHeader.replace("Bearer ", "");
         String userId = jwtTokenProvider.getUserPk(token);
 
-        // ✅ 유저 조회
+
         UserEntity user = userRepository.findById(userId).orElse(null);
         if (user == null || user.getOtpSecretKey() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("OTP 설정이 되어 있지 않거나, 사용자가 존재하지 않습니다.");
         }
 
-        // ✅ 프론트에서 보낸 `otpCode` 값 가져오기
         String otpCodeStr = requestBody.get("otpCode");
 
         if (otpCodeStr == null || otpCodeStr.isEmpty()) {
@@ -152,7 +151,7 @@ public class UserController {
         }
 
         try {
-            int otpCode = Integer.parseInt(otpCodeStr); // ✅ String → int 변환
+            int otpCode = Integer.parseInt(otpCodeStr);
             boolean isOtpValid = otpService.verifyOtp(user.getOtpSecretKey(), otpCode);
 
             if (!isOtpValid) {
@@ -160,7 +159,6 @@ public class UserController {
                         .body("OTP 인증 실패! 다시 입력해주세요.");
             }
 
-            // ✅ OTP 인증 성공하면 `otp_enabled`를 `true`로 변경
             user.setOtpEnabled(true);
             userRepository.save(user);
 

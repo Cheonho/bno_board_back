@@ -111,7 +111,7 @@ public class BoardController {
             @RequestPart(value = "file", required = false) List<MultipartFile> files
     ) {
         List<String> deleteIdList = new ArrayList<>();
-        if (deleteIdDto.getFileIds() != null) {deleteIdList = deleteIdDto.getFileIds();}
+        if (deleteIdDto != null) {deleteIdList = deleteIdDto.getFileIds();}
         ResponseEntity<? super PutUpdateBoardResponseDto> response = boardService.putUpdateBoard(board, files, deleteIdList);
         return response;
     }

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WriteBoards extends AbstractIdDto<String> {
+public class WriteBoards extends AbstractBoardNumDto<String> {
 
     @Schema(hidden = true)
     private String boardNum;

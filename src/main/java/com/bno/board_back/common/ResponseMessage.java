@@ -20,24 +20,26 @@ public interface ResponseMessage {
     String DUPLICATE_USER = "중복 확인을 해 주세요." ;
     String DUPLICATE_ADDRESS = "주소를 다시 확인해 주세요." ;// 주소 변경 오류
 
-    String VALIDATION_FAILED = "Validation failed";
-
     // Http status 404
     String USER_NOT_FOUND = "사용자를 찾을 수 없습니다."; // 사용자 찾을 수 없음
     String EMAIL_NOT_FOUND = "이메일을 찾을 수 없습니다."; // 이메일 찾을 수 없음
     String NICKNAME_NOT_FOUND = "닉네임을 찾을 수 없습니다."; // 닉네임 찾을 수 없음
     String PASSWORD_NOT_FOUND = "비밀번호를 찾을 수 없습니다."; // 비밀번호 찾을 수 없음
     String ADDRESS_NOT_FOUND = "주소를 찾을 수 없습니다."; // 주소 찾을 수 없음
-    String NOT_EXISTED_BOARD = "Board does not exist.";
+    String NOT_EXISTED_BOARD = "게시글을 찾을 수 없습니다.";
 
     // Http status 401
     String SIGN_IN_FAILED = "아이디 또는 비밀번호를 확인해 주세요."; // 로그인 실패
     String AUTHORIZATION_FAILED = "권한 인증 실패"; // 권한 인증 실패
-    String SIGN_IN_FAIL = "Login fail";
 
     // Http status 403
     String NO_PERMISSION = "권한이 없습니다."; // 권한 없음
 
     // Http status 500
     String DATABASE_ERROR = "데이터베이스 오류"; // 데이터베이스 오류
+
+    // file
+    String FILE_EXTENSION = "허용하지 않는 파일입니다." ;
+    String NON_FILE_EXISTED = "파일이 존재하지 않습니다.";
+    String NON_FILE_NAME = "파일명이 비어 있습니다.";
 }

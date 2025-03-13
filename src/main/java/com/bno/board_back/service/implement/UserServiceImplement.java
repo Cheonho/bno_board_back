@@ -223,8 +223,31 @@ public class UserServiceImplement implements UserService {
                 .email(userEntity.getEmail())
                 .role(userEntity.getRole())
                 .address(userEntity.getAddress())
+                .otpEnabled(userEntity.isOtpEnabled())
                 .build() ;
 
         return GetUserApiTokenDto.apiSuccess(apitokendataDto);
     }
+
+    @Override
+    public ResponseEntity<? super GetUserLoginResponseDto> otpLoginPage(OtpVerifyRequestDto otpVerifyRequestDto) {
+
+        // 1. 이메일로 사용자 조회
+        Optional<UserEntity> optionalUserEntity = userRepository.findByEmail(otpVerifyRequestDto.getEmail());
+        if (optionalUserEntity.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ResponseDto.loginFailed());
+        }
+        UserEntity userEntity = optionalUserEntity.get();
+
+
+        // 3. JWT 토큰 생성
+        String token = jwtTokenProvider.createToken(userEntity.getId(), userEntity.getUsername());
+        System.out.println(token);
+        // 4. 로그인 성공 응답 반환
+        return GetUserLoginResponseDto.success(userEntity, token);
+    }
+
+
+
 }

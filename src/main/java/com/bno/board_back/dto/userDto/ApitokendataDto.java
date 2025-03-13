@@ -16,5 +16,6 @@ public class ApitokendataDto {
     private String userNickname ;
     private String address ;
     private String role ;
+    private boolean otpEnabled  ;
 }
 

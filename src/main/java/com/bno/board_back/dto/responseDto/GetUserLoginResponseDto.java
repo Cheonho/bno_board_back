@@ -18,13 +18,11 @@ public class GetUserLoginResponseDto extends ResponseDto {
 
     private final LoginResponseDto loginResponseDto ;
     private final String token ;
-    private final boolean otpEnabled;
 
     private GetUserLoginResponseDto(UserEntity userEntity, String token, boolean otpEnabled) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS) ;
         this.loginResponseDto = UserLoginMapper.INSTANCE.toDTO(userEntity) ;
         this.token = token;
-        this.otpEnabled = otpEnabled;
     }
 
     public static ResponseEntity<GetUserLoginResponseDto> success(UserEntity userEntity, String token) {

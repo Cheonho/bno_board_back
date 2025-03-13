@@ -29,8 +29,8 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
-    private final OtpResultServlet otpResultServlet ;
-    private final OtpServlet otpServlet ;
+    private final OtpResultServlet otpResultServlet;
+    private final OtpServlet otpServlet;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
     private final OtpService otpService;
@@ -38,8 +38,8 @@ public class UserController {
     @Autowired
     public UserController(UserService userService, OtpResultServlet otpResultServlet, OtpServlet otpServlet, JwtTokenProvider jwtTokenProvider, UserRepository userRepository, OtpService otpService) {
         this.userService = userService;
-        this.otpResultServlet = otpResultServlet ;
-        this.otpServlet = otpServlet ;
+        this.otpResultServlet = otpResultServlet;
+        this.otpServlet = otpServlet;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userRepository = userRepository;
         this.otpService = otpService;
@@ -49,7 +49,7 @@ public class UserController {
     public ResponseEntity<? super GetUserLoginResponseDto> LoginPage(@RequestBody LoginRequestDto loginRequestDto, HttpSession session) {
         ResponseEntity<? super GetUserLoginResponseDto> response = userService.loginPage(loginRequestDto);
         session.setAttribute("loginDto", response);
-        return response ;
+        return response;
     }
 
 
@@ -62,33 +62,33 @@ public class UserController {
 
     @GetMapping("/idcheck")
     public ResponseEntity<? super GetUserCheckEmailDto> EmailCheckPage(@RequestParam String email) {
-        ResponseEntity<? super GetUserCheckEmailDto> response = userService.checkEmail(email) ;
-        return response ;
+        ResponseEntity<? super GetUserCheckEmailDto> response = userService.checkEmail(email);
+        return response;
     }
 
     @GetMapping("/namecheck")
     public ResponseEntity<? super GetUserCheckNicknameDto> NameCheckPage(@RequestParam String userNickname) {
-        ResponseEntity<? super GetUserCheckNicknameDto> response = userService.checkNickname(userNickname) ;
-        return response ;
+        ResponseEntity<? super GetUserCheckNicknameDto> response = userService.checkNickname(userNickname);
+        return response;
     }
 
 
     @PostMapping("/nicknamecorrection")
-    public ResponseEntity<? super GetUserInformationChangeDto> Nicknamecorrection (@RequestBody @Valid UserInformationChangeDto userInformationChangeDto) {
-    ResponseEntity<? super GetUserInformationChangeDto> response = userService.changeNickname(userInformationChangeDto) ;
-    return response ;
+    public ResponseEntity<? super GetUserInformationChangeDto> Nicknamecorrection(@RequestBody @Valid UserInformationChangeDto userInformationChangeDto) {
+        ResponseEntity<? super GetUserInformationChangeDto> response = userService.changeNickname(userInformationChangeDto);
+        return response;
     }
 
-   @PostMapping("/passwordcorrection")
-    public ResponseEntity<? super GetUserInformationChangeDto> Passwordcorrection (@RequestBody @Valid UserInformationChangeDto userInformationChangeDto, BindingResult bindingResult) {
-    ResponseEntity<? super GetUserInformationChangeDto> response = userService.changePassword(userInformationChangeDto, bindingResult) ;
-    return response ;
+    @PostMapping("/passwordcorrection")
+    public ResponseEntity<? super GetUserInformationChangeDto> Passwordcorrection(@RequestBody @Valid UserInformationChangeDto userInformationChangeDto, BindingResult bindingResult) {
+        ResponseEntity<? super GetUserInformationChangeDto> response = userService.changePassword(userInformationChangeDto, bindingResult);
+        return response;
     }
 
     @PostMapping("/addresscorrection")
-    public ResponseEntity<? super GetUserInformationChangeDto> Addresscorrection (@RequestBody @Valid UserInformationChangeDto userInformationChangeDto) {
-        ResponseEntity<? super GetUserInformationChangeDto> response = userService.changeAddress(userInformationChangeDto) ;
-        return response ;
+    public ResponseEntity<? super GetUserInformationChangeDto> Addresscorrection(@RequestBody @Valid UserInformationChangeDto userInformationChangeDto) {
+        ResponseEntity<? super GetUserInformationChangeDto> response = userService.changeAddress(userInformationChangeDto);
+        return response;
     }
 
     @PostMapping("/mypage/apitokendata")
@@ -158,7 +158,6 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body("OTP 인증 실패! 다시 입력해주세요.");
             }
-
             user.setOtpEnabled(true);
             userRepository.save(user);
 
@@ -169,4 +168,25 @@ public class UserController {
         }
     }
 
+    @PostMapping("/otp/verify")
+    public ResponseEntity<? super GetUserLoginResponseDto> verifyOtp(@RequestBody OtpVerifyRequestDto requestDto, HttpSession session) {
+
+        UserEntity user = userRepository.findByEmail(requestDto.getEmail()).orElse(null);
+        if (user == null || user.getOtpSecretKey() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("OTP 설정이 되어 있지 않거나, 사용자가 존재하지 않습니다.");
+        }
+
+        boolean isOtpValid = otpService.verifyOtp(user.getOtpSecretKey(), Integer.parseInt(requestDto.getOtpCode()));
+
+        if (!isOtpValid) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("OTP 인증 실패! 다시 입력해주세요.");
+        }
+
+        ResponseEntity<? super GetUserLoginResponseDto> response = userService.otpLoginPage(requestDto);
+        session.setAttribute("loginDto", response);
+        return response;
+    }
 }
+

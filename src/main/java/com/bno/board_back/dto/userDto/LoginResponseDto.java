@@ -1,5 +1,6 @@
 package com.bno.board_back.dto.userDto;
 
+import com.bno.board_back.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ public class LoginResponseDto {
     private String role;
     private boolean otpEnabled;
 
-    public static LoginResponseDto toLoginDto(UserDto userEntity) { // Entity → DTO 변환
+    public static LoginResponseDto toLoginDto(UserEntity userEntity) { // Entity → DTO 변환
         LoginResponseDto loginDto = new LoginResponseDto();
         loginDto.setId(userEntity.getId());
         loginDto.setEmail(userEntity.getEmail());

@@ -9,6 +9,8 @@ import java.util.List;
 public interface FileService {
 
     void uploadFileExtensionCheck(MultipartFile file);
+    void uploadFileSizeCheck(MultipartFile file);
+
     String dbSaveFile(MultipartFile file, String boardNum, String filePath, String fileUrl);
 
     String fileUpload(List<MultipartFile> files, String boardNum);

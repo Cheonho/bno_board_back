@@ -1,7 +1,5 @@
 package com.bno.board_back.service.implement;
 
-import com.bno.board_back.config.MinioConfig;
-import com.bno.board_back.dto.object.FileDto;
 import com.bno.board_back.entity.FileEntity;
 import com.bno.board_back.exception.CustomException;
 import com.bno.board_back.exception.FileException;
@@ -15,7 +13,6 @@ import io.minio.http.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +39,9 @@ public class FileServiceImplement implements FileService {
     @Value("#{'${file.allowed.file_extension}'.split(',')}")
     ArrayList<String> allowedFileExtensions;
 
+    @Value("${file.allowed.max_size}")
+    long allowedMaxSize;
+
     @Value("${minio.bucket.name}")
     private String bucketName;
 
@@ -56,6 +56,14 @@ public class FileServiceImplement implements FileService {
         String extension = FileUtil.getFileExtension(file).toLowerCase();
         if (!allowedFileExtensions.contains(extension)) {
             throw new FileException(FILE_EXTENSION, FILE_EXTENSION);
+        }
+    }
+
+    @Override
+    public void uploadFileSizeCheck(MultipartFile file) {
+        long size = (long) file.getSize();
+        if (size > allowedMaxSize) {
+            throw new FileException(FILE_SIZE_MAX,FILE_SIZE_MAX);
         }
     }
 
@@ -115,6 +123,7 @@ public class FileServiceImplement implements FileService {
             String fullPath = boardNum + "/" + path + "/" + originFileName;
 
             this.uploadFileExtensionCheck(file);
+            this.uploadFileSizeCheck(file);
 
             try {
                 // bucket 존재여부 확인

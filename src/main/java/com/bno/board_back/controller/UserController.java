@@ -5,41 +5,30 @@ import com.bno.board_back.dto.userDto.*;
 import com.bno.board_back.entity.UserEntity;
 import com.bno.board_back.provider.jwt.JwtTokenProvider;
 import com.bno.board_back.repository.UserRepository;
-import com.bno.board_back.service.OtpResultServlet;
 import com.bno.board_back.service.OtpService;
-import com.bno.board_back.service.OtpServlet;
 import com.bno.board_back.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Date;
 import java.util.Map;
 
 @RestController
 public class UserController {
 
     private final UserService userService;
-    private final OtpResultServlet otpResultServlet;
-    private final OtpServlet otpServlet;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
     private final OtpService otpService;
 
     @Autowired
-    public UserController(UserService userService, OtpResultServlet otpResultServlet, OtpServlet otpServlet, JwtTokenProvider jwtTokenProvider, UserRepository userRepository, OtpService otpService) {
+    public UserController(UserService userService, JwtTokenProvider jwtTokenProvider, UserRepository userRepository, OtpService otpService) {
         this.userService = userService;
-        this.otpResultServlet = otpResultServlet;
-        this.otpServlet = otpServlet;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userRepository = userRepository;
         this.otpService = otpService;

@@ -19,10 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static com.bno.board_back.common.ResponseMessage.*;
@@ -61,8 +58,15 @@ public class FileServiceImplement implements FileService {
 
     @Override
     public void uploadFileSizeCheck(MultipartFile file) {
+        long maxSize = 1;
         long size = file.getSize();
-        if (size > Long.parseLong(allowedMaxSize)) {
+        String[] calSize = allowedMaxSize.split("\\*");
+
+        for(String num : calSize) {
+            maxSize = maxSize * Long.parseLong(num);
+        }
+
+        if (size > maxSize) {
             throw new FileException(FILE_SIZE_MAX,FILE_SIZE_MAX);
         }
     }
@@ -115,7 +119,6 @@ public class FileServiceImplement implements FileService {
     @Transactional
     @Override
     public String fileUpload(List<MultipartFile> files, String boardNum) {
-        System.out.println("MinioConfig.getBucketName() : ---------- " + bucketName);
         List<String> pathList = new ArrayList<>();
         for (MultipartFile file : files) {
             String originFileName = file.getOriginalFilename();

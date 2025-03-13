@@ -118,7 +118,7 @@ public class BoardServiceImplement implements BoardService {
         } catch (Exception e) {
             logger.error("error", e);
             e.printStackTrace();
-            throw new CustomException(INVALID_PASSWORD, INVALID_PASSWORD, "BadRequest", HttpStatus.BAD_REQUEST);
+            throw new CustomException(INVALID_INPUT, INVALID_INPUT, "BadRequest", HttpStatus.BAD_REQUEST);
         }
 
         return PostWriteBoardResponseDto.success();
@@ -137,7 +137,7 @@ public class BoardServiceImplement implements BoardService {
             if (!checkUser) throw new CustomException(USER_NOT_FOUND, USER_NOT_FOUND, "NotFound", HttpStatus.NOT_FOUND);
 
             String boardNum = board.getBoardNum();
-            if (boardNum == null) throw new CustomException(INVALID_PASSWORD, INVALID_PASSWORD, "BadRequest", HttpStatus.BAD_REQUEST);
+            if (boardNum == null) throw new CustomException(INVALID_INPUT, INVALID_INPUT, "BadRequest", HttpStatus.BAD_REQUEST);
 
             updateBoard = boardRepository.findByBoardNumAndWriterEmail(boardNum, board.getWriterEmail());
             if (updateBoard == null) throw new CustomException(NOT_EXISTED_BOARD, NOT_EXISTED_BOARD, "NotFound", HttpStatus.NOT_FOUND);

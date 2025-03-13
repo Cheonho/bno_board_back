@@ -29,7 +29,7 @@ public class SecurityConfig {
                                 "/nicknamecorrection/**", "/addresscorrection/**",
                                 "/passwordcorrection/**",
                                 "/mypage/**",
-                                "/search-list/**", "/board/*",
+                                "/search-list/**", "/board/detail/*",
                                 "/board/*/view", "/swagger-ui/**", "/swagger-ui/*", "/v3/api-docs/**", "/v3/api-docs/*",
                                 "/board/board-list", "/board/*/comment"
 //                                "/**", "/*"

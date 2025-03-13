@@ -1,6 +1,7 @@
 package com.bno.board_back.controller;
 
 import com.bno.board_back.dto.response.ResponseDto;
+import com.bno.board_back.dto.response.file.GetRefreshFileUrlDto;
 import com.bno.board_back.service.FileService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
@@ -30,5 +31,13 @@ public class FileController {
     ) {
         String test = fileService.fileUpload(files, boardNum);
         return null;
+    }
+
+    @GetMapping(value = "refresh-url/{fileId}")
+    public ResponseEntity<? super GetRefreshFileUrlDto> refreshFiledUrl(
+            @PathVariable String fileId
+    ) {
+        String refreshUrl = fileService.refreshFileUrl(fileId);
+        return GetRefreshFileUrlDto.success(refreshUrl);
     }
 }

@@ -15,6 +15,7 @@ import io.minio.http.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -135,7 +137,7 @@ public class FileServiceImplement implements FileService {
                         .method(Method.GET)
                         .bucket(bucketName)
                         .object(fullPath)
-                        .expiry(10, TimeUnit.MINUTES) // 다운로드 시간 제한
+                        .expiry(1, TimeUnit.DAYS) // 다운로드 시간 제한
                         .build());
 
                 String fileMessage = dbSaveFile(file, boardNum, fullPath, url);
@@ -186,5 +188,32 @@ public class FileServiceImplement implements FileService {
             }
         }
         return SUCCESS;
+    }
+
+    @Override
+    public String refreshFileUrl(String fileId) {
+
+        Optional<FileEntity> fileEntity = fileRepository.findById(fileId);
+        String url =  "";
+        try {
+            if (fileEntity.isPresent()) {
+                // 다운로드 URL
+                url = minioClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs.builder()
+                        .method(Method.GET)
+                        .bucket(bucketName)
+                        .object(fileEntity.get().getFilePath())
+                        .expiry(10, TimeUnit.HOURS) // 다운로드 시간 제한
+                        .build());
+
+                fileEntity.get().setMinioDataUrl(url);
+                fileRepository.save(fileEntity.get());
+            } else {
+                throw new FileException(NON_FILE_EXISTED, NON_FILE_EXISTED);
+            }
+            return url;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

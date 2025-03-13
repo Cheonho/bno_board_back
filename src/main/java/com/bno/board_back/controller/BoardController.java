@@ -38,12 +38,12 @@ public class BoardController {
         this.commentService = commentService;
     }
 
-    @GetMapping("/{boardNum}")
+    @GetMapping("/detail/{boardNum}")
     public ResponseEntity<? super GetBoardResponseDto> getBoardById(@PathVariable String boardNum) {
         return boardService.getBoardById(boardNum);
     }
 
-    @DeleteMapping("/{boardNum}")
+    @DeleteMapping("/delete/{boardNum}")
     public ResponseEntity<ResponseDto> deleteBoard(@PathVariable String boardNum) {
         return boardService.deleteBoardById(boardNum);
     }

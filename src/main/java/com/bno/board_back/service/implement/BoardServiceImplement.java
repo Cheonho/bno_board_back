@@ -101,7 +101,6 @@ public class BoardServiceImplement implements BoardService {
         boolean checkUser;
         String fileMessage = "";
         BoardEntity newBoard;
-        System.out.println("----------------------- tsidUtil.getTsid() : " + tsidUtil.getTsid() + "-----------------------");
 
         try {
             checkUser = userRepository.existsByEmail(board.getWriterEmail());

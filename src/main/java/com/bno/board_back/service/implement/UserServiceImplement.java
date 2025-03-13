@@ -1,6 +1,5 @@
 package com.bno.board_back.service.implement;
 
-import com.bno.board_back.config.Hmac.SecretKeyConfig;
 import com.bno.board_back.dto.responseDto.*;
 import com.bno.board_back.dto.userDto.*;
 import com.bno.board_back.entity.UserEntity;
@@ -24,10 +23,8 @@ import java.util.Optional;
 public class UserServiceImplement implements UserService {
 
     private final UserRepository userRepository;
-    private final SecretKeyConfig secretKeyConfig;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
-    private UserService userService;
 
     @Override
     public ResponseEntity<? super GetUserLoginResponseDto> loginPage(LoginRequestDto loginRequestDto) {
@@ -50,12 +47,12 @@ public class UserServiceImplement implements UserService {
 
         // 3. JWT 토큰 생성
         String token = jwtTokenProvider.createToken(userEntity.getId(), userEntity.getUsername());
-        System.out.println(token);
+
         // 4. 로그인 성공 응답 반환
         return GetUserLoginResponseDto.success(userEntity, token);
     }
 
-
+    // 회원가입
     @Override
     public ResponseEntity<? super GetUserJoinResponseDto> joinPage(JoinRequestDto joinRequestDto, BindingResult bindingResult) {
 
@@ -84,23 +81,24 @@ public class UserServiceImplement implements UserService {
                 .id(TsidUtilUseSystem.getTsid())
                 .email(joinRequestDto.getEmail())
                 .userNickname(joinRequestDto.getUserNickname())
-                .password(bCryptPasswordEncoder.encode(joinRequestDto.getPassword())) // 비밀번호 암호화
+                .password(bCryptPasswordEncoder.encode(joinRequestDto.getPassword()))
                 .address(joinRequestDto.getAddress())
                 .role(Collections.singletonList("USER").toString())
                 .build();
 
-        System.out.println("UserEntity ID: " + userEntity.getId());
         // 4. 저장
         userRepository.save(userEntity);
 
         return GetUserJoinResponseDto.success(userEntity);
-    }
+    } ;
 
-    ;
 
+    // 이메일 중복 확인
     @Override
     public ResponseEntity<? super GetUserCheckEmailDto> checkEmail(String email) {
+        // 해당 이메일이 이미 사용 중인 경우 true를 반환
         boolean isAvailable = userRepository.existsByEmail(email);
+
         if (isAvailable) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ResponseDto.duplicateEmail());
@@ -108,6 +106,7 @@ public class UserServiceImplement implements UserService {
         return GetUserCheckEmailDto.usedemail();
     }
 
+    // 닉네임 중복 확인
     @Override
     public ResponseEntity<? super GetUserCheckNicknameDto> checkNickname(String userNickname) {
         boolean isAvailable = userRepository.existsByUserNickname(userNickname);
@@ -139,7 +138,8 @@ public class UserServiceImplement implements UserService {
 
             return GetUserInformationChangeDto.changesuccess();
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자를 찾을 수 없습니다.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ResponseDto.notFoundUser());
         }
     }
 
@@ -150,12 +150,14 @@ public class UserServiceImplement implements UserService {
         Optional<UserEntity> originId = userRepository.findById(userInformationChangeDto.getId());
         UserEntity userEntity = originId.get();
 
+        // 현재 비밀번호가 존재하는지
         boolean nowPwCheck = bCryptPasswordEncoder.matches(userInformationChangeDto.getNowpassword(), userEntity.getPassword());
         if (!nowPwCheck) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ResponseDto.notFoundPassword());
         }
 
+        // 새 비밀번호가 서로 같지 않을 시
         if(!userInformationChangeDto.getPassword().equals(userInformationChangeDto.getCheckpassword())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ResponseDto.invalidpassword()) ;
@@ -178,6 +180,7 @@ public class UserServiceImplement implements UserService {
         return GetUserInformationChangeDto.changesuccess();
     }
 
+    // 주소 바꾸기
     @Override
     public ResponseEntity<? super GetUserInformationChangeDto> changeAddress(UserInformationChangeDto userInformationChangeDto) {
 
@@ -192,6 +195,7 @@ public class UserServiceImplement implements UserService {
         return GetUserInformationChangeDto.changesuccess();
     }
 
+    // api 토큰
     @Override
     public ResponseEntity<? super GetUserApiTokenDto> apitokendata(String authorizationHeader) {
         String token = authorizationHeader.replace("Bearer ", "");
@@ -207,7 +211,8 @@ public class UserServiceImplement implements UserService {
         // 4. 사용자 정보 조회
         Optional<UserEntity> user = userRepository.findById(id); // 아이디로 사용자 조회
         if (user.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자를 찾을 수 없습니다.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ResponseDto.notFoundUser());
         }
 
         // 5. 사용자 데이터 반환 (GetUserApiTokenDto 형식으로 반환)

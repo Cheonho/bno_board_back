@@ -2,6 +2,8 @@ package com.bno.board_back.utils;
 
 import com.bno.board_back.common.ResponseMessage;
 import com.bno.board_back.dto.object.FileDto;
+import com.bno.board_back.exception.CustomException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -14,12 +16,12 @@ public class FileUtil {
         String originalFilename = file.getOriginalFilename();
 
         if (originalFilename == null || originalFilename.isEmpty()) {
-            throw new IllegalArgumentException("파일명이 비어 있습니다.");
+            throw new CustomException(ResponseMessage.NON_FILE_NAME, ResponseMessage.NON_FILE_NAME, "BadRequest", HttpStatus.BAD_REQUEST);
         }
 
         int lastIndex = originalFilename.lastIndexOf(".");
         if (lastIndex == -1) {
-            throw new IllegalArgumentException("확장자가 없는 파일입니다: " + originalFilename);
+            throw new CustomException(ResponseMessage.NON_FILE_EXISTED, ResponseMessage.NON_FILE_EXISTED, "BadRequest", HttpStatus.BAD_REQUEST);
         }
 
         return originalFilename.substring(lastIndex + 1); // 확장자 반환

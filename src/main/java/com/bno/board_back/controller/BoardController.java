@@ -107,12 +107,12 @@ public class BoardController {
     @PutMapping(value = "update",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<? super PutUpdateBoardResponseDto> patchUpdateBoard(
+    public ResponseEntity<? super PutUpdateBoardResponseDto> putUpdateBoard(
             @RequestPart(value = "board", required = true) UpdateBoards board,
             @RequestPart(value = "files", required = false) List<MultipartFile> files,
-            @RequestParam(value = "deleteIdList", required = false) List<String> deleteIdList
+            @RequestPart(value = "deleteIdList", required = false) List<String> deleteIdList
     ) {
-        ResponseEntity<? super PutUpdateBoardResponseDto> response = boardService.patchUpdateBoard(board, files, deleteIdList);
+        ResponseEntity<? super PutUpdateBoardResponseDto> response = boardService.putUpdateBoard(board, files, deleteIdList);
         return response;
     }
 

@@ -40,4 +40,5 @@ public interface ResponseMessage {
     // file
     String FILE_EXTENSION = "허용하지 않는 파일입니다." ;
     String NON_FILE_EXISTED = "파일이 존재하지 않습니다.";
+    String NON_FILE_NAME = "파일명이 비어 있습니다.";
 }

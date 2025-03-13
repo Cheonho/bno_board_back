@@ -41,6 +41,7 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({FileException.class})
     public ResponseEntity<Object> handleFileException(FileException ex) {
+        System.out.println("🔥 CustomException 발생!");
         final Error error = Error.builder()
                 .type("BadRequest")
                 .title(messageSource.getMessage("error.file.title", null, Locale.getDefault()))

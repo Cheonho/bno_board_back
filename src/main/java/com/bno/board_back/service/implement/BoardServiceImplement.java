@@ -124,9 +124,10 @@ public class BoardServiceImplement implements BoardService {
 
     @Override
     @Transactional
-    public ResponseEntity<? super PutUpdateBoardResponseDto> patchUpdateBoard(UpdateBoards board, List<MultipartFile> files, List<String> deleteIdList) {
+    public ResponseEntity<? super PutUpdateBoardResponseDto> putUpdateBoard(UpdateBoards board, List<MultipartFile> files, List<String> deleteIdList) {
 
         boolean checkUser = false;
+        String fileMessage = "";
         BoardEntity updateBoard;
 
         try{
@@ -142,12 +143,18 @@ public class BoardServiceImplement implements BoardService {
             boardUpdateMapper.updateFormDto(board, updateBoard);
             boardRepository.save(updateBoard);
 
-            if (files != null && !files.isEmpty()) {
+            if (deleteIdList != null && !deleteIdList.isEmpty()) {
                 String isDelete = fileService.deleteFile(boardNum, deleteIdList);
                 if (!isDelete.equals(SUCCESS)) {throw new CustomException(DATABASE_ERROR, DATABASE_ERROR, "DataBaseError", HttpStatus.INTERNAL_SERVER_ERROR);}
             }
 
-//            String isUpload = fileService.fileUpload(file)
+            if (files != null) {
+                fileMessage = fileService.fileUpload(files, board.getBoardNum());
+
+                if (!fileMessage.equals(SUCCESS)) {
+                    throw new CustomException(fileMessage, fileMessage, "BadRequest", HttpStatus.BAD_REQUEST);
+                }
+            }
         } catch (Exception e){
             logger.error("error", e);
             e.printStackTrace();

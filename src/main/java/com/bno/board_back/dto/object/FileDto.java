@@ -21,7 +21,7 @@ public class FileDto extends AbstractIdDto<String> {
     private String contentType; // 타입
     private Long size; // 파일 크기
     private String fileExtension; // 파일 확장자
-    private LocalDateTime uploadedAt;
-    private LocalDateTime createdAt;
+    private LocalDateTime updateAt;
+    private LocalDateTime createAt;
     private Boolean status;
 }

@@ -40,7 +40,7 @@ public class FileServiceImplement implements FileService {
     ArrayList<String> allowedFileExtensions;
 
     @Value("${file.allowed.max_size}")
-    long allowedMaxSize;
+    String allowedMaxSize;
 
     @Value("${minio.bucket.name}")
     private String bucketName;
@@ -61,8 +61,8 @@ public class FileServiceImplement implements FileService {
 
     @Override
     public void uploadFileSizeCheck(MultipartFile file) {
-        long size = (long) file.getSize();
-        if (size > allowedMaxSize) {
+        long size = file.getSize();
+        if (size > Long.parseLong(allowedMaxSize)) {
             throw new FileException(FILE_SIZE_MAX,FILE_SIZE_MAX);
         }
     }

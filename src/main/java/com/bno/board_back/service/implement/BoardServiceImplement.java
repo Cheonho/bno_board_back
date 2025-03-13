@@ -12,6 +12,7 @@ import com.bno.board_back.exception.CustomException;
 import com.bno.board_back.mapper.BoardUpdateMapper;
 import com.bno.board_back.repository.BoardListViewRepository;
 import com.bno.board_back.repository.BoardRepository;
+import com.bno.board_back.repository.FileRepository;
 import com.bno.board_back.repository.UserRepository;
 import com.bno.board_back.service.BoardService;
 import com.bno.board_back.mapper.BoardWriteMapper;
@@ -30,6 +31,7 @@ import org.slf4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.bno.board_back.common.ResponseMessage.*;
 
@@ -47,6 +49,7 @@ public class BoardServiceImplement implements BoardService {
 
     private final TsidUtil tsidUtil;
     private final BoardUpdateMapper boardUpdateMapper;
+    private final FileRepository fileRepository;
 
     public BoardEntity saveBoard(WriteBoards writeBoards) {
         if (writeBoards.getTitle() == null || writeBoards.getTitle().isEmpty()) { return null; }
@@ -98,7 +101,6 @@ public class BoardServiceImplement implements BoardService {
         boolean checkUser;
         String fileMessage = "";
         BoardEntity newBoard;
-        System.out.println("----------------------- tsidUtil.getTsid() : " + tsidUtil.getTsid() + "-----------------------");
 
         try {
             checkUser = userRepository.existsByEmail(board.getWriterEmail());
@@ -218,14 +220,22 @@ public class BoardServiceImplement implements BoardService {
         return GetBoardResponseDto.success(boardListViewEntity, fileEntity);
     }
 
+    @Transactional
     @Override
     public ResponseEntity<ResponseDto> deleteBoardById(String boardNum) {
         try {
             BoardEntity boardEntity = boardRepository.findById(boardNum)
                     .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
 
+            List<FileEntity> fileEntity = fileRepository.findAllByBoardNumAndStatusTrue(boardNum);
+
             boardEntity.setStatus(false);
             boardRepository.save(boardEntity);
+
+            if (fileEntity != null) {
+                List<String> fileIdList = fileEntity.stream().map(FileEntity::getId).collect(Collectors.toList());
+                fileService.deleteFile(boardNum, fileIdList);
+            }
 
             return ResponseDto.resSuccess();
         } catch (Exception e) {

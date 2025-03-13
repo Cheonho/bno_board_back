@@ -1,10 +1,7 @@
 package com.bno.board_back.controller;
 
-import com.bno.board_back.dto.object.FileDto;
-import com.bno.board_back.dto.object.UpdateBoards;
-import com.bno.board_back.dto.object.WriteBoards;
+import com.bno.board_back.dto.object.*;
 import com.bno.board_back.dto.response.board.*;
-import com.bno.board_back.dto.object.Comment;
 import com.bno.board_back.dto.response.ResponseDto;
 import com.bno.board_back.dto.response.board.GetBoardResponseDto;
 import com.bno.board_back.dto.response.comment.GetCommentListResponseDto;
@@ -25,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -40,12 +38,12 @@ public class BoardController {
         this.commentService = commentService;
     }
 
-    @GetMapping("/{boardNum}")
+    @GetMapping("/detail/{boardNum}")
     public ResponseEntity<? super GetBoardResponseDto> getBoardById(@PathVariable String boardNum) {
         return boardService.getBoardById(boardNum);
     }
 
-    @DeleteMapping("/{boardNum}")
+    @DeleteMapping("/delete/{boardNum}")
     public ResponseEntity<ResponseDto> deleteBoard(@PathVariable String boardNum) {
         return boardService.deleteBoardById(boardNum);
     }
@@ -109,9 +107,11 @@ public class BoardController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<? super PutUpdateBoardResponseDto> putUpdateBoard(
             @RequestPart(value = "board", required = true) UpdateBoards board,
-            @RequestPart(value = "files", required = false) List<MultipartFile> files,
-            @RequestPart(value = "deleteIdList", required = false) List<String> deleteIdList
+            @RequestPart(value = "deleteIdList", required = false) FileDeleteIdDto deleteIdDto,
+            @RequestPart(value = "file", required = false) List<MultipartFile> files
     ) {
+        List<String> deleteIdList = new ArrayList<>();
+        if (deleteIdDto != null) {deleteIdList = deleteIdDto.getFileIds();}
         ResponseEntity<? super PutUpdateBoardResponseDto> response = boardService.putUpdateBoard(board, files, deleteIdList);
         return response;
     }

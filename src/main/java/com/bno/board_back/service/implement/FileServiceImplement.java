@@ -1,7 +1,5 @@
 package com.bno.board_back.service.implement;
 
-import com.bno.board_back.config.MinioConfig;
-import com.bno.board_back.dto.object.FileDto;
 import com.bno.board_back.entity.FileEntity;
 import com.bno.board_back.exception.CustomException;
 import com.bno.board_back.exception.FileException;
@@ -21,9 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static com.bno.board_back.common.ResponseMessage.*;
@@ -40,6 +36,9 @@ public class FileServiceImplement implements FileService {
     @Value("#{'${file.allowed.file_extension}'.split(',')}")
     ArrayList<String> allowedFileExtensions;
 
+    @Value("${file.allowed.max_size}")
+    String allowedMaxSize;
+
     @Value("${minio.bucket.name}")
     private String bucketName;
 
@@ -54,6 +53,21 @@ public class FileServiceImplement implements FileService {
         String extension = FileUtil.getFileExtension(file).toLowerCase();
         if (!allowedFileExtensions.contains(extension)) {
             throw new FileException(FILE_EXTENSION, FILE_EXTENSION);
+        }
+    }
+
+    @Override
+    public void uploadFileSizeCheck(MultipartFile file) {
+        long maxSize = 1;
+        long size = file.getSize();
+        String[] calSize = allowedMaxSize.split("\\*");
+
+        for(String num : calSize) {
+            maxSize = maxSize * Long.parseLong(num);
+        }
+
+        if (size > maxSize) {
+            throw new FileException(FILE_SIZE_MAX,FILE_SIZE_MAX);
         }
     }
 
@@ -105,7 +119,6 @@ public class FileServiceImplement implements FileService {
     @Transactional
     @Override
     public String fileUpload(List<MultipartFile> files, String boardNum) {
-        System.out.println("MinioConfig.getBucketName() : ---------- " + bucketName);
         List<String> pathList = new ArrayList<>();
         for (MultipartFile file : files) {
             String originFileName = file.getOriginalFilename();
@@ -113,6 +126,7 @@ public class FileServiceImplement implements FileService {
             String fullPath = boardNum + "/" + path + "/" + originFileName;
 
             this.uploadFileExtensionCheck(file);
+            this.uploadFileSizeCheck(file);
 
             try {
                 // bucket 존재여부 확인
@@ -135,7 +149,7 @@ public class FileServiceImplement implements FileService {
                         .method(Method.GET)
                         .bucket(bucketName)
                         .object(fullPath)
-                        .expiry(10, TimeUnit.MINUTES) // 다운로드 시간 제한
+                        .expiry(1, TimeUnit.DAYS) // 다운로드 시간 제한
                         .build());
 
                 String fileMessage = dbSaveFile(file, boardNum, fullPath, url);
@@ -186,5 +200,32 @@ public class FileServiceImplement implements FileService {
             }
         }
         return SUCCESS;
+    }
+
+    @Override
+    public String refreshFileUrl(String fileId) {
+
+        Optional<FileEntity> fileEntity = fileRepository.findById(fileId);
+        String url =  "";
+        try {
+            if (fileEntity.isPresent()) {
+                // 다운로드 URL
+                url = minioClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs.builder()
+                        .method(Method.GET)
+                        .bucket(bucketName)
+                        .object(fileEntity.get().getFilePath())
+                        .expiry(10, TimeUnit.HOURS) // 다운로드 시간 제한
+                        .build());
+
+                fileEntity.get().setMinioDataUrl(url);
+                fileRepository.save(fileEntity.get());
+            } else {
+                throw new FileException(NON_FILE_EXISTED, NON_FILE_EXISTED);
+            }
+            return url;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

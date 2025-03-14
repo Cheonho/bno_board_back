@@ -1,9 +1,6 @@
 spring:
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://192.168.35.43:5433/bnosoft
-    username: postgres
-    password: postgres
+  profiles:
+    include: db
   mvc:
     hiddenmethod:
       filter:
@@ -13,16 +10,13 @@ spring:
   jpa:
     properties:
       hibernate:
-        default_schema: board2025
         format_sql: true
       org.hibernate.envers:
         audit_table_suffix: History # 이력 테이블 이름의 _AUD를 History로 변경
         revision_field_name: revisionId # 이력 테이블 REV 컬럼명
         revision_type_field_name: revisionType # 이력 테이블 REVTYPE 컬럼명
         store_data_at_delete: true # 삭제시 저장 여부, 기본은 false
-    show-sql: 'true'
-    hibernate:
-      ddl-auto: none
+
 server:
   tomcat:
     use-relative-redirects: 'true'
@@ -49,17 +43,17 @@ jwt:
 
 file:
   allowed:
-    file_extension: txt,xlsx,png,jpg
+    file_extension: txt,xlsx,png,jpg,jpeg,gif
     max_size: 10*1024*1024
     # 최대 사이즈 10MB
 
 minio:
-  url: http://localhost:9000
+  url: http://192.168.35.199:9000
   bucket:
     name: bnoboard
   access:
-    key: OesszS3PCH6guojY0UiZ
-    secret: bMhvsr2CrxIIHjFBSa8WgRQbwM0FuqbW6wci6YME
+    key: zJbvnqHnSUGAbwmLWlFI
+    secret: cHx87Q4c9sRSkdYtr44omCKfqZapzFhHzWTq9KBG
 
 # minio 실행
 # minio.exe server ./minio_data

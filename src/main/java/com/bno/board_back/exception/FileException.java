@@ -1,7 +1,6 @@
 package com.bno.board_back.exception;
 
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter

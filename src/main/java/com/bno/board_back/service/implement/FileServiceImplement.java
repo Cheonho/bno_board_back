@@ -67,7 +67,7 @@ public class FileServiceImplement implements FileService {
         }
 
         if (size > maxSize) {
-            throw new FileException(FILE_SIZE_MAX,FILE_SIZE_MAX);
+            throw new FileException(FILE_EXTENSION, FILE_EXTENSION);
         }
     }
 
@@ -225,7 +225,7 @@ public class FileServiceImplement implements FileService {
             }
             return url;
         } catch (Exception e) {
-            return null;
+            throw new FileException(MINIOCLIENT_OR_DB_ERROR, MINIOCLIENT_OR_DB_ERROR);
         }
     }
 }

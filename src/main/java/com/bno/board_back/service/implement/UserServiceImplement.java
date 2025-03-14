@@ -1,10 +1,12 @@
 package com.bno.board_back.service.implement;
 
-import com.bno.board_back.config.Hmac.SecretKeyConfig;
 import com.bno.board_back.dto.responseDto.*;
 import com.bno.board_back.dto.userDto.*;
+import com.bno.board_back.entity.RefreshEntity;
 import com.bno.board_back.entity.UserEntity;
 import com.bno.board_back.provider.jwt.JwtTokenProvider;
+import com.bno.board_back.provider.jwt.RefreshTokenProvider;
+import com.bno.board_back.repository.RefreshRepository;
 import com.bno.board_back.repository.UserRepository;
 import com.bno.board_back.service.OtpService;
 import com.bno.board_back.service.UserService;
@@ -17,6 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -25,11 +30,12 @@ import java.util.Optional;
 public class UserServiceImplement implements UserService {
 
     private final UserRepository userRepository;
-    private final SecretKeyConfig secretKeyConfig;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private UserService userService;
     private OtpService otpService;
+    private final RefreshTokenProvider refreshTokenProvider ;
+    private final RefreshRepository refreshRepository;
 
     @Override
     public ResponseEntity<? super GetUserLoginResponseDto> loginPage(LoginRequestDto loginRequestDto) {
@@ -51,13 +57,34 @@ public class UserServiceImplement implements UserService {
         }
 
         // 3. JWT 토큰 생성
-        String token = jwtTokenProvider.createToken(userEntity.getId(), userEntity.getUsername());
-        System.out.println(token);
+        String accessToken = jwtTokenProvider.createToken(userEntity.getId(), userEntity.getUsername());
+        String refreshToken = refreshTokenProvider.createRefreshToken(userEntity.getId(), userEntity.getEmail());
+
+        // 4. RefreshToken 유무
+        Optional<RefreshEntity>
+                refreshTokenEntity = refreshRepository.findByEmail(loginRequestDto.getEmail()) ;
+
+        RefreshEntity refreshEntity = refreshTokenEntity.get() ;
+
+
+        if (refreshEntity.getRefresh() != null && !refreshEntity.getRefresh().isEmpty()) {
+            return GetUserLoginResponseDto.success(userEntity, accessToken, refreshToken);
+        }
+
+        refreshEntity = RefreshEntity.builder()
+                .id(refreshEntity.getId())
+                .email(refreshEntity.getEmail())
+                .refresh(refreshToken)
+                .expirationTime(Timestamp.from(Instant.now().plus(7, ChronoUnit.DAYS)))
+                .build() ;
+
+        refreshRepository.save(refreshEntity) ;
+
         // 4. 로그인 성공 응답 반환
-        return GetUserLoginResponseDto.success(userEntity, token);
+        return GetUserLoginResponseDto.success(userEntity, accessToken, refreshToken);
     }
 
-
+    // 회원가입
     @Override
     public ResponseEntity<? super GetUserJoinResponseDto> joinPage(JoinRequestDto joinRequestDto, BindingResult bindingResult) {
 
@@ -86,25 +113,31 @@ public class UserServiceImplement implements UserService {
                 .id(TsidUtilUseSystem.getTsid())
                 .email(joinRequestDto.getEmail())
                 .userNickname(joinRequestDto.getUserNickname())
-                .password(bCryptPasswordEncoder.encode(joinRequestDto.getPassword())) // 비밀번호 암호화
+                .password(bCryptPasswordEncoder.encode(joinRequestDto.getPassword()))
                 .address(joinRequestDto.getAddress())
                 .role(Collections.singletonList("USER").toString())
                 .otpSecretKey(null)
                 .build();
 
-        System.out.println("UserEntity ID: " + userEntity.getId());
+        RefreshEntity refreshEntity = RefreshEntity.builder()
+                .id(TsidUtilUseSystem.getTsid())
+                .email(joinRequestDto.getEmail())
+                .build() ;
 
         // 4. 저장
         userRepository.save(userEntity);
+        refreshRepository.save(refreshEntity);
 
-        return GetUserJoinResponseDto.success(userEntity);
-    }
+        return GetUserJoinResponseDto.success(userEntity, refreshEntity);
+    } ;
 
-    ;
 
+    // 이메일 중복 확인
     @Override
     public ResponseEntity<? super GetUserCheckEmailDto> checkEmail(String email) {
+        // 해당 이메일이 이미 사용 중인 경우 true를 반환
         boolean isAvailable = userRepository.existsByEmail(email);
+
         if (isAvailable) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ResponseDto.duplicateEmail());
@@ -112,6 +145,7 @@ public class UserServiceImplement implements UserService {
         return GetUserCheckEmailDto.usedemail();
     }
 
+    // 닉네임 중복 확인
     @Override
     public ResponseEntity<? super GetUserCheckNicknameDto> checkNickname(String userNickname) {
         boolean isAvailable = userRepository.existsByUserNickname(userNickname);
@@ -143,7 +177,8 @@ public class UserServiceImplement implements UserService {
 
             return GetUserInformationChangeDto.changesuccess();
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자를 찾을 수 없습니다.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ResponseDto.notFoundUser());
         }
     }
 
@@ -154,12 +189,14 @@ public class UserServiceImplement implements UserService {
         Optional<UserEntity> originId = userRepository.findById(userInformationChangeDto.getId());
         UserEntity userEntity = originId.get();
 
+        // 현재 비밀번호가 존재하는지
         boolean nowPwCheck = bCryptPasswordEncoder.matches(userInformationChangeDto.getNowpassword(), userEntity.getPassword());
         if (!nowPwCheck) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ResponseDto.notFoundPassword());
         }
 
+        // 새 비밀번호가 서로 같지 않을 시
         if(!userInformationChangeDto.getPassword().equals(userInformationChangeDto.getCheckpassword())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ResponseDto.invalidpassword()) ;
@@ -182,6 +219,7 @@ public class UserServiceImplement implements UserService {
         return GetUserInformationChangeDto.changesuccess();
     }
 
+    // 주소 바꾸기
     @Override
     public ResponseEntity<? super GetUserInformationChangeDto> changeAddress(UserInformationChangeDto userInformationChangeDto) {
 
@@ -196,6 +234,7 @@ public class UserServiceImplement implements UserService {
         return GetUserInformationChangeDto.changesuccess();
     }
 
+    // api 토큰
     @Override
     public ResponseEntity<? super GetUserApiTokenDto> apitokendata(String authorizationHeader) {
         String token = authorizationHeader.replace("Bearer ", "");
@@ -211,7 +250,8 @@ public class UserServiceImplement implements UserService {
         // 4. 사용자 정보 조회
         Optional<UserEntity> user = userRepository.findById(id); // 아이디로 사용자 조회
         if (user.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자를 찾을 수 없습니다.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ResponseDto.notFoundUser());
         }
 
         // 5. 사용자 데이터 반환 (GetUserApiTokenDto 형식으로 반환)
@@ -229,6 +269,32 @@ public class UserServiceImplement implements UserService {
         return GetUserApiTokenDto.apiSuccess(apitokendataDto);
     }
 
+   /* @Override
+    public ResponseEntity<? super GetUserRefreshTokenResponseDto> reFreshToken(RefreshTokenDto refreshTokenDto) {
+
+        Optional<RefreshEntity> refreshTokenEntity = refreshRepository.findByEmail(refreshTokenDto.getEmail()) ;
+        Optional<UserEntity> optionalUserEntity = userRepository.findByEmail(refreshTokenDto.getEmail()) ;
+
+        UserEntity userEntity = optionalUserEntity.get() ;
+        RefreshEntity refreshEntity = refreshTokenEntity.get() ;
+
+        if(!refreshEntity.getRefresh().isEmpty() &&
+                // 현재 시간과 만료 시간을 비교해서 연장할지 결정
+                refreshEntity.getExpirationTime().toInstant().isBefore(Instant.now())) {
+
+            // JWT 토큰 생성
+            String accessToken = jwtTokenProvider.createToken(userEntity.getId(), userEntity.getUsername());
+            String refreshToken = refreshTokenProvider.createRefreshToken(userEntity.getId(), userEntity.getEmail());
+
+        }
+
+
+
+        String accessToken = jwtTokenProvider.createToken(userEntity.getId(), userEntity.getUsername());
+    }
+
+
+*/
     @Override
     public ResponseEntity<? super GetUserLoginResponseDto> otpLoginPage(OtpVerifyRequestDto otpVerifyRequestDto) {
 
@@ -238,16 +304,34 @@ public class UserServiceImplement implements UserService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ResponseDto.loginFailed());
         }
+
         UserEntity userEntity = optionalUserEntity.get();
 
-
         // 3. JWT 토큰 생성
-        String token = jwtTokenProvider.createToken(userEntity.getId(), userEntity.getUsername());
-        System.out.println(token);
+        String accessToken = jwtTokenProvider.createToken(userEntity.getId(), userEntity.getUsername());
+        String refreshToken = refreshTokenProvider.createRefreshToken(userEntity.getId(), userEntity.getEmail());
+
+        // 4. RefreshToken 유무
+        Optional<RefreshEntity>
+                refreshTokenEntity = refreshRepository.findByEmail(otpVerifyRequestDto.getEmail());
+
+        RefreshEntity refreshEntity = refreshTokenEntity.get();
+
+        if (refreshEntity.getRefresh() != null && !refreshEntity.getRefresh().isEmpty()) {
+            return GetUserLoginResponseDto.success(userEntity, accessToken, refreshToken);
+        }
+
+        refreshEntity = RefreshEntity.builder()
+                .id(refreshEntity.getId())
+                .email(refreshEntity.getEmail())
+                .refresh(refreshToken)
+                .expirationTime(Timestamp.from(Instant.now().plus(7, ChronoUnit.DAYS)))
+                .build();
+
+        refreshRepository.save(refreshEntity);
+
         // 4. 로그인 성공 응답 반환
-        return GetUserLoginResponseDto.success(userEntity, token);
+        return GetUserLoginResponseDto.success(userEntity, accessToken, refreshToken);
     }
-
-
 
 }

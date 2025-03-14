@@ -132,35 +132,29 @@ public class BoardServiceImplement implements BoardService {
         String fileMessage = "";
         BoardEntity updateBoard;
 
-        try{
-            checkUser = userRepository.existsByEmail(board.getWriterEmail());
-            if (!checkUser) throw new CustomException(USER_NOT_FOUND, USER_NOT_FOUND, "NotFound", HttpStatus.NOT_FOUND);
+        checkUser = userRepository.existsByEmail(board.getWriterEmail());
+        if (!checkUser) throw new CustomException(USER_NOT_FOUND, USER_NOT_FOUND, "NotFound", HttpStatus.NOT_FOUND);
 
-            String boardNum = board.getBoardNum();
-            if (boardNum == null) throw new CustomException(INVALID_INPUT, INVALID_INPUT, "BadRequest", HttpStatus.BAD_REQUEST);
+        String boardNum = board.getBoardNum();
+        if (boardNum == null) throw new CustomException(INVALID_INPUT, INVALID_INPUT, "BadRequest", HttpStatus.BAD_REQUEST);
 
-            updateBoard = boardRepository.findByBoardNumAndWriterEmail(boardNum, board.getWriterEmail());
-            if (updateBoard == null) throw new CustomException(NOT_EXISTED_BOARD, NOT_EXISTED_BOARD, "NotFound", HttpStatus.NOT_FOUND);
+        updateBoard = boardRepository.findByBoardNumAndWriterEmail(boardNum, board.getWriterEmail());
+        if (updateBoard == null) throw new CustomException(NOT_EXISTED_BOARD, NOT_EXISTED_BOARD, "NotFound", HttpStatus.NOT_FOUND);
 
-            boardUpdateMapper.updateFormDto(board, updateBoard);
-            boardRepository.save(updateBoard);
+        boardUpdateMapper.updateFormDto(board, updateBoard);
+        boardRepository.save(updateBoard);
 
-            if (deleteIdList != null && !deleteIdList.isEmpty()) {
-                String isDelete = fileService.deleteFile(boardNum, deleteIdList);
-                if (!isDelete.equals(SUCCESS)) {throw new CustomException(DATABASE_ERROR, DATABASE_ERROR, "DataBaseError", HttpStatus.INTERNAL_SERVER_ERROR);}
+        if (deleteIdList != null && !deleteIdList.isEmpty()) {
+            String isDelete = fileService.deleteFile(boardNum, deleteIdList);
+            if (!isDelete.equals(SUCCESS)) {throw new CustomException(DATABASE_ERROR, DATABASE_ERROR, "DataBaseError", HttpStatus.INTERNAL_SERVER_ERROR);}
+        }
+
+        if (files != null) {
+            fileMessage = fileService.fileUpload(files, board.getBoardNum());
+
+            if (!fileMessage.equals(SUCCESS)) {
+                throw new CustomException(fileMessage, fileMessage, "BadRequest", HttpStatus.BAD_REQUEST);
             }
-
-            if (files != null) {
-                fileMessage = fileService.fileUpload(files, board.getBoardNum());
-
-                if (!fileMessage.equals(SUCCESS)) {
-                    throw new CustomException(fileMessage, fileMessage, "BadRequest", HttpStatus.BAD_REQUEST);
-                }
-            }
-        } catch (Exception e){
-            logger.error("error", e);
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
         }
 
         return PutUpdateBoardResponseDto.success();

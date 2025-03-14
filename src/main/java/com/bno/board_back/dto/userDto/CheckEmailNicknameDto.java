@@ -10,8 +10,5 @@ public class CheckEmailNicknameDto {
     @NotNull
     private Boolean isAvailable ;
 
-    public CheckEmailNicknameDto(Boolean isAvailable) {
-        this.isAvailable = isAvailable;
-    }
 
 }

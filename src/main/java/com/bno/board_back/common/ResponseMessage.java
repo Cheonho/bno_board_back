@@ -19,7 +19,7 @@ public interface ResponseMessage {
     String PASSWORD_TOO_WEAK = "비밀번호가 너무 약함"; // 비밀번호가 너무 약함
     String DUPLICATE_USER = "중복 확인을 해 주세요." ;
     String DUPLICATE_ADDRESS = "주소를 다시 확인해 주세요." ;// 주소 변경 오류
-    String INVALID_INPUT = "필수 값이 존재하지 않습니다.";
+    String INVALID_INPUT = "잘못된 입력 값입니다." ;
 
     // Http status 404
     String USER_NOT_FOUND = "사용자를 찾을 수 없습니다."; // 사용자 찾을 수 없음
@@ -41,7 +41,7 @@ public interface ResponseMessage {
 
     // file
     String FILE_EXTENSION = "허용하지 않는 파일입니다." ;
-    String FILE_SIZE_MAX = "파일 크기가 너무 큽니다.";
     String NON_FILE_EXISTED = "파일이 존재하지 않습니다.";
     String NON_FILE_NAME = "파일명이 비어 있습니다.";
+    String MINIOCLIENT_OR_DB_ERROR = "미나이오 클라이언트 혹은 데이터베이스 오류";
 }

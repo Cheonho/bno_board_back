@@ -17,16 +17,18 @@ import org.springframework.http.ResponseEntity;
 public class GetUserLoginResponseDto extends ResponseDto {
 
     private final LoginResponseDto loginResponseDto ;
-    private final String token ;
+    private final String accessToken ;
+    private final String refreshToken ;
 
-    private GetUserLoginResponseDto(UserEntity userEntity, String token, boolean otpEnabled) {
+    private GetUserLoginResponseDto(UserEntity userEntity, String accessToken, String refreshTSoken, boolean otpEnabled) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS) ;
         this.loginResponseDto = UserLoginMapper.INSTANCE.toDTO(userEntity) ;
-        this.token = token;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshTSoken;
     }
 
-    public static ResponseEntity<GetUserLoginResponseDto> success(UserEntity userEntity, String token) {
-        GetUserLoginResponseDto result = new GetUserLoginResponseDto(userEntity, token, userEntity.isOtpEnabled()) ;
+        public static ResponseEntity<GetUserLoginResponseDto> success(UserEntity userEntity, String accessToken, String refreshToken) {
+        GetUserLoginResponseDto result = new GetUserLoginResponseDto(userEntity, accessToken, refreshToken, userEntity.isOtpEnabled()) ;
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

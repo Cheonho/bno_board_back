@@ -2,7 +2,6 @@ package com.bno.board_back.dto.userDto;
 
 import com.bno.board_back.common.ResponseCode;
 import com.bno.board_back.common.ResponseMessage;
-import com.bno.board_back.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -16,7 +15,7 @@ public class ResponseDto {
     private String message;
 
     // 성공
-    public static ResponseEntity<ResponseDto> success(UserEntity userEntity) {
+    public static ResponseEntity<ResponseDto> success() {
         ResponseDto responseDto = new ResponseDto(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }

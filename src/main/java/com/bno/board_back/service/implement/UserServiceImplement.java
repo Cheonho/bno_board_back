@@ -2,8 +2,11 @@ package com.bno.board_back.service.implement;
 
 import com.bno.board_back.dto.responseDto.*;
 import com.bno.board_back.dto.userDto.*;
+import com.bno.board_back.entity.RefreshEntity;
 import com.bno.board_back.entity.UserEntity;
 import com.bno.board_back.provider.jwt.JwtTokenProvider;
+import com.bno.board_back.provider.jwt.RefreshTokenProvider;
+import com.bno.board_back.repository.RefreshRepository;
 import com.bno.board_back.repository.UserRepository;
 import com.bno.board_back.service.UserService;
 import com.bno.board_back.utils.TsidUtilUseSystem;
@@ -25,6 +28,8 @@ public class UserServiceImplement implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenProvider refreshTokenProvider ;
+    private final RefreshRepository refreshRepository;
 
     @Override
     public ResponseEntity<? super GetUserLoginResponseDto> loginPage(LoginRequestDto loginRequestDto) {
@@ -46,10 +51,31 @@ public class UserServiceImplement implements UserService {
         }
 
         // 3. JWT 토큰 생성
-        String token = jwtTokenProvider.createToken(userEntity.getId(), userEntity.getUsername());
+        String accessToken = jwtTokenProvider.createToken(userEntity.getId(), userEntity.getUsername());
+        String refreshToken = refreshTokenProvider.createRefreshToken(userEntity.getId(), userEntity.getEmail());
+        // 4. RefreshToken 유무
+        Optional<RefreshEntity>
+                refreshTokenEntity = refreshRepository.findByEmail(loginRequestDto.getEmail()) ;
+
+        RefreshEntity refreshEntity = refreshTokenEntity.get() ;
+        System.out.println("❤ refreshEntity : " + refreshEntity);
+
+        if (refreshEntity.getRefresh() != null && !refreshEntity.getRefresh().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(ResponseDto.success());
+        }
+
+        refreshEntity = RefreshEntity.builder()
+                .id(refreshEntity.getId())
+                .email(refreshEntity.getEmail())
+                .refresh(refreshToken)
+                .expirationTime(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)
+                .build() ;
+
+        refreshRepository.save(refreshEntity) ;
 
         // 4. 로그인 성공 응답 반환
-        return GetUserLoginResponseDto.success(userEntity, token);
+        return GetUserLoginResponseDto.success(userEntity, accessToken, refreshToken);
     }
 
     // 회원가입
@@ -86,10 +112,16 @@ public class UserServiceImplement implements UserService {
                 .role(Collections.singletonList("USER").toString())
                 .build();
 
+        RefreshEntity refreshEntity = RefreshEntity.builder()
+                .id(TsidUtilUseSystem.getTsid())
+                .email(joinRequestDto.getEmail())
+                .build() ;
+
         // 4. 저장
         userRepository.save(userEntity);
+        refreshRepository.save(refreshEntity);
 
-        return GetUserJoinResponseDto.success(userEntity);
+        return GetUserJoinResponseDto.success(userEntity, refreshEntity);
     } ;
 
 

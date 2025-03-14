@@ -19,6 +19,7 @@ public interface ResponseMessage {
     String PASSWORD_TOO_WEAK = "비밀번호가 너무 약함"; // 비밀번호가 너무 약함
     String DUPLICATE_USER = "중복 확인을 해 주세요." ;
     String DUPLICATE_ADDRESS = "주소를 다시 확인해 주세요." ;// 주소 변경 오류
+    String INVALID_INPUT = "잘못된 입력 값입니다." ;
 
     // Http status 404
     String USER_NOT_FOUND = "사용자를 찾을 수 없습니다."; // 사용자 찾을 수 없음

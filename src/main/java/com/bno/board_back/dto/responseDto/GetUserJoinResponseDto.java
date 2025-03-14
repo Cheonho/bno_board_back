@@ -5,6 +5,7 @@ import com.bno.board_back.common.ResponseCode;
 import com.bno.board_back.common.ResponseMessage;
 import com.bno.board_back.dto.userDto.JoinResponseDto;
 import com.bno.board_back.dto.userDto.ResponseDto;
+import com.bno.board_back.entity.RefreshEntity;
 import com.bno.board_back.entity.UserEntity;
 import com.bno.board_back.service.Mapper.UserJoinMapper;
 import lombok.Getter;
@@ -18,13 +19,13 @@ public class GetUserJoinResponseDto extends ResponseDto {
 
     private final JoinResponseDto joinResponseDto;
 
-    private GetUserJoinResponseDto(UserEntity userEntity) {
+    private GetUserJoinResponseDto(UserEntity userEntity, RefreshEntity refreshEntity) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
         this.joinResponseDto = UserJoinMapper.INSTANCE.toDTO(userEntity);
     }
 
-    public static ResponseEntity<ResponseDto> success(UserEntity userEntity) {
-        GetUserJoinResponseDto result = new GetUserJoinResponseDto(userEntity) ;
+    public static ResponseEntity<ResponseDto> success(UserEntity userEntity,RefreshEntity refreshEntity ) {
+        GetUserJoinResponseDto result = new GetUserJoinResponseDto(userEntity,refreshEntity) ;
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

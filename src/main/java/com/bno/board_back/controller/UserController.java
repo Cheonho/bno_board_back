@@ -177,5 +177,30 @@ public class UserController {
         session.setAttribute("loginDto", response);
         return response;
     }
+
+
+    @PatchMapping("/otp/deactivate")
+    public ResponseEntity<?> deactivateOtp(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        String userId = jwtTokenProvider.getUserPk(token);
+
+
+        UserEntity user = userRepository.findById(userId).orElse(null);
+        if (user == null || user.getOtpSecretKey() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("OTP 설정이 되어 있지 않거나, 사용자가 존재하지 않습니다.");
+        }
+        try {
+            user.setOtpEnabled(false);
+            userRepository.save(user);
+            return ResponseEntity.ok("OTP 비활성화 완료");
+        } catch (NumberFormatException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("OTP 입력값이 올바르지 않습니다.");
+        }
+    }
+
+
+
 }
 

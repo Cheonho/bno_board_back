@@ -16,7 +16,6 @@ import java.util.Date;
 public class RefreshTokenProvider {
 
     private final SecretKey secretKey;
-    private final long expiredMillis = 7 * 24 * 60 * 60 * 1000;
 
     public RefreshTokenProvider(@Value("${jwt.secret}") String key) {
         this.secretKey = Keys.hmacShaKeyFor(key.getBytes());
@@ -31,7 +30,7 @@ public class RefreshTokenProvider {
         // 만료 시간 설정
         Calendar exPCalendar = Calendar.getInstance();
         exPCalendar.setTime(iatDate);
-        exPCalendar.add(Calendar.MILLISECOND, (int) expiredMillis);
+        exPCalendar.add(Calendar.MILLISECOND, (int) (7 * 24 * 60 * 60 * 1000));
 
         Date expDate = exPCalendar.getTime();
 

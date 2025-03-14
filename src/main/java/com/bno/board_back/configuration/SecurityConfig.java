@@ -24,14 +24,14 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless 세션 설정
 //                .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login/**", "/join",
+                        .requestMatchers("/login/**", "/join", "/otp/**",
                                 "/idcheck/**", "/namecheck/**" ,
                                 "/nicknamecorrection/**", "/addresscorrection/**",
                                 "/passwordcorrection/**",
                                 "/mypage/**",
-                                "/search-list/**", "/board/*",
+                                "/search-list/**", "/board/detail/*",
                                 "/board/*/view", "/swagger-ui/**", "/swagger-ui/*", "/v3/api-docs/**", "/v3/api-docs/*",
-                                "/board/board-list", "/board/*/comment"
+                                "/board/board-list", "/board/*/comment", "/board/*/comment/**"
 //                                "/**", "/*"
                         ).permitAll() // 특정 URL에 대한 접근 허용
                         .anyRequest().authenticated() // 나머지 요청은 인증 필요

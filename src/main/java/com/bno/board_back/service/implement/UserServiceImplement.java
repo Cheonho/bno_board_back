@@ -1,5 +1,6 @@
 package com.bno.board_back.service.implement;
 
+import com.bno.board_back.config.Hmac.SecretKeyConfig;
 import com.bno.board_back.dto.responseDto.*;
 import com.bno.board_back.dto.userDto.*;
 import com.bno.board_back.entity.RefreshEntity;
@@ -8,6 +9,7 @@ import com.bno.board_back.provider.jwt.JwtTokenProvider;
 import com.bno.board_back.provider.jwt.RefreshTokenProvider;
 import com.bno.board_back.repository.RefreshRepository;
 import com.bno.board_back.repository.UserRepository;
+import com.bno.board_back.service.OtpService;
 import com.bno.board_back.service.UserService;
 import com.bno.board_back.utils.TsidUtilUseSystem;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,8 @@ public class UserServiceImplement implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private UserService userService;
+    private OtpService otpService;
     private final RefreshTokenProvider refreshTokenProvider ;
     private final RefreshRepository refreshRepository;
 
@@ -110,6 +114,7 @@ public class UserServiceImplement implements UserService {
                 .password(bCryptPasswordEncoder.encode(joinRequestDto.getPassword()))
                 .address(joinRequestDto.getAddress())
                 .role(Collections.singletonList("USER").toString())
+                .otpSecretKey(null)
                 .build();
 
         RefreshEntity refreshEntity = RefreshEntity.builder()
@@ -256,8 +261,31 @@ public class UserServiceImplement implements UserService {
                 .email(userEntity.getEmail())
                 .role(userEntity.getRole())
                 .address(userEntity.getAddress())
+                .otpEnabled(userEntity.isOtpEnabled())
                 .build() ;
 
         return GetUserApiTokenDto.apiSuccess(apitokendataDto);
     }
+
+    @Override
+    public ResponseEntity<? super GetUserLoginResponseDto> otpLoginPage(OtpVerifyRequestDto otpVerifyRequestDto) {
+
+        // 1. 이메일로 사용자 조회
+        Optional<UserEntity> optionalUserEntity = userRepository.findByEmail(otpVerifyRequestDto.getEmail());
+        if (optionalUserEntity.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ResponseDto.loginFailed());
+        }
+        UserEntity userEntity = optionalUserEntity.get();
+
+
+        // 3. JWT 토큰 생성
+        String token = jwtTokenProvider.createToken(userEntity.getId(), userEntity.getUsername());
+        System.out.println(token);
+        // 4. 로그인 성공 응답 반환
+        return GetUserLoginResponseDto.success(userEntity, token);
+    }
+
+
+
 }

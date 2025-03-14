@@ -20,15 +20,15 @@ public class GetUserLoginResponseDto extends ResponseDto {
     private final String accessToken ;
     private final String refreshToken ;
 
-    private GetUserLoginResponseDto(UserEntity userEntity, String accessToken, String refreshToken) {
+    private GetUserLoginResponseDto(UserEntity userEntity, String accessToken, String refreshTSoken, boolean otpEnabled) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS) ;
         this.loginResponseDto = UserLoginMapper.INSTANCE.toDTO(userEntity) ;
         this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
+        this.refreshToken = refreshTSoken;
     }
 
-    public static ResponseEntity<GetUserLoginResponseDto> success(UserEntity userEntity, String accessToken, String refreshToken) {
-        GetUserLoginResponseDto result = new GetUserLoginResponseDto(userEntity, accessToken, refreshToken) ;
+        public static ResponseEntity<GetUserLoginResponseDto> success(UserEntity userEntity, String accessToken, String refreshToken) {
+        GetUserLoginResponseDto result = new GetUserLoginResponseDto(userEntity, accessToken, refreshToken, userEntity.isOtpEnabled()) ;
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

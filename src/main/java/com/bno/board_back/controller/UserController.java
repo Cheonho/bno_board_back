@@ -2,41 +2,43 @@ package com.bno.board_back.controller;
 
 import com.bno.board_back.dto.responseDto.*;
 import com.bno.board_back.dto.userDto.*;
-import com.bno.board_back.service.OtpResultServlet;
-import com.bno.board_back.service.OtpServlet;
+import com.bno.board_back.entity.UserEntity;
+import com.bno.board_back.provider.jwt.JwtTokenProvider;
+import com.bno.board_back.repository.UserRepository;
+import com.bno.board_back.service.OtpService;
 import com.bno.board_back.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Date;
+import java.util.Map;
 
 @RestController
 public class UserController {
 
     private final UserService userService;
-    private final OtpResultServlet otpResultServlet ;
-    private final OtpServlet otpServlet ;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
+    private final OtpService otpService;
 
     @Autowired
-    public UserController(UserService userService, OtpResultServlet otpResultServlet, OtpServlet otpServlet) {
+    public UserController(UserService userService, JwtTokenProvider jwtTokenProvider, UserRepository userRepository, OtpService otpService) {
         this.userService = userService;
-        this.otpResultServlet = otpResultServlet ;
-        this.otpServlet = otpServlet ;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.userRepository = userRepository;
+        this.otpService = otpService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<? super GetUserLoginResponseDto> LoginPage(@RequestBody LoginRequestDto loginRequestDto, HttpSession session) {
         ResponseEntity<? super GetUserLoginResponseDto> response = userService.loginPage(loginRequestDto);
         session.setAttribute("loginDto", response);
-        return response ;
+        return response;
     }
 
 
@@ -49,33 +51,33 @@ public class UserController {
 
     @GetMapping("/idcheck")
     public ResponseEntity<? super GetUserCheckEmailDto> EmailCheckPage(@RequestParam String email) {
-        ResponseEntity<? super GetUserCheckEmailDto> response = userService.checkEmail(email) ;
-        return response ;
+        ResponseEntity<? super GetUserCheckEmailDto> response = userService.checkEmail(email);
+        return response;
     }
 
     @GetMapping("/namecheck")
     public ResponseEntity<? super GetUserCheckNicknameDto> NameCheckPage(@RequestParam String userNickname) {
-        ResponseEntity<? super GetUserCheckNicknameDto> response = userService.checkNickname(userNickname) ;
-        return response ;
+        ResponseEntity<? super GetUserCheckNicknameDto> response = userService.checkNickname(userNickname);
+        return response;
     }
 
 
     @PostMapping("/nicknamecorrection")
-    public ResponseEntity<? super GetUserInformationChangeDto> Nicknamecorrection (@RequestBody @Valid UserInformationChangeDto userInformationChangeDto) {
-    ResponseEntity<? super GetUserInformationChangeDto> response = userService.changeNickname(userInformationChangeDto) ;
-    return response ;
+    public ResponseEntity<? super GetUserInformationChangeDto> Nicknamecorrection(@RequestBody @Valid UserInformationChangeDto userInformationChangeDto) {
+        ResponseEntity<? super GetUserInformationChangeDto> response = userService.changeNickname(userInformationChangeDto);
+        return response;
     }
 
-   @PostMapping("/passwordcorrection")
-    public ResponseEntity<? super GetUserInformationChangeDto> Passwordcorrection (@RequestBody @Valid UserInformationChangeDto userInformationChangeDto, BindingResult bindingResult) {
-    ResponseEntity<? super GetUserInformationChangeDto> response = userService.changePassword(userInformationChangeDto, bindingResult) ;
-    return response ;
+    @PostMapping("/passwordcorrection")
+    public ResponseEntity<? super GetUserInformationChangeDto> Passwordcorrection(@RequestBody @Valid UserInformationChangeDto userInformationChangeDto, BindingResult bindingResult) {
+        ResponseEntity<? super GetUserInformationChangeDto> response = userService.changePassword(userInformationChangeDto, bindingResult);
+        return response;
     }
 
     @PostMapping("/addresscorrection")
-    public ResponseEntity<? super GetUserInformationChangeDto> Addresscorrection (@RequestBody @Valid UserInformationChangeDto userInformationChangeDto) {
-        ResponseEntity<? super GetUserInformationChangeDto> response = userService.changeAddress(userInformationChangeDto) ;
-        return response ;
+    public ResponseEntity<? super GetUserInformationChangeDto> Addresscorrection(@RequestBody @Valid UserInformationChangeDto userInformationChangeDto) {
+        ResponseEntity<? super GetUserInformationChangeDto> response = userService.changeAddress(userInformationChangeDto);
+        return response;
     }
 
     @PostMapping("/mypage/apitokendata")
@@ -83,67 +85,97 @@ public class UserController {
         ResponseEntity<? super GetUserApiTokenDto> response = userService.apitokendata(authorizationHeader);
         return response;
     }
-;
 
-    @RequestMapping("/otp")
-    public String generateOtp(HttpServletRequest request, ModelMap modelMap) {
-        try {
-            String encodedKey = OtpServlet.generateOtpAndGetKey();
 
-            UserDto userDto = (UserDto) request.getSession().getAttribute("loggedInUser");
+    @Transactional
+    @PostMapping("/otp/setup")
+    public ResponseEntity<? super OtpSetupResponseDto> setupOtp(@RequestHeader("Authorization") String authorizationHeader) {
+        //  JWT 토큰에서 사용자 ID 추출
+        String token = authorizationHeader.replace("Bearer ", "");
+        String userId = jwtTokenProvider.getUserPk(token); // 토큰에서 사용자 ID 가져오기
 
-            String email = userDto.getEmail();
-            String Nickname = userDto.getUserNickname();
-            String qrCodeUrl = OtpServlet.getQRBarcodeURL(email, Nickname, encodedKey);
+        //  유저 조회
+        UserEntity user = userRepository.findById(userId).orElse(null);
 
-            modelMap.addAttribute("encodedKey", encodedKey);
-            modelMap.addAttribute("qrCodeUrl", qrCodeUrl);
-            modelMap.addAttribute("qr", OtpServlet.getQrCodeUrl(userDto.getUserNickname(), encodedKey));
-
-            request.getSession().setAttribute("encodedKey", encodedKey);
-            request.getSession().setAttribute("url", qrCodeUrl);
-
-            return "/board";
-        } catch (Exception e) {
-            e.printStackTrace();
-            modelMap.addAttribute("error", "An error occurred");
-            return "/error";
-        }
-    }
-
-    /*
-    사용자로부터 입력받은 OTP를 검증하는 메서드
-    @param userCode 사용자가 입력한 OTP 코드
-    @param encodedKey 서버에서 생성된 OTP 코드
-    @param request HttpServletRequest 객체
-    @param modelMap ModelMap 객체
-    @return 검증 결과에 따라 이동할 페이지 경로
-     */
-
-    @PostMapping("/otp/")
-    public String adminOtpVerification(@RequestParam("user_code") String userCode, @RequestParam("encodedKey") String encodedKey,
-                                       HttpServletRequest request, ModelMap modelMap) {
-        if (encodedKey == null || encodedKey.isEmpty()) {
-            modelMap.addAttribute("error", "OTP 키가 유효하지 않습니다. 다시 시도해 주세요");
-            return "/";
+        //  유저가 존재하지 않는 경우
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new OtpSetupResponseDto(null));
         }
 
-        boolean otpVerificationResult = false;
-        try {
-            otpVerificationResult =
-                    OtpResultServlet.check_Code(encodedKey, Long.parseLong(userCode), new
-                            Date().getTime() / 30000);
-        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
-            e.printStackTrace();
-        }
-        if (otpVerificationResult) {
-// OTP 검증 성공 시
-            return "redirect:/admin/dashboard"; // 대시보드로 리다이렉트
+        //  이미 OTP가 설정된 경우
+        if (user.getOtpSecretKey() != null) {
+            String otpAuthUrl = String.format("otpauth://totp/BnoBoard:%s?secret=%s&issuer=BnoBoard", user.getId(), user.getOtpSecretKey());
+            return OtpSetupResponseDto.success(otpAuthUrl);
         } else {
-// OTP 검증 실패 시
-            modelMap.addAttribute("error", "OTP 검증에 실패했습니다. 다시 시도해 주세요.");
-            return "/otpVerificationErrorPage"; // 오류 페이지 예시
+            //  OTP Secret Key 생성
+            String secretKey = otpService.generateSecretKey();
+            String otpAuthUrl = String.format("otpauth://totp/BnoBoard:%s?secret=%s&issuer=BnoBoard", user.getId(), secretKey);
+
+            //  DB에 OTP Secret Key 저장
+            user.setOtpSecretKey(secretKey);
+            userRepository.save(user);
+            return OtpSetupResponseDto.success(otpAuthUrl);
         }
     }
 
+    @PostMapping("/otp/activate")
+    public ResponseEntity<?> activateOtp(@RequestHeader("Authorization") String authorizationHeader,
+                                         @RequestBody Map<String, String> requestBody) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        String userId = jwtTokenProvider.getUserPk(token);
+
+
+        UserEntity user = userRepository.findById(userId).orElse(null);
+        if (user == null || user.getOtpSecretKey() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("OTP 설정이 되어 있지 않거나, 사용자가 존재하지 않습니다.");
+        }
+
+        String otpCodeStr = requestBody.get("otpCode");
+
+        if (otpCodeStr == null || otpCodeStr.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("OTP 코드가 제공되지 않았습니다.");
+        }
+
+        try {
+            int otpCode = Integer.parseInt(otpCodeStr);
+            boolean isOtpValid = otpService.verifyOtp(user.getOtpSecretKey(), otpCode);
+
+            if (!isOtpValid) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("OTP 인증 실패! 다시 입력해주세요.");
+            }
+            user.setOtpEnabled(true);
+            userRepository.save(user);
+
+            return ResponseEntity.ok("OTP 활성화 완료! 보안이 강화되었습니다.");
+        } catch (NumberFormatException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("OTP 입력값이 올바르지 않습니다.");
+        }
+    }
+
+    @PostMapping("/otp/verify")
+    public ResponseEntity<? super GetUserLoginResponseDto> verifyOtp(@RequestBody OtpVerifyRequestDto requestDto, HttpSession session) {
+
+        UserEntity user = userRepository.findByEmail(requestDto.getEmail()).orElse(null);
+        if (user == null || user.getOtpSecretKey() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("OTP 설정이 되어 있지 않거나, 사용자가 존재하지 않습니다.");
+        }
+
+        boolean isOtpValid = otpService.verifyOtp(user.getOtpSecretKey(), Integer.parseInt(requestDto.getOtpCode()));
+
+        if (!isOtpValid) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("OTP 인증 실패! 다시 입력해주세요.");
+        }
+
+        ResponseEntity<? super GetUserLoginResponseDto> response = userService.otpLoginPage(requestDto);
+        session.setAttribute("loginDto", response);
+        return response;
+    }
 }
+

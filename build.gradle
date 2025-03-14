@@ -73,6 +73,9 @@ dependencies {
 
 	// Minio
 	implementation 'io.minio:minio:8.5.17'
+
+	// Google OTP
+	implementation 'com.warrenstrange:googleauth:1.4.0'
 }
 
 tasks.named('test') {

@@ -43,6 +43,10 @@ public class UserEntity implements UserDetails {
     @Column(name = "is_available")
     private String isAvailable;
 
+    private String otpSecretKey;
+
+    private boolean otpEnabled;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role)); // 단일 권한을 리스트로 변환

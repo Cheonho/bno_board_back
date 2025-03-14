@@ -31,7 +31,7 @@ public class SecurityConfig {
                                 "/mypage/**",
                                 "/search-list/**", "/board/detail/*",
                                 "/board/*/view", "/swagger-ui/**", "/swagger-ui/*", "/v3/api-docs/**", "/v3/api-docs/*",
-                                "/board/board-list", "/board/*/comment", "/board/*/comment/**"
+                                "/board/board-list", "/board/*/comment", "/board/*/comment/**", "/file/refresh-url/*"
 //                                "/**", "/*"
                         ).permitAll() // 특정 URL에 대한 접근 허용
                         .anyRequest().authenticated() // 나머지 요청은 인증 필요

@@ -44,4 +44,5 @@ public interface ResponseMessage {
     String FILE_SIZE_MAX = "파일 크기가 너무 큽니다.";
     String NON_FILE_EXISTED = "파일이 존재하지 않습니다.";
     String NON_FILE_NAME = "파일명이 비어 있습니다.";
+    String MINIOCLIENT_OR_DB_ERROR = "미나이오 클라이언트 혹은 데이터베이스 오류";
 }

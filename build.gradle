@@ -76,6 +76,9 @@ dependencies {
 
 	// Google OTP
 	implementation 'com.warrenstrange:googleauth:1.4.0'
+
+	// spring 설정 암호화
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
 }
 
 tasks.named('test') {

@@ -6,6 +6,7 @@ import com.bno.board_back.dto.response.ResponseDto;
 import com.bno.board_back.dto.response.board.GetBoardResponseDto;
 import com.bno.board_back.dto.response.comment.GetCommentListResponseDto;
 import com.bno.board_back.dto.response.comment.PostCommentResponseDto;
+import com.bno.board_back.exception.FileException;
 import com.bno.board_back.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,6 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.bno.board_back.common.ResponseMessage.FILE_EXTENSION;
 
 @RestController
 @RequestMapping("/board/")
@@ -110,6 +113,7 @@ public class BoardController {
             @RequestPart(value = "deleteIdList", required = false) FileDeleteIdDto deleteIdDto,
             @RequestPart(value = "file", required = false) List<MultipartFile> files
     ) {
+//        throw new FileException(FILE_EXTENSION, FILE_EXTENSION);
         List<String> deleteIdList = new ArrayList<>();
         if (deleteIdDto != null) {deleteIdList = deleteIdDto.getFileIds();}
         ResponseEntity<? super PutUpdateBoardResponseDto> response = boardService.putUpdateBoard(board, files, deleteIdList);

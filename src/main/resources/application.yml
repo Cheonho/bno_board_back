@@ -43,7 +43,7 @@ jwt:
 
 file:
   allowed:
-    file_extension: txt,xlsx,png,jpg
+    file_extension: txt,xlsx,png,jpg,jpeg,gif
     max_size: 10*1024*1024
     # 최대 사이즈 10MB
 

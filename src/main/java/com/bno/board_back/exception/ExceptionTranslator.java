@@ -6,11 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -19,10 +22,8 @@ import java.util.Locale;
 
 @Hidden
 @RestControllerAdvice
+@Slf4j
 public class ExceptionTranslator extends ResponseEntityExceptionHandler {
-
-    @Autowired
-    private MessageSource messageSource;
 
     @Data
     @AllArgsConstructor
@@ -39,12 +40,12 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
         private Instant timestamp = Instant.now();
     }
 
-    @ExceptionHandler({FileException.class})
+    @ExceptionHandler(FileException.class)
     public ResponseEntity<Object> handleFileException(FileException ex) {
-        System.out.println("🔥 CustomException 발생!");
+        System.out.println("CustomException 발생!");
         final Error error = Error.builder()
                 .type("BadRequest")
-                .title(messageSource.getMessage("error.file.title", null, Locale.getDefault()))
+                .title("error.file.title")
                 .status(HttpStatus.BAD_REQUEST.value())
                 .detail(ex.getErrorData())
                 .build();
@@ -57,7 +58,7 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
         HttpStatus status = ex.getStatus();
         final Error error = Error.builder()
                 .type(ex.getErrorName())
-                .title(messageSource.getMessage("error.custom.title", null, Locale.getDefault()))
+                .title("error.custom.title")
                 .status(status.value())
                 .detail(ex.getErrorData())
                 .build();

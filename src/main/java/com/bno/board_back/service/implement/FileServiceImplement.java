@@ -225,7 +225,7 @@ public class FileServiceImplement implements FileService {
             }
             return url;
         } catch (Exception e) {
-            return null;
+            throw new FileException(MINIOCLIENT_OR_DB_ERROR, MINIOCLIENT_OR_DB_ERROR);
         }
     }
 }

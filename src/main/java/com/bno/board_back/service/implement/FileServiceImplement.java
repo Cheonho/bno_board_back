@@ -67,7 +67,7 @@ public class FileServiceImplement implements FileService {
         }
 
         if (size > maxSize) {
-            throw new FileException(FILE_SIZE_MAX,FILE_SIZE_MAX);
+            throw new FileException(FILE_EXTENSION, FILE_EXTENSION);
         }
     }
 

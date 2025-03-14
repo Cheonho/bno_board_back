@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,5 +21,5 @@ public class RefreshEntity {
     private String id ;
     private String email ;
     private String refresh ; // 재토큰
-    private long expirationTime ; // 만료
+    private Timestamp expirationTime ; // 만료
 }

@@ -1,6 +1,5 @@
 package com.bno.board_back.service.implement;
 
-import com.bno.board_back.config.Hmac.SecretKeyConfig;
 import com.bno.board_back.dto.responseDto.*;
 import com.bno.board_back.dto.userDto.*;
 import com.bno.board_back.entity.RefreshEntity;
@@ -20,6 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -57,23 +59,23 @@ public class UserServiceImplement implements UserService {
         // 3. JWT 토큰 생성
         String accessToken = jwtTokenProvider.createToken(userEntity.getId(), userEntity.getUsername());
         String refreshToken = refreshTokenProvider.createRefreshToken(userEntity.getId(), userEntity.getEmail());
+
         // 4. RefreshToken 유무
         Optional<RefreshEntity>
                 refreshTokenEntity = refreshRepository.findByEmail(loginRequestDto.getEmail()) ;
 
         RefreshEntity refreshEntity = refreshTokenEntity.get() ;
-        System.out.println("❤ refreshEntity : " + refreshEntity);
+
 
         if (refreshEntity.getRefresh() != null && !refreshEntity.getRefresh().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(ResponseDto.success());
+            return GetUserLoginResponseDto.success(userEntity, accessToken, refreshToken);
         }
 
         refreshEntity = RefreshEntity.builder()
                 .id(refreshEntity.getId())
                 .email(refreshEntity.getEmail())
                 .refresh(refreshToken)
-                .expirationTime(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)
+                .expirationTime(Timestamp.from(Instant.now().plus(7, ChronoUnit.DAYS)))
                 .build() ;
 
         refreshRepository.save(refreshEntity) ;
@@ -267,6 +269,32 @@ public class UserServiceImplement implements UserService {
         return GetUserApiTokenDto.apiSuccess(apitokendataDto);
     }
 
+   /* @Override
+    public ResponseEntity<? super GetUserRefreshTokenResponseDto> reFreshToken(RefreshTokenDto refreshTokenDto) {
+
+        Optional<RefreshEntity> refreshTokenEntity = refreshRepository.findByEmail(refreshTokenDto.getEmail()) ;
+        Optional<UserEntity> optionalUserEntity = userRepository.findByEmail(refreshTokenDto.getEmail()) ;
+
+        UserEntity userEntity = optionalUserEntity.get() ;
+        RefreshEntity refreshEntity = refreshTokenEntity.get() ;
+
+        if(!refreshEntity.getRefresh().isEmpty() &&
+                // 현재 시간과 만료 시간을 비교해서 연장할지 결정
+                refreshEntity.getExpirationTime().toInstant().isBefore(Instant.now())) {
+
+            // JWT 토큰 생성
+            String accessToken = jwtTokenProvider.createToken(userEntity.getId(), userEntity.getUsername());
+            String refreshToken = refreshTokenProvider.createRefreshToken(userEntity.getId(), userEntity.getEmail());
+
+        }
+
+
+
+        String accessToken = jwtTokenProvider.createToken(userEntity.getId(), userEntity.getUsername());
+    }
+
+
+*/
     @Override
     public ResponseEntity<? super GetUserLoginResponseDto> otpLoginPage(OtpVerifyRequestDto otpVerifyRequestDto) {
 
@@ -276,16 +304,34 @@ public class UserServiceImplement implements UserService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ResponseDto.loginFailed());
         }
+
         UserEntity userEntity = optionalUserEntity.get();
 
-
         // 3. JWT 토큰 생성
-        String token = jwtTokenProvider.createToken(userEntity.getId(), userEntity.getUsername());
-        System.out.println(token);
+        String accessToken = jwtTokenProvider.createToken(userEntity.getId(), userEntity.getUsername());
+        String refreshToken = refreshTokenProvider.createRefreshToken(userEntity.getId(), userEntity.getEmail());
+
+        // 4. RefreshToken 유무
+        Optional<RefreshEntity>
+                refreshTokenEntity = refreshRepository.findByEmail(otpVerifyRequestDto.getEmail());
+
+        RefreshEntity refreshEntity = refreshTokenEntity.get();
+
+        if (refreshEntity.getRefresh() != null && !refreshEntity.getRefresh().isEmpty()) {
+            return GetUserLoginResponseDto.success(userEntity, accessToken, refreshToken);
+        }
+
+        refreshEntity = RefreshEntity.builder()
+                .id(refreshEntity.getId())
+                .email(refreshEntity.getEmail())
+                .refresh(refreshToken)
+                .expirationTime(Timestamp.from(Instant.now().plus(7, ChronoUnit.DAYS)))
+                .build();
+
+        refreshRepository.save(refreshEntity);
+
         // 4. 로그인 성공 응답 반환
-        return GetUserLoginResponseDto.success(userEntity, token);
+        return GetUserLoginResponseDto.success(userEntity, accessToken, refreshToken);
     }
-
-
 
 }

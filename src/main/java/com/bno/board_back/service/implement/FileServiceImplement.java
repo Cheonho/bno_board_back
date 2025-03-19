@@ -86,7 +86,6 @@ public class FileServiceImplement implements FileService {
                     .contentType(file.getContentType())
                     .size(file.getSize())
                     .fileExtension(FileUtil.getFileExtension(file).toLowerCase())
-                    .updateAt(null)
                     .createAt(LocalDateTime.now())
                     .status(true)
                     .build();
